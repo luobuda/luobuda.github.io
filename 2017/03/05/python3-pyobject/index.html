@@ -1,0 +1,738 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="python," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.2" />
+
+
+
+
+
+
+<meta name="description" content="&amp;#x5BF9;&amp;#x8C61;CPython&amp;#x58F0;&amp;#x660E;Object and type object interface&amp;#x9996;&amp;#x5148;&amp;#x6211;&amp;#x4EEC;&amp;#x5148;&amp;#x6765;&amp;#x770B;&amp;#x770B;object.h&amp;#x6587;&amp;#x4EF6;&amp;#x4E2D;&amp;#x7684;&amp;#x6CE8;&amp;#x91CA;&amp;#x3002;1">
+<meta property="og:type" content="article">
+<meta property="og:title" content="python3源码浅读——对象PyObject">
+<meta property="og:url" content="http://luobuda.github.io/2017/03/05/python3-pyobject/index.html">
+<meta property="og:site_name" content="洛卜哒的博客">
+<meta property="og:description" content="&amp;#x5BF9;&amp;#x8C61;CPython&amp;#x58F0;&amp;#x660E;Object and type object interface&amp;#x9996;&amp;#x5148;&amp;#x6211;&amp;#x4EEC;&amp;#x5148;&amp;#x6765;&amp;#x770B;&amp;#x770B;object.h&amp;#x6587;&amp;#x4EF6;&amp;#x4E2D;&amp;#x7684;&amp;#x6CE8;&amp;#x91CA;&amp;#x3002;1">
+<meta property="og:updated_time" content="2017-03-05T08:09:33.723Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="python3源码浅读——对象PyObject">
+<meta name="twitter:description" content="&amp;#x5BF9;&amp;#x8C61;CPython&amp;#x58F0;&amp;#x660E;Object and type object interface&amp;#x9996;&amp;#x5148;&amp;#x6211;&amp;#x4EEC;&amp;#x5148;&amp;#x6765;&amp;#x770B;&amp;#x770B;object.h&amp;#x6587;&amp;#x4EF6;&amp;#x4E2D;&amp;#x7684;&amp;#x6CE8;&amp;#x91CA;&amp;#x3002;1">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://luobuda.github.io/2017/03/05/python3-pyobject/"/>
+
+
+  <title> python3源码浅读——对象PyObject | 洛卜哒的博客 </title>
+</head>
+
+<body itemscope itemtype="//schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="//schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">洛卜哒的博客</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">大约，孔乙己的确死了！</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                python3源码浅读——对象PyObject
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-03-05T14:16:37+08:00" content="2017-03-05">
+              2017-03-05
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2017/03/05/python3-pyobject/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/03/05/python3-pyobject/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="&#x5BF9;&#x8C61;CPython&#x58F0;&#x660E;"><a href="#&#x5BF9;&#x8C61;CPython&#x58F0;&#x660E;" class="headerlink" title="&#x5BF9;&#x8C61;CPython&#x58F0;&#x660E;"></a>&#x5BF9;&#x8C61;CPython&#x58F0;&#x660E;</h2><h3 id="Object-and-type-object-interface"><a href="#Object-and-type-object-interface" class="headerlink" title="Object and type object interface"></a>Object and type object interface</h3><p>&#x9996;&#x5148;&#x6211;&#x4EEC;&#x5148;&#x6765;&#x770B;&#x770B;<a href="https://github.com/python/cpython/blob/master/Include/object.h" target="_blank" rel="external">object.h</a>&#x6587;&#x4EF6;&#x4E2D;&#x7684;&#x6CE8;&#x91CA;&#x3002;<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div></pre></td><td class="code"><pre><div class="line">/* Object and type object interface */</div><div class="line"></div><div class="line">/*</div><div class="line">Objects are structures allocated on the heap.  Special rules apply to</div><div class="line">the use of objects to ensure they are properly garbage-collected.</div><div class="line">Objects are never allocated statically or on the stack; they must be</div><div class="line">accessed through special macros and functions only.  (Type objects are</div><div class="line">exceptions to the first rule; the standard types are represented by</div><div class="line">statically initialized type objects, although work on type/class unification</div><div class="line">for Python 2.2 made it possible to have heap-allocated type objects too).</div><div class="line"></div><div class="line">An object has a &apos;reference count&apos; that is increased or decreased when a</div><div class="line">pointer to the object is copied or deleted; when the reference count</div><div class="line">reaches zero there are no references to the object left and it can be</div><div class="line">removed from the heap.</div><div class="line"></div><div class="line">An object has a &apos;type&apos; that determines what it represents and what kind</div><div class="line">of data it contains.  An object&apos;s type is fixed when it is created.</div><div class="line">Types themselves are represented as objects; an object contains a</div><div class="line">pointer to the corresponding type object.  The type itself has a type</div><div class="line">pointer pointing to the object representing the type &apos;type&apos;, which</div><div class="line">contains a pointer to itself!).</div><div class="line"></div><div class="line">Objects do not float around in memory; once allocated an object keeps</div><div class="line">the same size and address.  Objects that must hold variable-size data</div><div class="line">can contain pointers to variable-size parts of the object.  Not all</div><div class="line">objects of the same type have the same size; but the size cannot change</div><div class="line">after allocation.  (These restrictions are made so a reference to an</div><div class="line">object can be simply a pointer -- moving an object would require</div><div class="line">updating all the pointers, and changing an object&apos;s size would require</div><div class="line">moving it if there was another object right next to it.)</div><div class="line"></div><div class="line">Objects are always accessed through pointers of the type &apos;PyObject *&apos;.</div><div class="line">The type &apos;PyObject&apos; is a structure that only contains the reference count</div><div class="line">and the type pointer.  The actual memory allocated for an object</div><div class="line">contains other data that can only be accessed after casting the pointer</div><div class="line">to a pointer to a longer structure type.  This longer type must start</div><div class="line">with the reference count and type fields; the macro PyObject_HEAD should be</div><div class="line">used for this (to accommodate for future changes).  The implementation</div><div class="line">of a particular object type can cast the object pointer to the proper</div><div class="line">type and back.</div><div class="line"></div><div class="line">A standard interface exists for objects that contain an array of items</div><div class="line">whose size is determined when the object is allocated.</div><div class="line">*/</div></pre></td></tr></table></figure></p>
+<p>&#x7B80;&#x5355;&#x603B;&#x7ED3;&#x5982;&#x4E0B;&#xFF1A;</p>
+<ul>
+<li>&#x5BF9;&#x8C61;&#x5206;&#x914D;&#x4E00;&#x822C;&#x5728;&#x5806;&#x4E0A;&#x8FDB;&#x884C;</li>
+<li>&#x6BCF;&#x4E2A;&#x5BF9;&#x8C61;&#x6709;&#x4E00;&#x4E2A;reference count &#x5F15;&#x7528;&#x8BA1;&#x6570;</li>
+<li>&#x6BCF;&#x4E00;&#x4E2A;&#x5BF9;&#x8C61;&#x6709;&#x4E00;&#x4E2A;<code>type</code>&#x6765;&#x771F;&#x6B63;&#x8868;&#x660E;&#x5BF9;&#x8C61;&#x7C7B;&#x578B;</li>
+<li>&#x5BF9;&#x8C61;&#x4E00;&#x65E6;&#x5206;&#x914D;&#xFF0C;&#x5176;&#x5728;&#x5185;&#x5B58;&#x7684;&#x5730;&#x5740;&#x5C31;&#x4E0D;&#x5728;&#x6539;&#x53D8;</li>
+<li>&#x4EFB;&#x4F55;&#x5BF9;&#x8C61;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;<code>PyObject *</code>&#x7C7B;&#x578B;&#x6307;&#x9488;&#x8BBF;&#x95EE;&#xFF0C;PyObject&#x7ED3;&#x6784;&#x53EA;&#x5305;&#x542B;&#x5F15;&#x7528;&#x8BA1;&#x6570;&#x548C;type&#x7C7B;&#x578B;&#x6307;&#x9488;&#x4E24;&#x4E2A;&#x5B57;&#x6BB5;&#xFF0C;&#x5B9E;&#x9645;&#x7684;&#x5BF9;&#x8C61;&#x6570;&#x636E;&#x7531;type&#x7C7B;&#x578B;&#x6307;&#x9488;&#x6307;&#x5411;&#xFF0C;&#x5373;<code>_typeobject</code>&#x7ED3;&#x6784;&#x4F53;&#x3002; </li>
+</ul>
+<a id="more"></a>
+<h3 id="PyObject&#x548C;PyVarObject"><a href="#PyObject&#x548C;PyVarObject" class="headerlink" title="PyObject&#x548C;PyVarObject"></a>PyObject&#x548C;PyVarObject</h3><p>&#x5728;Python&#x4E2D;&#x4E00;&#x5207;&#x90FD;&#x662F;&#x5BF9;&#x8C61;&#xFF0C;CPython&#x901A;&#x8FC7;&#x76F8;&#x5E94;&#x7684;&#x7ED3;&#x6784;&#x4F53;&#x6765;&#x5B9E;&#x73B0;&#x3002;&#x800C;Python&#x4E2D;&#x7684;&#x5BF9;&#x8C61;&#x53C8;&#x5206;&#x4E3A;&#x5B9A;&#x957F;&#x548C;&#x53D8;&#x957F;&#x4E24;&#x79CD;&#xFF0C;&#x5728;<a href="https://github.com/python/cpython/blob/master/Include/object.h" target="_blank" rel="external">object.h</a>&#x4E2D;&#x5206;&#x522B;&#x58F0;&#x660E;&#x4E86;PyObject&#x548C;PyVarObject&#x4E24;&#x4E2A;&#x7ED3;&#x6784;&#x4F53;&#x6765;&#x8868;&#x793A;&#xFF0C;&#x4EE3;&#x7801;&#x5982;&#x4E0B;&#xFF1A;</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> _object {</div><div class="line">    _PyObject_HEAD_EXTRA</div><div class="line">    Py_ssize_t ob_refcnt;</div><div class="line">    <span class="keyword">struct</span> _typeobject *ob_type;</div><div class="line">} PyObject;</div><div class="line"></div><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> {</div><div class="line">    PyObject ob_base;</div><div class="line">    Py_ssize_t ob_size; <span class="comment">/* Number of items in variable part */</span></div><div class="line">} PyVarObject;</div></pre></td></tr></table></figure>
+<p>&#x4ECE;&#x4E24;&#x4E2A;&#x7ED3;&#x6784;&#x4F53;&#x5B9A;&#x4E49;&#x53EF;&#x4EE5;&#x53D1;&#x73B0;&#xFF0C;PyObject&#x5D4C;&#x5957;&#x5728;PyVarObject&#x5185;&#xFF0C;&#x5B9E;&#x73B0;&#x4E86;&#x7EE7;&#x627F;&#x5173;&#x7CFB;&#xFF0C;&#x4EFB;&#x4F55;&#x4E00;&#x4E2A;&#x6307;&#x5411;Python&#x5BF9;&#x8C61;&#x7684;&#x6307;&#x9488;&#x90FD;&#x53EF;&#x4EE5;&#x8F6C;&#x6362;&#x4E3A;<code>PyObject*</code>,&#x800C;&#x4EFB;&#x4F55;&#x4E00;&#x4E2A;&#x6307;&#x5411;Python&#x53D8;&#x957F;&#x5BF9;&#x8C61;&#x7684;&#x6307;&#x9488;&#x90FD;&#x53EF;&#x4EE5;&#x8F6C;&#x6362;&#x4E3A;<code>PyVarObject*</code>&#x3002;</p>
+<p>&#x5404;&#x4E2A;&#x5B57;&#x6BB5;&#x7B80;&#x8981;&#x8BF4;&#x660E;&#xFF1A;</p>
+<table>
+<thead>
+<tr>
+<th>&#x5B57;&#x6BB5;</th>
+<th>&#x8BF4;&#x660E;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>_PyObject_HEAD_EXTRA</td>
+<td>&#x53CC;&#x5411;&#x94FE;&#x8868;&#x7ED3;&#x6784;&#xFF0C;&#x7528;&#x4E8E;&#x5783;&#x573E;&#x56DE;&#x6536;</td>
+</tr>
+<tr>
+<td>ob_refcnt</td>
+<td>&#x5373;&#x5F15;&#x7528;&#x8BA1;&#x6570;</td>
+</tr>
+<tr>
+<td>ob_type</td>
+<td>&#x6307;&#x5411;&#x7C7B;&#x578B;&#x5BF9;&#x8C61;&#x7684;&#x6307;&#x9488;&#xFF0C;&#x5B9E;&#x73B0;&#x5BF9;&#x8C61;&#x771F;&#x6B63;&#x7684;_typeobject&#x7ED3;&#x6784;&#x4F53;</td>
+</tr>
+<tr>
+<td>ob_size</td>
+<td>&#x53D8;&#x957F;&#x5BF9;&#x8C61;&#x4E2D;&#x5143;&#x7D20;&#x7684;&#x4E2A;&#x6570;&#xFF0C;&#x5982;&#x5217;&#x8868;&#x4E0E;&#x5143;&#x7D20;</td>
+</tr>
+</tbody>
+</table>
+<h3 id="&#x4E3B;&#x8981;&#x7ED3;&#x6784;&#x4F53;"><a href="#&#x4E3B;&#x8981;&#x7ED3;&#x6784;&#x4F53;" class="headerlink" title="&#x4E3B;&#x8981;&#x7ED3;&#x6784;&#x4F53;"></a>&#x4E3B;&#x8981;&#x7ED3;&#x6784;&#x4F53;</h3><table>
+<thead>
+<tr>
+<th>&#x7ED3;&#x6784;&#x4F53;</th>
+<th>&#x8BF4;&#x660E;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>PyNumberMethods</td>
+<td>&#x6570;&#x503C;&#x65B9;&#x6CD5;</td>
+</tr>
+<tr>
+<td>PySequenceMethods</td>
+<td>&#x5E8F;&#x5217;&#x65B9;&#x6CD5;</td>
+</tr>
+<tr>
+<td>PyMappingMethods</td>
+<td>&#x6620;&#x5C04;&#x65B9;&#x6CD5;</td>
+</tr>
+<tr>
+<td>PyAsyncMethods</td>
+<td>&#x5F02;&#x6B65;&#x65B9;&#x6CD5;</td>
+</tr>
+<tr>
+<td><strong>_typeobject</strong></td>
+<td>&#x7C7B;&#x578B;&#x5BF9;&#x8C61;</td>
+</tr>
+</tbody>
+</table>
+<p>&#x5728;&#x7ED3;&#x6784;&#x4F53;&#x4E2D;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x770B;&#x89C1;&#x5982;&#x4E0B;&#x4EE3;&#x7801;&#x7247;&#x6BB5;&#xFF1A;<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">PyNumberMethods *tp_as_number;</div><div class="line">PySequenceMethods *tp_as_sequence;</div><div class="line">PyMappingMethods *tp_as_mapping;</div></pre></td></tr></table></figure></p>
+<p>&#x5BF9;&#x8C61;&#x7684;&#x4E00;&#x7CFB;&#x5217;&#x65B9;&#x6CD5;&#x5C31;&#x662F;&#x901A;&#x8FC7;&#x8FD9;&#x51E0;&#x4E2A;&#x6307;&#x9488;&#x7ED1;&#x5B9A;&#x3002;</p>
+<h3 id="&#x9700;&#x8981;&#x7559;&#x610F;&#x7684;&#x51E0;&#x4E2A;&#x65B9;&#x6CD5;"><a href="#&#x9700;&#x8981;&#x7559;&#x610F;&#x7684;&#x51E0;&#x4E2A;&#x65B9;&#x6CD5;" class="headerlink" title="&#x9700;&#x8981;&#x7559;&#x610F;&#x7684;&#x51E0;&#x4E2A;&#x65B9;&#x6CD5;"></a>&#x9700;&#x8981;&#x7559;&#x610F;&#x7684;&#x51E0;&#x4E2A;&#x65B9;&#x6CD5;</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">// &#x83B7;&#x53D6;op&#x7684;&#x5F15;&#x7528;&#x8BA1;&#x6570;</div><div class="line">#define Py_REFCNT(ob)           (((PyObject*)(ob))-&gt;ob_refcnt)</div><div class="line">// &#x83B7;&#x53D6;op&#x7684;&#x7C7B;&#x578B;</div><div class="line">#define Py_TYPE(ob)             (((PyObject*)(ob))-&gt;ob_type)</div><div class="line">// &#x83B7;&#x53D6;op&#x5143;&#x7D20;&#x7684;&#x4E2A;&#x6570;</div><div class="line">#define Py_SIZE(ob)             (((PyVarObject*)(ob))-&gt;ob_size)</div></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// &#x5220;&#x9664;&#x4E86;&#x90E8;&#x5206;code&#xFF0C;&#x4E0D;&#x5F71;&#x54CD;&#x6838;&#x5FC3;&#x903B;&#x8F91;</span></div><div class="line"></div><div class="line"><span class="comment">// &#x8C03;&#x7528;&#x7C7B;&#x578B;&#x7684;tp_dealloc&#x8FDB;&#x884C;&#x91CA;&#x653E;&#xFF0C;&#x4E0D;&#x540C;&#x5BF9;&#x8C61;&#x7C7B;&#x578B;&#x884C;&#x4E3A;&#x4E0D;&#x540C;</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> _Py_Dealloc(op)  ((*Py_TYPE(op)-&gt;tp_dealloc)((PyObject *)(op)))</span></div><div class="line"><span class="comment">// &#x5F15;&#x7528;&#x8BA1;&#x6570;+1</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> Py_INCREF(op)    (((PyObject *)(op))-&gt;ob_refcnt++)</span></div><div class="line"><span class="comment">// &#x5F15;&#x7528;&#x8BA1;&#x6570;-1&#xFF0C;&#x5F53;&#x5F15;&#x7528;&#x8BA1;&#x6570;=0&#xFF0C;&#x8C03;&#x7528;_Py_Dealloc</span></div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> Py_DECREF(op)                                   \</span></div><div class="line">    do {                                                \</div><div class="line">        PyObject *_py_decref_tmp = (PyObject *)(op);    \</div><div class="line">        <span class="meta-keyword">if</span> (_Py_DEC_REFTOTAL  _Py_REF_DEBUG_COMMA       \</div><div class="line">        --(_py_decref_tmp)-&gt;ob_refcnt != 0)             \</div><div class="line">            _Py_CHECK_REFCNT(_py_decref_tmp)            \</div><div class="line">        <span class="meta-keyword">else</span>                                            \</div><div class="line">        _Py_Dealloc(_py_decref_tmp);                    \</div><div class="line">    } while (0)</div></pre></td></tr></table></figure>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/python/" rel="tag">#python</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/03/05/python3-source-read/" rel="next" title="python3源码浅读——编译">
+                <i class="fa fa-chevron-left"></i> python3源码浅读——编译
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/03/05/python3-pyobject/"
+           data-title="python3源码浅读——对象PyObject" data-url="http://luobuda.github.io/2017/03/05/python3-pyobject/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="//schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="https://projecteuler.net/profile/luobuda.png"
+               alt="洛卜哒" />
+          <p class="site-author-name" itemprop="name">洛卜哒</p>
+          <p class="site-description motion-element" itemprop="description">没事还是学学数学吧</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">8</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/luobuda" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://github.com/luobuda" title="Github" target="_blank">Github</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://projecteuler.net/" title="Project Euler" target="_blank">Project Euler</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#对象CPython声明"><span class="nav-number">1.</span> <span class="nav-text">对象CPython声明</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Object-and-type-object-interface"><span class="nav-number">1.1.</span> <span class="nav-text">Object and type object interface</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PyObject和PyVarObject"><span class="nav-number">1.2.</span> <span class="nav-text">PyObject和PyVarObject</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#主要结构体"><span class="nav-number">1.3.</span> <span class="nav-text">主要结构体</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#需要留意的几个方法"><span class="nav-number">1.4.</span> <span class="nav-text">需要留意的几个方法</span></a></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">洛卜哒</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.2"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"luobuda"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>

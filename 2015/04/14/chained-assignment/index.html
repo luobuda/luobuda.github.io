@@ -90,7 +90,7 @@
 <meta property="og:url" content="http://luobuda.github.io/2015/04/14/chained-assignment/index.html">
 <meta property="og:site_name" content="洛卜哒的博客">
 <meta property="og:description" content="python&amp;#x5C0F;&amp;#x77E5;&amp;#x8BC6;&amp;#x5173;&amp;#x4E8E;a=b=True&amp;#x662F;&amp;#x600E;&amp;#x6837;&amp;#x5DE5;&amp;#x4F5C;&amp;#x7684;&amp;#x94FE;&amp;#x5F0F;&amp;#x8D4B;&amp;#x503C;&amp;#x5173;&amp;#x4E8E;python&amp;#x6709;&amp;#x4E00;&amp;#x4E2A;&amp;#x6709;&amp;#x8DA3;&amp;#x7">
-<meta property="og:updated_time" content="2016-11-03T14:25:29.360Z">
+<meta property="og:updated_time" content="2017-03-05T03:27:02.556Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="python的chained assignment">
 <meta name="twitter:description" content="python&amp;#x5C0F;&amp;#x77E5;&amp;#x8BC6;&amp;#x5173;&amp;#x4E8E;a=b=True&amp;#x662F;&amp;#x600E;&amp;#x6837;&amp;#x5DE5;&amp;#x4F5C;&amp;#x7684;&amp;#x94FE;&amp;#x5F0F;&amp;#x8D4B;&amp;#x503C;&amp;#x5173;&amp;#x4E8E;python&amp;#x6709;&amp;#x4E00;&amp;#x4E2A;&amp;#x6709;&amp;#x8DA3;&amp;#x7">
@@ -335,7 +335,7 @@
 </blockquote>
 <p>&#x90A3;&#x4E48;&#x95EE;&#x9898;&#x6765;&#x4E86;&#xFF0C;&#x5982;&#x679C;&#x8D4B;&#x503C;&#x7684;&#x8FD9;&#x4E2A;RHS(&#x53F3;&#x503C;)&#x662F;&#x53EF;&#x53D8;&#x7C7B;&#x578B;&#x7684;&#xFF0C;&#x6BD4;&#x5982;&#x662F;&#x4E00;&#x4E2A;list&#x3001;dict&#xFF0C;&#x5F53;&#x6211;&#x4EEC;&#x5E0C;&#x671B;a = b = [],a, b&#x5206;&#x522B;&#x5F97;&#x5230;&#x4E0D;&#x540C;&#x7684;list&#x65F6;&#x663E;&#x7136;&#x51FA;&#x9519;&#x4E86;&#x3002;<br>&#x53E6;&#x4E00;&#x4E2A;&#x7B80;&#x5355;&#x7684;&#x8BF4;&#x660E;&#x4F8B;&#x5B50;&#xFF1A;</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="function"><span class="keyword">def</span> <span class="title">somefunction</span><span class="params">()</span>:</span></div><div class="line"><span class="meta">... </span>    <span class="keyword">return</span> []</div><div class="line"><span class="meta">... </span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>x = y = somefunction()</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>x.append(<span class="number">4</span>)</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>x</div><div class="line">[<span class="number">4</span>]</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>y</div><div class="line">[<span class="number">4</span>]</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>x = somefunction(); y = somefunction()</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>x.append(<span class="number">3</span>)</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>x</div><div class="line">[<span class="number">3</span>]</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>y</div><div class="line">[]</div></pre></td></tr></table></figure>
-<p>&#x8FD9;&#x70B9;&#x8C8C;&#x4F3C;&#x662F;python2.x&#x624D;&#x6709;&#x7684;&#xFF0C;&#x6211;&#x4E5F;&#x662F;&#x770B;<a href="http://stackoverflow.com/questions/7601823/how-do-chained-assignments-work" target="_blank" rel="external">&#x8FD9;&#x91CC;</a>&#x7684;&#x4EBA;&#x8BF4;&#x7684;&#xFF0C;&#x6211;&#x8FD8;&#x6CA1;<br>&#x8BD5;&#x8FC7;&#xFF0C;&#x5982;&#x679C;&#x8363;&#x5E78;&#x6709;&#x4EBA;&#x770B;&#x89C1;&#x8FD9;&#x7BC7;&#x5C0F;&#x6587;&#xFF0C;&#x90A3;&#x4F60;&#x81EA;&#x5DF1;&#x4EB2;&#x81EA;&#x8BD5;&#x8BD5;&#x770B;&#x3002;</p>
+<p>&#x8FD9;&#x662F;Python&#x6700;&#x5E38;&#x89C1;&#x7684;&#x5751;&#x4E4B;&#x4E00;&#xFF0C;&#x66F4;&#x591A;&#x8BA8;&#x8BBA;&#x8BF7;&#x770B;<a href="http://stackoverflow.com/questions/7601823/how-do-chained-assignments-work" target="_blank" rel="external">&#x8FD9;&#x91CC;</a>&#x3002;</p>
 <h2 id="&#x53E6;&#x5916;&#x4E00;&#x70B9;&#xFF1A;&#x5173;&#x4E8E;chaining-operators"><a href="#&#x53E6;&#x5916;&#x4E00;&#x70B9;&#xFF1A;&#x5173;&#x4E8E;chaining-operators" class="headerlink" title="&#x53E6;&#x5916;&#x4E00;&#x70B9;&#xFF1A;&#x5173;&#x4E8E;chaining operators"></a>&#x53E6;&#x5916;&#x4E00;&#x70B9;&#xFF1A;&#x5173;&#x4E8E;chaining operators</h2><p>&#x5728;python&#x4E2D; <strong>a is b is c</strong> &#x7B49;&#x4EF7;&#x4E8E; <strong>a is b and b is c</strong><br>&#x6240;&#x4EE5;&#xFF0C;&#x731C;&#x731C;<br><strong>False is False is False</strong><br>&#x7684;&#x7ED3;&#x679C;&#x662F;&#x4EC0;&#x4E48;&#xFF1F;<br>&#x53C2;&#x8003;</p>
 <p><a href="http://en.wikipedia.org/wiki/Assignment_%28computer_science%29#Chained_assignment" target="_blank" rel="external">http://en.wikipedia.org/wiki/Assignment_%28computer_science%29#Chained_assignment</a><br><a href="http://stackoverflow.com/questions/11498441/what-is-this-kind-of-assignment-in-python-called-a-b-true" target="_blank" rel="external">http://stackoverflow.com/questions/11498441/what-is-this-kind-of-assignment-in-python-called-a-b-true</a><br><a href="http://stackoverflow.com/questions/7601823/how-do-chained-assignments-work" target="_blank" rel="external">http://stackoverflow.com/questions/7601823/how-do-chained-assignments-work</a><br><a href="http://www.tutorialspoint.com/python/python_variable_types.htm" target="_blank" rel="external">http://www.tutorialspoint.com/python/python_variable_types.htm</a></p>
 
@@ -440,12 +440,12 @@
                src="https://projecteuler.net/profile/luobuda.png"
                alt="洛卜哒" />
           <p class="site-author-name" itemprop="name">洛卜哒</p>
-          <p class="site-description motion-element" itemprop="description">梦想成为扫地僧，其实就是个搬砖的</p>
+          <p class="site-description motion-element" itemprop="description">没事还是学学数学吧</p>
         </div>
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">6</span>
+              <span class="site-state-item-count">8</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -539,7 +539,7 @@
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2016</span>
+  <span itemprop="copyrightYear">2017</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
