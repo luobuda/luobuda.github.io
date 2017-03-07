@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="math, python, C/C++" />
+  <meta name="keywords" content="python," />
 
 
 
@@ -84,16 +84,25 @@
 
 
 
-<meta name="description" content="python&amp;#x5C0F;&amp;#x77E5;&amp;#x8BC6;&amp;#x5173;&amp;#x4E8E;a=b=True&amp;#x662F;&amp;#x600E;&amp;#x6837;&amp;#x5DE5;&amp;#x4F5C;&amp;#x7684;&amp;#x94FE;&amp;#x5F0F;&amp;#x8D4B;&amp;#x503C;&amp;#x5173;&amp;#x4E8E;python&amp;#x6709;&amp;#x4E00;&amp;#x4E2A;&amp;#x6709;&amp;#x8DA3;&amp;#x7">
+<meta name="description" content="&amp;#x6211;&amp;#x4EEC;&amp;#x90FD;&amp;#x662F;&amp;#x6210;&amp;#x5E74;&amp;#x4EBA;
+ we&amp;#x2019;re all consenting adults here  &amp;#x2014;- What is &amp;#x201C;pythonic&amp;#x201D;?
+
+python&amp;#x4E2D;&amp;#x5E76;&amp;#x6CA1;&amp;#x6709;&amp;#x771F;&amp;#x6B63;&amp;#">
 <meta property="og:type" content="article">
-<meta property="og:title" content="python的chained assignment">
-<meta property="og:url" content="http://luobuda.github.io/2015/04/14/chained-assignment/index.html">
+<meta property="og:title" content="关于添加双下划线构成python私有成员（私有函数，私有变量）">
+<meta property="og:url" content="http://luobuda.github.io/2017/03/07/python-name-nangling/index.html">
 <meta property="og:site_name" content="洛卜哒的博客">
-<meta property="og:description" content="python&amp;#x5C0F;&amp;#x77E5;&amp;#x8BC6;&amp;#x5173;&amp;#x4E8E;a=b=True&amp;#x662F;&amp;#x600E;&amp;#x6837;&amp;#x5DE5;&amp;#x4F5C;&amp;#x7684;&amp;#x94FE;&amp;#x5F0F;&amp;#x8D4B;&amp;#x503C;&amp;#x5173;&amp;#x4E8E;python&amp;#x6709;&amp;#x4E00;&amp;#x4E2A;&amp;#x6709;&amp;#x8DA3;&amp;#x7">
-<meta property="og:updated_time" content="2017-03-05T03:27:02.556Z">
+<meta property="og:description" content="&amp;#x6211;&amp;#x4EEC;&amp;#x90FD;&amp;#x662F;&amp;#x6210;&amp;#x5E74;&amp;#x4EBA;
+ we&amp;#x2019;re all consenting adults here  &amp;#x2014;- What is &amp;#x201C;pythonic&amp;#x201D;?
+
+python&amp;#x4E2D;&amp;#x5E76;&amp;#x6CA1;&amp;#x6709;&amp;#x771F;&amp;#x6B63;&amp;#">
+<meta property="og:updated_time" content="2017-03-07T08:35:41.784Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="python的chained assignment">
-<meta name="twitter:description" content="python&amp;#x5C0F;&amp;#x77E5;&amp;#x8BC6;&amp;#x5173;&amp;#x4E8E;a=b=True&amp;#x662F;&amp;#x600E;&amp;#x6837;&amp;#x5DE5;&amp;#x4F5C;&amp;#x7684;&amp;#x94FE;&amp;#x5F0F;&amp;#x8D4B;&amp;#x503C;&amp;#x5173;&amp;#x4E8E;python&amp;#x6709;&amp;#x4E00;&amp;#x4E2A;&amp;#x6709;&amp;#x8DA3;&amp;#x7">
+<meta name="twitter:title" content="关于添加双下划线构成python私有成员（私有函数，私有变量）">
+<meta name="twitter:description" content="&amp;#x6211;&amp;#x4EEC;&amp;#x90FD;&amp;#x662F;&amp;#x6210;&amp;#x5E74;&amp;#x4EBA;
+ we&amp;#x2019;re all consenting adults here  &amp;#x2014;- What is &amp;#x201C;pythonic&amp;#x201D;?
+
+python&amp;#x4E2D;&amp;#x5E76;&amp;#x6CA1;&amp;#x6709;&amp;#x771F;&amp;#x6B63;&amp;#">
 
 
 
@@ -114,10 +123,10 @@
 
 
 
-  <link rel="canonical" href="http://luobuda.github.io/2015/04/14/chained-assignment/"/>
+  <link rel="canonical" href="http://luobuda.github.io/2017/03/07/python-name-nangling/"/>
 
 
-  <title> python的chained assignment | 洛卜哒的博客 </title>
+  <title> 关于添加双下划线构成python私有成员（私有函数，私有变量） | 洛卜哒的博客 </title>
 </head>
 
 <body itemscope itemtype="//schema.org/WebPage" lang="zh-Hans">
@@ -257,7 +266,7 @@
             
             
               
-                python的chained assignment
+                关于添加双下划线构成python私有成员（私有函数，私有变量）
               
             
           </h1>
@@ -269,8 +278,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2015-04-14T22:41:10+08:00" content="2015-04-14">
-              2015-04-14
+            <time itemprop="dateCreated" datetime="2017-03-07T16:16:29+08:00" content="2017-03-07">
+              2017-03-07
             </time>
           </span>
 
@@ -299,8 +308,8 @@
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2015/04/14/chained-assignment/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/04/14/chained-assignment/" itemprop="commentsCount"></span>
+                <a href="/2017/03/07/python-name-nangling/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/03/07/python-name-nangling/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -323,21 +332,19 @@
       
 
       
-        <h2 id="python&#x5C0F;&#x77E5;&#x8BC6;&#x5173;&#x4E8E;a-b-True&#x662F;&#x600E;&#x6837;&#x5DE5;&#x4F5C;&#x7684;"><a href="#python&#x5C0F;&#x77E5;&#x8BC6;&#x5173;&#x4E8E;a-b-True&#x662F;&#x600E;&#x6837;&#x5DE5;&#x4F5C;&#x7684;" class="headerlink" title="python&#x5C0F;&#x77E5;&#x8BC6;&#x5173;&#x4E8E;a=b=True&#x662F;&#x600E;&#x6837;&#x5DE5;&#x4F5C;&#x7684;"></a>python&#x5C0F;&#x77E5;&#x8BC6;&#x5173;&#x4E8E;a=b=True&#x662F;&#x600E;&#x6837;&#x5DE5;&#x4F5C;&#x7684;</h2><p>&#x94FE;&#x5F0F;&#x8D4B;&#x503C;&#x5173;&#x4E8E;python&#x6709;&#x4E00;&#x4E2A;&#x6709;&#x8DA3;&#x7684;&#x5730;&#x65B9;&#xFF0C;&#x4ECE;&#x4E0A;&#x9762;&#x8FD9;&#x6BB5;&#x8BDD;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x4E86;&#x89E3;&#x5230;&#xFF1A;</p>
-<p>1&#x3001;&#x5728;C&#x8BED;&#x8A00;&#x4E2D;&#xFF0C;a=b=True&#x7B49;&#x4EF7;&#x4E8E;<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">b = True</div><div class="line">a = b</div></pre></td></tr></table></figure></p>
-<p>2&#x3001;&#x800C;&#x5728;python&#x4E2D;&#xFF0C;a = b = True&#x7B49;&#x4EF7;&#x4E8E;</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">temporary_expr_result = <span class="keyword">True</span></div><div class="line"></div><div class="line">a = temporary_expr_result</div><div class="line">b = temporary_expr_result</div></pre></td></tr></table></figure>
-<a id="more"></a>
-<p>&#x4E0B;&#x9762;&#x662F;<strong>wikipedia</strong>&#x7684;&#x8BF4;&#x660E;&#xFF0C;</p>
-<blockquote>
-<p>In some programming languages (C for example), chained assignments are supported because assignments are expressions, and have values.In this case chain assignment can be implemented by having a right-associative assignment, and assignments happen right-to-left. For example, i = arr[i] = f() is equivalent to arr[i] = f(); i = arr[i]. In C++ they are also available for values of class types by declaringthe appropriate return type for the assignment operator.</p>
-<p>In Python, assignment statements are not expressions and thus do not have a value. Instead, chained assignments are a series of statements with multiple targets for a single expression. The assignments are executed left-to-right so that i = arr[i] = f() evaluates the expression f(), then assigns the result to the leftmost target, i, and then assigns the same result to the next target, arr[i], using the new value of i.[9] This is essentially equivalent to tmp = f(); i = tmp; arr[i] = tmp though no actual variable is produced for the temporary value.<br><a href="http://en.wikipedia.org/wiki/Assignment_%28computer_science%29#Chained_assignment" target="_blank" rel="external">Chained assignment</a> </p>
+        <h2 id="&#x6211;&#x4EEC;&#x90FD;&#x662F;&#x6210;&#x5E74;&#x4EBA;"><a href="#&#x6211;&#x4EEC;&#x90FD;&#x662F;&#x6210;&#x5E74;&#x4EBA;" class="headerlink" title="&#x6211;&#x4EEC;&#x90FD;&#x662F;&#x6210;&#x5E74;&#x4EBA;"></a>&#x6211;&#x4EEC;&#x90FD;&#x662F;&#x6210;&#x5E74;&#x4EBA;</h2><blockquote>
+<p> we&#x2019;re all consenting adults here  &#x2014;- <a href="https://mail.python.org/pipermail/tutor/2003-October/025932.html" target="_blank" rel="external">What is &#x201C;pythonic&#x201D;?</a></p>
 </blockquote>
-<p>&#x90A3;&#x4E48;&#x95EE;&#x9898;&#x6765;&#x4E86;&#xFF0C;&#x5982;&#x679C;&#x8D4B;&#x503C;&#x7684;&#x8FD9;&#x4E2A;RHS(&#x53F3;&#x503C;)&#x662F;&#x53EF;&#x53D8;&#x7C7B;&#x578B;&#x7684;&#xFF0C;&#x6BD4;&#x5982;&#x662F;&#x4E00;&#x4E2A;list&#x3001;dict&#xFF0C;&#x5F53;&#x6211;&#x4EEC;&#x5E0C;&#x671B;a = b = [],a, b&#x5206;&#x522B;&#x5F97;&#x5230;&#x4E0D;&#x540C;&#x7684;list&#x65F6;&#x663E;&#x7136;&#x51FA;&#x9519;&#x4E86;&#x3002;<br>&#x53E6;&#x4E00;&#x4E2A;&#x7B80;&#x5355;&#x7684;&#x8BF4;&#x660E;&#x4F8B;&#x5B50;&#xFF1A;</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="function"><span class="keyword">def</span> <span class="title">somefunction</span><span class="params">()</span>:</span></div><div class="line"><span class="meta">... </span>    <span class="keyword">return</span> []</div><div class="line"><span class="meta">... </span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>x = y = somefunction()</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>x.append(<span class="number">4</span>)</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>x</div><div class="line">[<span class="number">4</span>]</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>y</div><div class="line">[<span class="number">4</span>]</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>x = somefunction(); y = somefunction()</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>x.append(<span class="number">3</span>)</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>x</div><div class="line">[<span class="number">3</span>]</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>y</div><div class="line">[]</div></pre></td></tr></table></figure>
-<p>&#x8FD9;&#x662F;Python&#x6700;&#x5E38;&#x89C1;&#x7684;&#x5751;&#x4E4B;&#x4E00;&#xFF0C;&#x66F4;&#x591A;&#x8BA8;&#x8BBA;&#x8BF7;&#x770B;<a href="http://stackoverflow.com/questions/7601823/how-do-chained-assignments-work" target="_blank" rel="external">&#x8FD9;&#x91CC;</a>&#x3002;</p>
-<h2 id="&#x53E6;&#x5916;&#x4E00;&#x70B9;&#xFF1A;&#x5173;&#x4E8E;chaining-operators"><a href="#&#x53E6;&#x5916;&#x4E00;&#x70B9;&#xFF1A;&#x5173;&#x4E8E;chaining-operators" class="headerlink" title="&#x53E6;&#x5916;&#x4E00;&#x70B9;&#xFF1A;&#x5173;&#x4E8E;chaining operators"></a>&#x53E6;&#x5916;&#x4E00;&#x70B9;&#xFF1A;&#x5173;&#x4E8E;chaining operators</h2><p>&#x5728;python&#x4E2D; <strong>a is b is c</strong> &#x7B49;&#x4EF7;&#x4E8E; <strong>a is b and b is c</strong><br>&#x6240;&#x4EE5;&#xFF0C;&#x731C;&#x731C;<br><strong>False is False is False</strong><br>&#x7684;&#x7ED3;&#x679C;&#x662F;&#x4EC0;&#x4E48;&#xFF1F;<br>&#x53C2;&#x8003;</p>
-<p><a href="http://en.wikipedia.org/wiki/Assignment_%28computer_science%29#Chained_assignment" target="_blank" rel="external">http://en.wikipedia.org/wiki/Assignment_%28computer_science%29#Chained_assignment</a><br><a href="http://stackoverflow.com/questions/11498441/what-is-this-kind-of-assignment-in-python-called-a-b-true" target="_blank" rel="external">http://stackoverflow.com/questions/11498441/what-is-this-kind-of-assignment-in-python-called-a-b-true</a><br><a href="http://stackoverflow.com/questions/7601823/how-do-chained-assignments-work" target="_blank" rel="external">http://stackoverflow.com/questions/7601823/how-do-chained-assignments-work</a><br><a href="http://www.tutorialspoint.com/python/python_variable_types.htm" target="_blank" rel="external">http://www.tutorialspoint.com/python/python_variable_types.htm</a></p>
+<p>python&#x4E2D;&#x5E76;&#x6CA1;&#x6709;&#x771F;&#x6B63;&#x610F;&#x4E49;&#x4E0A;&#x7684;&#x79C1;&#x6709;&#x6210;&#x5458;&#xFF0C;&#x5B83;&#x63D0;&#x4F9B;&#x4E86;&#x5728;&#x6210;&#x5458;&#x524D;&#x9762;&#x6DFB;&#x52A0;&#x53CC;&#x4E0B;&#x5212;&#x7EBF;&#x7684;&#x65B9;&#x6CD5;&#x6765;&#x6A21;&#x62DF;&#x7C7B;&#x4F3C;&#x529F;&#x80FD;&#x3002;&#x5177;&#x4F53;&#x6765;&#x8BF4;&#xFF1A;</p>
+<ul>
+<li>_xxx &#x8868;&#x793A;&#x6A21;&#x5757;&#x7EA7;&#x522B;&#x7684;&#x79C1;&#x6709;&#x53D8;&#x91CF;&#x6216;&#x51FD;&#x6570;</li>
+<li>__xxx &#x8868;&#x793A;&#x7C7B;&#x7684;&#x79C1;&#x6709;&#x53D8;&#x91CF;&#x6216;&#x51FD;&#x6570;</li>
+</ul>
+<p>&#x8FD9;&#x88AB;&#x79F0;&#x4E3A;<a href="https://en.wikipedia.org/wiki/Name_mangling#Python" target="_blank" rel="external">name nangling</a>,&#x5C06;__membername&#x66FF;&#x6362;&#x4E3A;_classname__membername&#x3002;<br>&#x8FD9;&#x6837;&#x4ECE;&#x8BED;&#x6CD5;&#x4E0A;&#x5B9E;&#x73B0;&#x4E86;&#x79C1;&#x6709;&#x6210;&#x5458;&#x4E0D;&#x80FD;&#x7528;classinstance.__membername&#x8BBF;&#x95EE;&#xFF0C;&#x4F46;&#x662F;&#x4EFB;&#x7136;&#x53EF;&#x4EE5;&#x7528;<br>classinstance._classname__membername&#x8BBF;&#x95EE;&#x3002;</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="class"><span class="keyword">class</span> <span class="title">Foo</span><span class="params">(object)</span>:</span></div><div class="line">         <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></div><div class="line">             self.__baz = <span class="number">42</span></div><div class="line"> </div><div class="line">         <span class="function"><span class="keyword">def</span> <span class="title">foo</span><span class="params">(self)</span>:</span></div><div class="line">             <span class="keyword">print</span> self.__baz</div><div class="line"> </div><div class="line"><span class="meta">&gt;&gt;&gt; </span>x = Foo()</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>x.__dict__</div><div class="line">{<span class="string">&apos;_Foo__baz&apos;</span>: <span class="number">42</span>}</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>x.__baz</div><div class="line"> </div><div class="line">Traceback (most recent call last):</div><div class="line">File <span class="string">&quot;&lt;pyshell#8&gt;&quot;</span>, line <span class="number">1</span>, <span class="keyword">in</span> &lt;module&gt;</div><div class="line">x.__baz</div><div class="line">AttributeError: <span class="string">&apos;Foo&apos;</span> object has no attribute <span class="string">&apos;__baz&apos;</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>x._Foo__baz</div><div class="line"><span class="number">42</span></div></pre></td></tr></table></figure>
+<p>&#x8FD9;&#x6837;&#x505A;&#x66F4;&#x91CD;&#x8981;&#x7684;&#x76EE;&#x7684;&#x662F;&#x9632;&#x6B62;&#x7236;&#x7C7B;&#x7684;&#x540C;&#x540D;&#x6210;&#x5458;&#x88AB;&#x6D3E;&#x751F;&#x7C7B;&#x91CD;&#x5199;&#x3002;<br><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="class"><span class="keyword">class</span> <span class="title">Foo</span><span class="params">(object)</span>:</span></div><div class="line"><span class="meta">... </span>    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></div><div class="line"><span class="meta">... </span>        self.__baz = <span class="number">42</span></div><div class="line"><span class="meta">... </span>    <span class="function"><span class="keyword">def</span> <span class="title">foo</span><span class="params">(self)</span>:</span></div><div class="line"><span class="meta">... </span>        <span class="keyword">print</span> self.__baz</div><div class="line">...</div><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="class"><span class="keyword">class</span> <span class="title">Bar</span><span class="params">(Foo)</span>:</span></div><div class="line"><span class="meta">... </span>    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></div><div class="line"><span class="meta">... </span>        super(Bar, self).__init__()</div><div class="line"><span class="meta">... </span>        self.__baz = <span class="number">21</span></div><div class="line"><span class="meta">... </span>    <span class="function"><span class="keyword">def</span> <span class="title">bar</span><span class="params">(self)</span>:</span></div><div class="line"><span class="meta">... </span>        <span class="keyword">print</span> self.__baz</div><div class="line">...</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>x = Bar()</div><div class="line"><span class="meta">&gt;&gt;&gt; </span>x.foo()</div><div class="line"><span class="number">42</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span>x.bar()</div><div class="line"><span class="number">21</span></div><div class="line"><span class="meta">&gt;&gt;&gt; </span><span class="keyword">print</span> x.__dict__</div><div class="line">{<span class="string">&apos;_Bar__baz&apos;</span>: <span class="number">21</span>, <span class="string">&apos;_Foo__baz&apos;</span>: <span class="number">42</span>}</div></pre></td></tr></table></figure></p>
+<hr>
+<p>&#x53C2;&#x8003;&#xFF1A;<br><a href="https://docs.python.org/2/tutorial/classes.html#private-variables-and-class-local-references" target="_blank" rel="external">https://docs.python.org/2/tutorial/classes.html#private-variables-and-class-local-references</a><br><a href="https://docs.python.org/3.7/tutorial/classes.html#private-variables" target="_blank" rel="external">https://docs.python.org/3.7/tutorial/classes.html#private-variables</a><br><a href="http://stackoverflow.com/questions/70528/why-are-pythons-private-methods-not-actually-private" target="_blank" rel="external">http://stackoverflow.com/questions/70528/why-are-pythons-private-methods-not-actually-private</a></p>
 
       
     </div>
@@ -358,22 +365,24 @@
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/python/" rel="tag">#python</a>
+          
+        </div>
+      
 
       
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2015/04/11/trie-tree/" rel="next" title="Trie_tree">
-                <i class="fa fa-chevron-left"></i> Trie_tree
+              <a href="/2017/03/05/python3-pyobject/" rel="next" title="python3源码浅读——对象PyObject">
+                <i class="fa fa-chevron-left"></i> python3源码浅读——对象PyObject
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2015/04/15/singleton-in-python/" rel="prev" title="python中如何实现单例模式">
-                python中如何实现单例模式 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -399,8 +408,8 @@
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2015/04/14/chained-assignment/"
-           data-title="python的chained assignment" data-url="http://luobuda.github.io/2015/04/14/chained-assignment/">
+      <div class="ds-thread" data-thread-key="2017/03/07/python-name-nangling/"
+           data-title="关于添加双下划线构成python私有成员（私有函数，私有变量）" data-url="http://luobuda.github.io/2017/03/07/python-name-nangling/">
       </div>
     
   </div>
@@ -520,7 +529,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#python小知识关于a-b-True是怎样工作的"><span class="nav-number">1.</span> <span class="nav-text">python小知识关于a=b=True是怎样工作的</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#另外一点：关于chaining-operators"><span class="nav-number">2.</span> <span class="nav-text">另外一点：关于chaining operators</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#我们都是成年人"><span class="nav-number">1.</span> <span class="nav-text">我们都是成年人</span></a></li></ol></div>
             
           </div>
         </section>
