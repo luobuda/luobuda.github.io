@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="shell," />
+  <meta name="keywords" content="Linux kernel," />
 
 
 
@@ -84,16 +84,22 @@
 
 
 
-<meta name="description" content="$0&amp;#x4E0D;&amp;#x591F;&amp;#x7528;&amp;#xFF1F;&amp;#x5F53;&amp;#x6211;&amp;#x4EEC;&amp;#x7F16;&amp;#x5199;shell&amp;#x811A;&amp;#x672C;&amp;#x65F6;&amp;#xFF0C;&amp;#x6709;&amp;#x65F6;&amp;#x5019;&amp;#x9700;&amp;#x8981;&amp;#x83B7;&amp;#x53D6;&amp;#x5F53;&amp;#x524D;&amp;#x6267;&amp;#x884C;&amp;">
+<meta name="description" content="&amp;#x201C;do one thing, do it well.&amp;#x201D; &amp;#x2014;&amp;#x2014; Linus Torvalds
+
+1. Linux&amp;#x7B80;&amp;#x4ECB;Linux&amp;#x8BDE;&amp;#x751F;&amp;#x4E8E;1991&amp;#x5E74;&amp;#xFF0C;&amp;#x7531;&amp;#x82AC;&amp;#x5170;&amp;#x7684;&amp;#x5927;&amp;#x795E;Lin">
 <meta property="og:type" content="article">
-<meta property="og:title" content="获取当前shell执行脚本的名字的几种方法">
-<meta property="og:url" content="http://luobuda.github.io/2017/03/12/get-shell-script-name/index.html">
+<meta property="og:title" content="第一章 Linux内核简介">
+<meta property="og:url" content="http://luobuda.github.io/2017/04/23/第一章-Linux内核简介/index.html">
 <meta property="og:site_name" content="洛卜哒的博客">
-<meta property="og:description" content="$0&amp;#x4E0D;&amp;#x591F;&amp;#x7528;&amp;#xFF1F;&amp;#x5F53;&amp;#x6211;&amp;#x4EEC;&amp;#x7F16;&amp;#x5199;shell&amp;#x811A;&amp;#x672C;&amp;#x65F6;&amp;#xFF0C;&amp;#x6709;&amp;#x65F6;&amp;#x5019;&amp;#x9700;&amp;#x8981;&amp;#x83B7;&amp;#x53D6;&amp;#x5F53;&amp;#x524D;&amp;#x6267;&amp;#x884C;&amp;">
-<meta property="og:updated_time" content="2017-03-12T15:48:50.027Z">
+<meta property="og:description" content="&amp;#x201C;do one thing, do it well.&amp;#x201D; &amp;#x2014;&amp;#x2014; Linus Torvalds
+
+1. Linux&amp;#x7B80;&amp;#x4ECB;Linux&amp;#x8BDE;&amp;#x751F;&amp;#x4E8E;1991&amp;#x5E74;&amp;#xFF0C;&amp;#x7531;&amp;#x82AC;&amp;#x5170;&amp;#x7684;&amp;#x5927;&amp;#x795E;Lin">
+<meta property="og:updated_time" content="2017-04-23T08:36:33.240Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="获取当前shell执行脚本的名字的几种方法">
-<meta name="twitter:description" content="$0&amp;#x4E0D;&amp;#x591F;&amp;#x7528;&amp;#xFF1F;&amp;#x5F53;&amp;#x6211;&amp;#x4EEC;&amp;#x7F16;&amp;#x5199;shell&amp;#x811A;&amp;#x672C;&amp;#x65F6;&amp;#xFF0C;&amp;#x6709;&amp;#x65F6;&amp;#x5019;&amp;#x9700;&amp;#x8981;&amp;#x83B7;&amp;#x53D6;&amp;#x5F53;&amp;#x524D;&amp;#x6267;&amp;#x884C;&amp;">
+<meta name="twitter:title" content="第一章 Linux内核简介">
+<meta name="twitter:description" content="&amp;#x201C;do one thing, do it well.&amp;#x201D; &amp;#x2014;&amp;#x2014; Linus Torvalds
+
+1. Linux&amp;#x7B80;&amp;#x4ECB;Linux&amp;#x8BDE;&amp;#x751F;&amp;#x4E8E;1991&amp;#x5E74;&amp;#xFF0C;&amp;#x7531;&amp;#x82AC;&amp;#x5170;&amp;#x7684;&amp;#x5927;&amp;#x795E;Lin">
 
 
 
@@ -114,10 +120,10 @@
 
 
 
-  <link rel="canonical" href="http://luobuda.github.io/2017/03/12/get-shell-script-name/"/>
+  <link rel="canonical" href="http://luobuda.github.io/2017/04/23/第一章-Linux内核简介/"/>
 
 
-  <title> 获取当前shell执行脚本的名字的几种方法 | 洛卜哒的博客 </title>
+  <title> 第一章 Linux内核简介 | 洛卜哒的博客 </title>
 </head>
 
 <body itemscope itemtype="//schema.org/WebPage" lang="zh-Hans">
@@ -257,7 +263,7 @@
             
             
               
-                获取当前shell执行脚本的名字的几种方法
+                第一章 Linux内核简介
               
             
           </h1>
@@ -269,8 +275,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2017-03-12T23:34:29+08:00" content="2017-03-12">
-              2017-03-12
+            <time itemprop="dateCreated" datetime="2017-04-23T16:34:45+08:00" content="2017-04-23">
+              2017-04-23
             </time>
           </span>
 
@@ -299,8 +305,8 @@
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2017/03/12/get-shell-script-name/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/03/12/get-shell-script-name/" itemprop="commentsCount"></span>
+                <a href="/2017/04/23/第一章-Linux内核简介/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/04/23/第一章-Linux内核简介/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -323,34 +329,50 @@
       
 
       
-        <h3 id="0&#x4E0D;&#x591F;&#x7528;&#xFF1F;"><a href="#0&#x4E0D;&#x591F;&#x7528;&#xFF1F;" class="headerlink" title="$0&#x4E0D;&#x591F;&#x7528;&#xFF1F;"></a>$0&#x4E0D;&#x591F;&#x7528;&#xFF1F;</h3><p>&#x5F53;&#x6211;&#x4EEC;&#x7F16;&#x5199;shell&#x811A;&#x672C;&#x65F6;&#xFF0C;&#x6709;&#x65F6;&#x5019;&#x9700;&#x8981;&#x83B7;&#x53D6;&#x5F53;&#x524D;&#x6267;&#x884C;&#x811A;&#x672C;&#x7684;&#x540D;&#x5B57;&#xFF0C;&#x6700;&#x5E38;&#x7528;&#x7684;&#x5E94;&#x8BE5;&#x5C31;&#x662F;<code>$0</code>&#x4E86;&#xFF0C;&#x4F46;&#x662F;&#x6839;&#x636E;&#x6267;&#x884C;&#x811A;&#x672C;&#x7684;&#x65B9;&#x5F0F;&#x4E0D;&#x540C;&#xFF0C;&#x8FD9;&#x79CD;&#x65B9;&#x5F0F;&#x662F;&#x6709;&#x7F3A;&#x9677;&#x7684;&#xFF0C;&#x6211;&#x4EEC;&#x6267;&#x884C;&#x811A;&#x672C;&#x7684;&#x53EF;&#x80FD;&#x65B9;&#x5F0F;&#x6709;&#xFF1A;<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">./script.sh</div><div class="line">. script.sh</div><div class="line">source script.sh</div></pre></td></tr></table></figure></p>
-<p>&#x8FD9;&#x51E0;&#x79CD;&#x65B9;&#x5F0F;&#x7684;<code>$0</code>&#x4E0D;&#x5C3D;&#x76F8;&#x540C;&#xFF0C;&#x5148;&#x603B;&#x7ED3;&#x5982;&#x4E0B;&#xFF1A;</p>
-<table>
+        <blockquote>
+<p>&#x201C;do one thing, do it well.&#x201D; &#x2014;&#x2014; Linus Torvalds</p>
+</blockquote>
+<h3 id="1-Linux&#x7B80;&#x4ECB;"><a href="#1-Linux&#x7B80;&#x4ECB;" class="headerlink" title="1. Linux&#x7B80;&#x4ECB;"></a>1. Linux&#x7B80;&#x4ECB;</h3><p>Linux&#x8BDE;&#x751F;&#x4E8E;1991&#x5E74;&#xFF0C;&#x7531;&#x82AC;&#x5170;&#x7684;&#x5927;&#x795E;Linus&#x5F00;&#x53D1;&#xFF0C;&#x73B0;&#x5728;Linux&#x8FD9;&#x4E2A;&#x8BCD;&#x4E3B;&#x8981;&#x6307;&#x5185;&#x6838;&#x3002;<br>&#x6BCF;&#x4E2A;&#x5904;&#x7406;&#x5668;&#x5728;&#x4EFB;&#x4F55;&#x6307;&#x5B9A;&#x7684;&#x65F6;&#x95F4;&#x70B9;&#x4E0A;&#x7684;&#x6D3B;&#x52A8;&#x4E3A;&#x4E0B;&#x5217;&#x60C5;&#x51B5;&#x4E4B;&#x4E00;&#xFF1A;</p>
+<ul>
+<li>&#x8FD0;&#x884C;&#x4E8E;&#x7528;&#x6237;&#x6001;&#xFF0C;&#x6267;&#x884C;&#x7528;&#x6237;&#x8FDB;&#x7A0B;</li>
+<li>&#x8FD0;&#x884C;&#x4E8E;&#x5185;&#x6838;&#x6001;&#xFF0C;&#x5904;&#x4E8E;&#x8FDB;&#x7A0B;&#x4E0A;&#x4E0B;&#x6587;&#xFF0C;&#x6267;&#x884C;&#x67D0;&#x4E2A;&#x7279;&#x5B9A;&#x8FDB;&#x7A0B;</li>
+<li>&#x8FD0;&#x884C;&#x4E8E;&#x5185;&#x6838;&#x6001;&#xFF0C;&#x5904;&#x4E8E;&#x4E2D;&#x65AD;&#x4E0A;&#x4E0B;&#x6587;&#xFF0C;&#x5904;&#x7406;&#x67D0;&#x4E2A;&#x4E2D;&#x65AD;</li>
+</ul>
+<p><a href="https://en.wikipedia.org/wiki/Linux_kernel" target="_blank" rel="external">&#x7EF4;&#x57FA;&#x767E;&#x79D1;&#xFF1A;Linux kernel</a><br><a href="https://www.ibm.com/developerworks/cn/linux/l-linux-kernel/" target="_blank" rel="external">Linux &#x5185;&#x6838;&#x5256;&#x6790;</a></p>
+<h3 id="2-&#x5355;&#x5185;&#x6838;&#x4E0E;&#x5FAE;&#x5185;&#x6838;"><a href="#2-&#x5355;&#x5185;&#x6838;&#x4E0E;&#x5FAE;&#x5185;&#x6838;" class="headerlink" title="2. &#x5355;&#x5185;&#x6838;&#x4E0E;&#x5FAE;&#x5185;&#x6838;"></a>2. &#x5355;&#x5185;&#x6838;&#x4E0E;&#x5FAE;&#x5185;&#x6838;</h3><table>
 <thead>
 <tr>
-<th>&#x65B9;&#x6CD5;</th>
-<th>&#x63CF;&#x8FF0;</th>
+<th></th>
+<th>&#x6982;&#x5FF5;</th>
+<th>&#x4F18;&#x70B9;</th>
+<th>&#x7F3A;&#x70B9;</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>$0</td>
-<td>only works when user executes &#x201C;./script.sh&#x201D;</td>
+<td>&#x5355;&#x5185;&#x6838;</td>
+<td>&#x5355;&#x5185;&#x6838;&#x8FD0;&#x884C;&#x5728;&#x4E00;&#x4E2A;&#x5355;&#x72EC;&#x7684;&#x5730;&#x5740;&#x7A7A;&#x95F4;&#x4E0A;&#xFF0C;&#x53EF;&#x4EE5;&#x770B;&#x505A;&#x4E00;&#x4E2A;&#x5355;&#x72EC;&#x7684;&#x6574;&#x4F53;&#xFF0C;&#x901A;&#x5E38;&#x4E3A;&#x4E00;&#x4E2A;&#x5355;&#x72EC;&#x7684;&#x4E8C;&#x8FDB;&#x5236;&#x6587;&#x4EF6;</td>
+<td>&#x5355;&#x5185;&#x6838;&#x8FD0;&#x884C;&#x5728;&#x4E00;&#x4E2A;&#x5355;&#x72EC;&#x7684;&#x5730;&#x5740;&#x7A7A;&#x95F4;&#x4E0A;&#xFF0C;&#x53EF;&#x4EE5;&#x770B;&#x505A;&#x4E00;&#x4E2A;&#x5355;&#x72EC;&#x7684;&#x6574;&#x4F53;&#xFF0C;&#x901A;&#x5E38;&#x4E3A;&#x4E00;&#x4E2A;&#x5355;&#x72EC;&#x7684;&#x4E8C;&#x8FDB;&#x5236;&#x6587;&#x4EF6;</td>
+<td>&#x4E00;&#x4E2A;&#x670D;&#x52A1;&#x5D29;&#x6E83;&#x5BFC;&#x81F4;&#x6574;&#x4E2A;&#x5185;&#x6838;&#x65E0;&#x6CD5;&#x4F7F;&#x7528;</td>
 </tr>
 <tr>
-<td>$BASH_ARGV</td>
-<td>only works when user executes &#x201C;. script.sh&#x201D; or &#x201C;source script.sh&#x201D;</td>
-</tr>
-<tr>
-<td>${BASH_SOURCE[0]}</td>
-<td>works on both cases.</td>
-</tr>
-<tr>
-<td>readlink -f</td>
-<td>useful when symbolic link is used</td>
+<td>&#x5FAE;&#x5185;&#x6838;</td>
+<td>&#x5FAE;&#x5185;&#x6838;&#x6309;&#x529F;&#x80FD;&#x5212;&#x5206;&#x4E3A;&#x591A;&#x4E2A;&#x72EC;&#x7ACB;&#x7684;&#x8FC7;&#x7A0B;&#xFF0C;&#x6BCF;&#x4E2A;&#x8FC7;&#x7A0B;&#x8FD0;&#x884C;&#x5728;&#x5404;&#x81EA;&#x7684;&#x5730;&#x5740;&#x7A7A;&#x95F4;&#x4E0A;&#xFF0C;&#x670D;&#x52A1;&#x4E4B;&#x95F4;&#x901A;&#x8FC7;&#x4FE1;&#x606F;&#x4F20;&#x9012;&#x901A;&#x4FE1;</td>
+<td>1.&#x5B89;&#x5168;&#x6027;&#x63D0;&#x9AD8;&#xFF1A;&#x53EA;&#x6709;&#x5C11;&#x6570;&#x6838;&#x5FC3;&#x529F;&#x80FD;&#x8FD0;&#x884C;&#x5728;&#x7279;&#x6743;&#x6A21;&#x5F0F;&#x4E0B;&#xFF0C;&#x5176;&#x4ED6;&#x670D;&#x52A1;&#x8FD0;&#x884C;&#x5728;&#x7528;&#x6237;&#x7A7A;&#x95F4; 2. &#x4E00;&#x4E2A;&#x670D;&#x52A1;&#x5D29;&#x6E83;&#x4E0D;&#x5F71;&#x54CD;&#x5176;&#x4ED6;&#x670D;&#x52A1;</td>
+<td>&#x5404;&#x670D;&#x52A1;&#x4E4B;&#x95F4;&#x901A;&#x4FE1;&#x6BD4;&#x8F83;&#x590D;&#x6742;</td>
 </tr>
 </tbody>
 </table>
+<p>Linux&#x662F;&#x5355;&#x5185;&#x6838;&#xFF0C;&#x8FD0;&#x884C;&#x5728;&#x5355;&#x72EC;&#x7684;&#x5730;&#x5740;&#x7A7A;&#x95F4;&#x4E0A;&#xFF0C;&#x540C;&#x65F6;&#x5438;&#x6536;&#x5FAE;&#x5185;&#x6838;&#x6709;&#x70B9;&#xFF0C;&#x652F;&#x6301;&#x6A21;&#x5757;&#x5316;&#x8BBE;&#x8BA1;&#x3001;&#x62A2;&#x5360;&#x5F0F;&#x5185;&#x6838;&#x3001;&#x5185;&#x6838;&#x7EBF;&#x7A0B;&#x3001;&#x52A8;&#x6001;&#x52A0;&#x8F7D;&#x5185;&#x6838;&#x6A21;&#x5757;&#x3001;&#x5185;&#x6838;&#x6001;&#x4E0E;&#x7528;&#x6237;&#x6001;&#x7B49;&#xFF0C;&#x4E0E;&#x4F20;&#x7EDF;Unix&#x76F8;&#x6BD4;&#xFF1A;</p>
+<ul>
+<li>&#x652F;&#x6301;&#x52A8;&#x6001;&#x52A0;&#x8F7D;&#x5185;&#x6838;&#x6A21;&#x5757;</li>
+<li>&#x652F;&#x6301;&#x5BF9;&#x79F0;&#x591A;&#x5904;&#x7406;(SMP)&#x673A;&#x5236;</li>
+<li>&#x5185;&#x6838;&#x53EF;&#x4EE5;&#x62A2;&#x5360;(preemptive)&#xFF0C;&#x8FDB;&#x7A0B;&#x4F18;&#x5148;&#x7EA7;</li>
+<li>Linux&#x5185;&#x6838;&#x4E0D;&#x533A;&#x5206;&#x7EBF;&#x7A0B;&#x548C;&#x8FDB;&#x7A0B;&#xFF0C;&#x79F0;task</li>
+<li>&#x63D0;&#x4F9B;&#x5177;&#x6709;&#x8BBE;&#x5907;&#x7C7B;&#x7684;&#x9762;&#x5411;&#x5BF9;&#x8C61;&#x7684;&#x8BBE;&#x5907;&#x6A21;&#x578B;&#x3001;&#x70ED;&#x63D2;&#x62D4;&#x4E8B;&#x4EF6;&#xFF0C;&#x7528;&#x6237;&#x7A7A;&#x95F4;&#x7684;&#x8BBE;&#x5907;&#x6587;&#x4EF6;&#x7CFB;&#x7EDF;sysfs</li>
+</ul>
+<h3 id="3-&#x5185;&#x6838;&#x7248;&#x672C;"><a href="#3-&#x5185;&#x6838;&#x7248;&#x672C;" class="headerlink" title="3. &#x5185;&#x6838;&#x7248;&#x672C;"></a>3. &#x5185;&#x6838;&#x7248;&#x672C;</h3><p>linux&#x5185;&#x6838;&#x5206;&#x4E3A;&#xFF1A;stable&#x548C;development&#xFF0C;&#x4E3E;&#x4F8B;&#x8BF4;&#x660E;&#xFF1A;Linux-2.6.26.1<br>2&#xFF1A;&#x4E3B;&#x7248;&#x672C;&#x53F7;<br>6&#xFF1A;&#x526F;&#x7248;&#x672C;&#x53F7;<br>26&#xFF1A;&#x4FEE;&#x8BA2;&#x7248;&#x672C;&#x53F7;<br>1&#xFF1A;&#x7A33;&#x5B9A;&#x7248;&#x672C;&#x53F7;<br>&#x526F;&#x7248;&#x672C;&#x53F7;&#x4E3A;&#x5947;&#x6570;&#x8868;&#x793A;&#x5F00;&#x53D1;&#x7248;&#xFF0C;&#x4E3A;&#x5076;&#x6570;&#x8868;&#x793A;&#x7A33;&#x5B9A;&#x7248;</p>
+<h3 id="4-&#x5E38;&#x7528;&#x793E;&#x533A;"><a href="#4-&#x5E38;&#x7528;&#x793E;&#x533A;" class="headerlink" title="4. &#x5E38;&#x7528;&#x793E;&#x533A;"></a>4. &#x5E38;&#x7528;&#x793E;&#x533A;</h3><p><a href="https://www.kernel.org/" target="_blank" rel="external">https://www.kernel.org/</a> &#x5185;&#x6838;&#x6E90;&#x7801;<br><a href="http://lxr.free-electrons.com/" target="_blank" rel="external">http://lxr.free-electrons.com/</a>   &#x5185;&#x6838;&#x6E90;&#x7801;&#x5728;&#x7EBF;&#x9605;&#x8BFB;&#x63A8;&#x8350;<br><a href="https://kernelnewbies.org/" target="_blank" rel="external">https://kernelnewbies.org/</a> &#x5185;&#x6838;&#x5F00;&#x53D1;&#x57FA;&#x7840;&#x77E5;&#x8BC6;<br><a href="https://lkml.org/" target="_blank" rel="external">https://lkml.org/</a>  &#x5185;&#x6838; Mailing List<br><a href="https://github.com/torvalds/linux" target="_blank" rel="external">https://github.com/torvalds/linux</a> github </p>
 
       
     </div>
@@ -373,7 +395,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/shell/" rel="tag">#shell</a>
+            <a href="/tags/Linux-kernel/" rel="tag">#Linux kernel</a>
           
         </div>
       
@@ -382,17 +404,13 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/03/07/python-name-nangling/" rel="next" title="关于添加双下划线构成python私有成员（私有函数，私有变量）">
-                <i class="fa fa-chevron-left"></i> 关于添加双下划线构成python私有成员（私有函数，私有变量）
+              <a href="/2017/04/23/System-map和kallsyms文件/" rel="next" title="System.map和kallsyms文件">
+                <i class="fa fa-chevron-left"></i> System.map和kallsyms文件
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/04/23/System-map和kallsyms文件/" rel="prev" title="System.map和kallsyms文件">
-                System.map和kallsyms文件 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -418,8 +436,8 @@
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2017/03/12/get-shell-script-name/"
-           data-title="获取当前shell执行脚本的名字的几种方法" data-url="http://luobuda.github.io/2017/03/12/get-shell-script-name/">
+      <div class="ds-thread" data-thread-key="2017/04/23/第一章-Linux内核简介/"
+           data-title="第一章 Linux内核简介" data-url="http://luobuda.github.io/2017/04/23/第一章-Linux内核简介/">
       </div>
     
   </div>
@@ -539,7 +557,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#0不够用？"><span class="nav-number">1.</span> <span class="nav-text">$0不够用？</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Linux简介"><span class="nav-number">1.</span> <span class="nav-text">1. Linux简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-单内核与微内核"><span class="nav-number">2.</span> <span class="nav-text">2. 单内核与微内核</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-内核版本"><span class="nav-number">3.</span> <span class="nav-text">3. 内核版本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-常用社区"><span class="nav-number">4.</span> <span class="nav-text">4. 常用社区</span></a></li></ol></div>
             
           </div>
         </section>
