@@ -92,7 +92,7 @@
 <meta property="og:site_name" content="洛卜哒的博客">
 <meta property="og:description" content="System.map&amp;#x6587;&amp;#x4EF6;&amp;#x548C;/proc/kallsymsSystem.map
 &amp;#x8BE5;&amp;#x6587;&amp;#x4EF6;&amp;#x662F;&amp;#x662F;&amp;#x4E00;&amp;#x4EFD;&amp;#x5185;&amp;#x6838;&amp;#x7B26;&amp;#x53F7;&amp;#x8868;kernel symbol table&amp;#xFF0C;&amp;#x5305;&amp;#x542B;&amp;#">
-<meta property="og:updated_time" content="2017-04-23T08:10:28.585Z">
+<meta property="og:updated_time" content="2017-04-23T08:26:10.487Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="System.map和kallsyms文件">
 <meta name="twitter:description" content="System.map&amp;#x6587;&amp;#x4EF6;&amp;#x548C;/proc/kallsymsSystem.map
@@ -331,7 +331,85 @@
 </blockquote>
 <p>System.map&#x6587;&#x4EF6;&#x683C;&#x5F0F;&#xFF1A;&#x5730;&#x5740; &#x7C7B;&#x578B; &#x7B26;&#x53F7;  </p>
 <p>&#x7C7B;&#x578B;&#x662F;&#x5C0F;&#x5199;&#x8868;&#x793A;local symbol&#xFF0C;&#x5927;&#x5199;&#x8868;&#x793A;global(external)<br>&#x91CD;&#x70B9;&#x4E86;&#x89E3;&#x51E0;&#x4E2A;&#x7C7B;&#x578B;&#xFF1A;<br>T   The symbol is in the text(code) section<br>D   The symbol is in the initialized data   section<br>R   The sysbol is in a read only data section<br>t   static<br>d   static<br>R   const<br>r   static const  </p>
-<p>&#x4F7F;&#x7528;nm&#x547D;&#x4EE4;&#x53EF;&#x4EE5;&#x67E5;&#x770B;&#x66F4;&#x591A;&#x4FE1;&#x606F;&#xFF1A;<br>nm - list symbols from object files<br>| &#x7C7B;&#x578B;    | &#x8BF4;&#x660E; |<br>| &#x2014;&#x2014;&#x2014;&#x2014;- | &#x2014;&#x2014;&#x2014;&#x2014;- |<br>| A      | The symbol&#x2019;s value is absolute, and will not be changed by further linking |<br>| B b | The symbol is in the uninitialized data section(known as BS  |<br>| C  | The symbol is common. Common symbols are uninitialized data. When linking, multiple common symbols may appear with the same name. If the symbol is defined anywhere, the common symbols are treated as undefined references. |<br>| D d  | The symbol is in the initialized data section. |<br>| G g  | The symbol is in an initialized data section for small objects. Some object file formats permit more efficient access to small data objects, such as a global int variable as opposed to a large global array. |<br>| i  | For PE format files this indicates that the symbol is in a section specific to the implementation of DLLs. For ELF format files this indicates that the symbol is an indirect function. This is a GNU extension to the standard set of ELF symbol types. It indicates a symbol which if referenced by a relocation does not evaluate to its address, but instead must be invoked at runtime. The runtime execution will then return the value to be used in the relocation. |<br>| N  | The symbol is a debugging symbol. |<br>| p  | The symbols is in a stack unwind section. |<br>| R r  | The symbol is in a read only data section. |<br>| S s  | The symbol is in an uninitialized data section for small objects. |<br>| T t  | The symbol is in the text (code) section. |<br>| U  | The symbol is undefined. |<br>| u  | The symbol is a unique global symbol. This is a GNU extension to the standard set of ELF symbol bindings. For such a symbol the dynamic linker will make sure that in the entire process there is just one symbol with this name and type in use. |<br>| V v  | The symbol is a weak object. When a weak defined symbol is linked with a normal defined symbol, the normal defined symbol is used with no error. When a weak undefined symbol is linked and the symbol is not defined, the value of the weak symbol becomes zero with no error. On some systems, uppercase indicates that a default value has been specified. |<br>| W w  | The symbol is a weak symbol that has not been specifically tagged as a weak object symbol. When a weak defined symbol is linked with a normal defined symbol, the normal defined symbol is used with no error. When a weak undefined symbol is linked and the symbol is not defined, the value of the symbol is determined in a system-specific manner without error. On some systems, uppercase indicates that a default value has been specified. |<br>| -  | The symbol is a stabs symbol in an a.out object file. In this case, the next values printed are the stabs other field, the stabs desc field, and the stab type. Stabs symbols are used to hold debugging information. |<br>| ?  | The symbol type is unknown, or object file format specific. |</p>
+<p>&#x4F7F;&#x7528;nm&#x547D;&#x4EE4;&#x53EF;&#x4EE5;&#x67E5;&#x770B;&#x66F4;&#x591A;&#x4FE1;&#x606F;&#xFF1A;<br>nm - list symbols from object files    </p>
+<table>
+<thead>
+<tr>
+<th>&#x7C7B;&#x578B;</th>
+<th>&#x8BF4;&#x660E;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>The symbol&#x2019;s value is absolute, and will not be changed by further linking</td>
+</tr>
+<tr>
+<td>B b</td>
+<td>The symbol is in the uninitialized data section(known as BS</td>
+</tr>
+<tr>
+<td>C</td>
+<td>The symbol is common. Common symbols are uninitialized data. When linking, multiple common symbols may appear with the same name. If the symbol is defined anywhere, the common symbols are treated as undefined references.</td>
+</tr>
+<tr>
+<td>D d</td>
+<td>The symbol is in the initialized data section.</td>
+</tr>
+<tr>
+<td>G g</td>
+<td>The symbol is in an initialized data section for small objects. Some object file formats permit more efficient access to small data objects, such as a global int variable as opposed to a large global array.</td>
+</tr>
+<tr>
+<td>i</td>
+<td>For PE format files this indicates that the symbol is in a section specific to the implementation of DLLs. For ELF format files this indicates that the symbol is an indirect function. This is a GNU extension to the standard set of ELF symbol types. It indicates a symbol which if referenced by a relocation does not evaluate to its address, but instead must be invoked at runtime. The runtime execution will then return the value to be used in the relocation.</td>
+</tr>
+<tr>
+<td>N</td>
+<td>The symbol is a debugging symbol.</td>
+</tr>
+<tr>
+<td>p</td>
+<td>The symbols is in a stack unwind section.</td>
+</tr>
+<tr>
+<td>R r</td>
+<td>The symbol is in a read only data section.</td>
+</tr>
+<tr>
+<td>S s</td>
+<td>The symbol is in an uninitialized data section for small objects.</td>
+</tr>
+<tr>
+<td>T t</td>
+<td>The symbol is in the text (code) section.</td>
+</tr>
+<tr>
+<td>U</td>
+<td>The symbol is undefined.</td>
+</tr>
+<tr>
+<td>u</td>
+<td>The symbol is a unique global symbol. This is a GNU extension to the standard set of ELF symbol bindings. For such a symbol the dynamic linker will make sure that in the entire process there is just one symbol with this name and type in use.</td>
+</tr>
+<tr>
+<td>V v</td>
+<td>The symbol is a weak object. When a weak defined symbol is linked with a normal defined symbol, the normal defined symbol is used with no error. When a weak undefined symbol is linked and the symbol is not defined, the value of the weak symbol becomes zero with no error. On some systems, uppercase indicates that a default value has been specified.</td>
+</tr>
+<tr>
+<td>W w</td>
+<td>The symbol is a weak symbol that has not been specifically tagged as a weak object symbol. When a weak defined symbol is linked with a normal defined symbol, the normal defined symbol is used with no error. When a weak undefined symbol is linked and the symbol is not defined, the value of the symbol is determined in a system-specific manner without error. On some systems, uppercase indicates that a default value has been specified.</td>
+</tr>
+<tr>
+<td>-</td>
+<td>The symbol is a stabs symbol in an a.out object file. In this case, the next values printed are the stabs other field, the stabs desc field, and the stab type. Stabs symbols are used to hold debugging information.</td>
+</tr>
+<tr>
+<td>?</td>
+<td>The symbol type is unknown, or object file format specific.</td>
+</tr>
+</tbody>
+</table>
 <a id="more"></a>
 <h4 id="proc-kallsysms"><a href="#proc-kallsysms" class="headerlink" title="/proc/kallsysms"></a>/proc/kallsysms</h4><blockquote>
 <p>/proc/kallsysms have symbols of dynamically loaded modules as well static code and system.map is symbol tables of only static code. kallsyms&#x5305;&#x542B;&#x4E86;<code>kernel image</code>&#x548C;&#x52A8;&#x6001;&#x52A0;&#x8F7D;&#x6A21;&#x5757;&#x7684;&#x7B26;&#x53F7;&#x8868;&#xFF0C;&#x51FD;&#x6570;&#x5982;&#x679C;&#x88AB;&#x7F16;&#x8BD1;&#x5668;&#x5185;&#x8054;&#xFF08;inline&#xFF09;&#x6216;&#x4F18;&#x5316;&#x6389;&#xFF0C;&#x5219;&#x5B83;&#x5728;/proc/kallsyms&#x6709;&#x53EF;&#x80FD;&#x627E;&#x4E0D;&#x5230;&#x3002;</p>
