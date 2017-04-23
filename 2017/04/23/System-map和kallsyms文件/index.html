@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="math, python, C/C++" />
+  <meta name="keywords" content="Linux kernel," />
 
 
 
@@ -84,25 +84,19 @@
 
 
 
-<meta name="description" content="##&amp;#x6570;&amp;#x503C;&amp;#x7684;&amp;#x7C7B;&amp;#x578B;
-C&amp;#x8BED;&amp;#x8A00;&amp;#x4E2D;&amp;#x7684;&amp;#x6570;&amp;#x503C;&amp;#x7C7B;&amp;#x578B;&amp;#x6709;
-
-&amp;#x6574;&amp;#x578B;&amp;#xFF1A;short int&amp;#xFF0C;int&amp;#xFF0C; long int&amp;#x6D6E;&amp;#x70B9;&amp;#x57">
+<meta name="description" content="System.map&amp;#x6587;&amp;#x4EF6;&amp;#x548C;/proc/kallsymsSystem.map
+&amp;#x8BE5;&amp;#x6587;&amp;#x4EF6;&amp;#x662F;&amp;#x662F;&amp;#x4E00;&amp;#x4EFD;&amp;#x5185;&amp;#x6838;&amp;#x7B26;&amp;#x53F7;&amp;#x8868;kernel symbol table&amp;#xFF0C;&amp;#x5305;&amp;#x542B;&amp;#">
 <meta property="og:type" content="article">
-<meta property="og:title" content="C语言中的数值">
-<meta property="og:url" content="http://luobuda.github.io/2015/01/14/c-number/index.html">
+<meta property="og:title" content="System.map和kallsyms文件">
+<meta property="og:url" content="http://luobuda.github.io/2017/04/23/System-map和kallsyms文件/index.html">
 <meta property="og:site_name" content="洛卜哒的博客">
-<meta property="og:description" content="##&amp;#x6570;&amp;#x503C;&amp;#x7684;&amp;#x7C7B;&amp;#x578B;
-C&amp;#x8BED;&amp;#x8A00;&amp;#x4E2D;&amp;#x7684;&amp;#x6570;&amp;#x503C;&amp;#x7C7B;&amp;#x578B;&amp;#x6709;
-
-&amp;#x6574;&amp;#x578B;&amp;#xFF1A;short int&amp;#xFF0C;int&amp;#xFF0C; long int&amp;#x6D6E;&amp;#x70B9;&amp;#x57">
-<meta property="og:updated_time" content="2015-01-14T14:34:17.805Z">
+<meta property="og:description" content="System.map&amp;#x6587;&amp;#x4EF6;&amp;#x548C;/proc/kallsymsSystem.map
+&amp;#x8BE5;&amp;#x6587;&amp;#x4EF6;&amp;#x662F;&amp;#x662F;&amp;#x4E00;&amp;#x4EFD;&amp;#x5185;&amp;#x6838;&amp;#x7B26;&amp;#x53F7;&amp;#x8868;kernel symbol table&amp;#xFF0C;&amp;#x5305;&amp;#x542B;&amp;#">
+<meta property="og:updated_time" content="2017-04-23T08:10:28.585Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="C语言中的数值">
-<meta name="twitter:description" content="##&amp;#x6570;&amp;#x503C;&amp;#x7684;&amp;#x7C7B;&amp;#x578B;
-C&amp;#x8BED;&amp;#x8A00;&amp;#x4E2D;&amp;#x7684;&amp;#x6570;&amp;#x503C;&amp;#x7C7B;&amp;#x578B;&amp;#x6709;
-
-&amp;#x6574;&amp;#x578B;&amp;#xFF1A;short int&amp;#xFF0C;int&amp;#xFF0C; long int&amp;#x6D6E;&amp;#x70B9;&amp;#x57">
+<meta name="twitter:title" content="System.map和kallsyms文件">
+<meta name="twitter:description" content="System.map&amp;#x6587;&amp;#x4EF6;&amp;#x548C;/proc/kallsymsSystem.map
+&amp;#x8BE5;&amp;#x6587;&amp;#x4EF6;&amp;#x662F;&amp;#x662F;&amp;#x4E00;&amp;#x4EFD;&amp;#x5185;&amp;#x6838;&amp;#x7B26;&amp;#x53F7;&amp;#x8868;kernel symbol table&amp;#xFF0C;&amp;#x5305;&amp;#x542B;&amp;#">
 
 
 
@@ -123,10 +117,10 @@ C&amp;#x8BED;&amp;#x8A00;&amp;#x4E2D;&amp;#x7684;&amp;#x6570;&amp;#x503C;&amp;#x
 
 
 
-  <link rel="canonical" href="http://luobuda.github.io/2015/01/14/c-number/"/>
+  <link rel="canonical" href="http://luobuda.github.io/2017/04/23/System-map和kallsyms文件/"/>
 
 
-  <title> C语言中的数值 | 洛卜哒的博客 </title>
+  <title> System.map和kallsyms文件 | 洛卜哒的博客 </title>
 </head>
 
 <body itemscope itemtype="//schema.org/WebPage" lang="zh-Hans">
@@ -266,7 +260,7 @@ C&amp;#x8BED;&amp;#x8A00;&amp;#x4E2D;&amp;#x7684;&amp;#x6570;&amp;#x503C;&amp;#x
             
             
               
-                C语言中的数值
+                System.map和kallsyms文件
               
             
           </h1>
@@ -278,8 +272,8 @@ C&amp;#x8BED;&amp;#x8A00;&amp;#x4E2D;&amp;#x7684;&amp;#x6570;&amp;#x503C;&amp;#x
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2015-01-14T22:30:19+08:00" content="2015-01-14">
-              2015-01-14
+            <time itemprop="dateCreated" datetime="2017-04-23T16:06:40+08:00" content="2017-04-23">
+              2017-04-23
             </time>
           </span>
 
@@ -292,8 +286,8 @@ C&amp;#x8BED;&amp;#x8A00;&amp;#x4E2D;&amp;#x7684;&amp;#x6570;&amp;#x503C;&amp;#x
               <span class="post-meta-item-text">分类于</span>
               
                 <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/C/" itemprop="url" rel="index">
-                    <span itemprop="name">C</span>
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
                   </a>
                 </span>
 
@@ -308,8 +302,8 @@ C&amp;#x8BED;&amp;#x8A00;&amp;#x4E2D;&amp;#x7684;&amp;#x6570;&amp;#x503C;&amp;#x
             
               <span class="post-comments-count">
                 &nbsp; | &nbsp;
-                <a href="/2015/01/14/c-number/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/01/14/c-number/" itemprop="commentsCount"></span>
+                <a href="/2017/04/23/System-map和kallsyms文件/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/04/23/System-map和kallsyms文件/" itemprop="commentsCount"></span>
                 </a>
               </span>
             
@@ -332,31 +326,29 @@ C&amp;#x8BED;&amp;#x8A00;&amp;#x4E2D;&amp;#x7684;&amp;#x6570;&amp;#x503C;&amp;#x
       
 
       
-        <p>##&#x6570;&#x503C;&#x7684;&#x7C7B;&#x578B;</p>
-<p>C&#x8BED;&#x8A00;&#x4E2D;&#x7684;&#x6570;&#x503C;&#x7C7B;&#x578B;&#x6709;</p>
-<blockquote>
-<p>&#x6574;&#x578B;&#xFF1A;short int&#xFF0C;int&#xFF0C; long int<br>&#x6D6E;&#x70B9;&#x578B;&#xFF1A;float&#xFF0C; double<br>&#x5B57;&#x7B26;&#x578B;&#xFF1A;char</p>
+        <h3 id="System-map&#x6587;&#x4EF6;&#x548C;-proc-kallsyms"><a href="#System-map&#x6587;&#x4EF6;&#x548C;-proc-kallsyms" class="headerlink" title="System.map&#x6587;&#x4EF6;&#x548C;/proc/kallsyms"></a>System.map&#x6587;&#x4EF6;&#x548C;/proc/kallsyms</h3><h4 id="System-map"><a href="#System-map" class="headerlink" title="System.map"></a>System.map</h4><blockquote>
+<p>&#x8BE5;&#x6587;&#x4EF6;&#x662F;&#x662F;&#x4E00;&#x4EFD;&#x5185;&#x6838;&#x7B26;&#x53F7;&#x8868;kernel symbol table&#xFF0C;&#x5305;&#x542B;&#x4E86;&#x5185;&#x6838;&#x4E2D;&#x7684;&#x53D8;&#x91CF;&#x540D;&#x548C;&#x51FD;&#x6570;&#x540D;&#x5730;&#x5740;&#xFF0C;&#x5728;&#x6BCF;&#x6B21;&#x7F16;&#x8BD1;&#x5185;&#x6838;&#x65F6;&#xFF0C;&#x81EA;&#x52A8;&#x751F;&#x6210;&#x3002;<br>&#x76F8;&#x5173;&#x8D44;&#x6599;&#xFF1A;<br><a href="https://en.wikipedia.org/wiki/GNU_Binutils" target="_blank" rel="external">GNU Binutils wiki</a><br><a href="https://www.gnu.org/software/binutils/" target="_blank" rel="external">GNU Binutils</a><br><a href="http://dirac.org/linux/system.map/" target="_blank" rel="external">What Are Symbols?</a></p>
 </blockquote>
-<p>&#x5176;&#x4E2D;&#x53C8;&#x5206;&#x4E3A;&#x6709;&#x7B26;&#x53F7;&#x6570;signed&#x548C;&#x65E0;&#x7B26;&#x53F7;&#x6570;unsigned&#x3002;<br>&#x5176;&#x5B9E;&#x6570;&#x503C;&#x5728;&#x5185;&#x5B58;&#x4E2D;&#x5B58;&#x50A8;&#x65F6;&#x53EA;&#x662F;&#x4E00;&#x4E32;&#x4E8C;&#x8FDB;&#x5236;&#x4E32;&#xFF0C;&#x6CA1;&#x6709;&#x6B63;&#x8D1F;&#x4E4B;&#x5206;&#xFF0C;&#x6240;&#x8C13;&#x7684;&#x6B63;&#x8D1F;&#x662F;&#x5982;&#x4F55;&#x53BB;&#x89E3;&#x91CA;&#x8FD9;&#x4E2A;&#x4E8C;&#x8FDB;&#x5236;&#x4E32;&#x3002;&#x4F8B;&#x5982;&#xFF1A;<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">unsigned</span> <span class="keyword">int</span> a = <span class="number">-1</span>;</div><div class="line"><span class="built_in">printf</span>(<span class="string">&quot;%u %d\n&quot;</span>, a, a);</div></pre></td></tr></table></figure></p>
-<p>&#x6211;&#x4EEC;&#x6307;&#x5B9A;%u&#x548C;%d&#x4E24;&#x79CD;&#x65B9;&#x5F0F;&#x8F93;&#x51FA;&#xFF0C;&#x5F97;&#x5230;&#x7ED3;&#x679C;&#xFF1A;<strong>4294967295 -1</strong><br>&#x6211;&#x4EEC;&#x5B9A;&#x4E49;&#x53D8;&#x91CF;&#x7684;&#x7C7B;&#x578B;&#x662F;&#x7ED9;&#x7F16;&#x8BD1;&#x5668;&#x770B;&#x7684;&#xFF0C;&#x800C;&#x53D8;&#x91CF;&#x672C;&#x8EAB;&#x53EA;&#x662F;&#x5185;&#x5B58;&#x7A7A;&#x95F4;&#xFF0C;&#x4F60;&#x60F3;&#x8BA9;&#x5B83;&#x540E;&#x6765;&#x89E3;&#x91CA;&#x6210;&#x4EC0;&#x4E48;&#x7C7B;&#x578B;&#x5C31;&#x89E3;&#x91CA;&#x6210;&#x4EC0;&#x4E48;&#x7C7B;&#x578B;&#x3002;<br><a id="more"></a></p>
-<p>##C&#x8BED;&#x8A00;&#x4E2D;&#x7684;&#x6570;&#x503C;&#x8F6C;&#x6362;</p>
-<p>###&#x9690;&#x5F0F;&#x8F6C;&#x6362;<br>C&#x8BED;&#x8A00;&#x5728;&#x4EE5;&#x4E0B;&#x56DB;&#x79CD;&#x60C5;&#x51B5;&#x4E0B;&#x8FDB;&#x884C;&#x9690;&#x5F0F;&#x8F6C;&#x6362;&#xFF1A;</p>
-<blockquote>
-<p>1&#x3001;&#x7B97;&#x672F;&#x8FD0;&#x7B97;&#x5F0F;&#x4E2D;&#xFF0C;&#x4F4E;&#x7C7B;&#x578B;&#x80FD;&#x591F;&#x8F6C;&#x6362;&#x4E3A;&#x9AD8;&#x7C7B;&#x578B;&#x3002;<br>2&#x3001;&#x8D4B;&#x503C;&#x8868;&#x8FBE;&#x5F0F;&#x4E2D;&#xFF0C;&#x53F3;&#x8FB9;&#x8868;&#x8FBE;&#x5F0F;&#x7684;&#x503C;&#x81EA;&#x52A8;&#x9690;&#x5F0F;&#x8F6C;&#x6362;&#x4E3A;&#x5DE6;&#x8FB9;&#x53D8;&#x91CF;&#x7684;&#x7C7B;&#x578B;&#xFF0C;&#x5E76;&#x8D4B;&#x503C;&#x7ED9;&#x4ED6;&#x3002;<br>3&#x3001;&#x51FD;&#x6570;&#x8C03;&#x7528;&#x4E2D;&#x53C2;&#x6570;&#x4F20;&#x9012;&#x65F6;&#xFF0C;&#x7CFB;&#x7EDF;&#x9690;&#x5F0F;&#x5730;&#x5C06;&#x5B9E;&#x53C2;&#x8F6C;&#x6362;&#x4E3A;&#x5F62;&#x53C2;&#x7684;&#x7C7B;&#x578B;&#x540E;&#xFF0C;&#x8D4B;&#x7ED9;&#x5F62;&#x53C2;&#x3002;<br>4&#x3001;&#x51FD;&#x6570;&#x6709;&#x8FD4;&#x56DE;&#x503C;&#x65F6;&#xFF0C;&#x7CFB;&#x7EDF;&#x5C06;&#x9690;&#x5F0F;&#x5730;&#x5C06;&#x8FD4;&#x56DE;&#x8868;&#x8FBE;&#x5F0F;&#x7C7B;&#x578B;&#x8F6C;&#x6362;&#x4E3A;&#x8FD4;&#x56DE;&#x503C;&#x7C7B;&#x578B;&#xFF0C;&#x8D4B;&#x503C;&#x7ED9;&#x8C03;&#x7528;&#x51FD;&#x6570;&#x3002;</p>
+<p>System.map&#x6587;&#x4EF6;&#x683C;&#x5F0F;&#xFF1A;&#x5730;&#x5740; &#x7C7B;&#x578B; &#x7B26;&#x53F7;  </p>
+<p>&#x7C7B;&#x578B;&#x662F;&#x5C0F;&#x5199;&#x8868;&#x793A;local symbol&#xFF0C;&#x5927;&#x5199;&#x8868;&#x793A;global(external)<br>&#x91CD;&#x70B9;&#x4E86;&#x89E3;&#x51E0;&#x4E2A;&#x7C7B;&#x578B;&#xFF1A;<br>T   The symbol is in the text(code) section<br>D   The symbol is in the initialized data   section<br>R   The sysbol is in a read only data section<br>t   static<br>d   static<br>R   const<br>r   static const  </p>
+<p>&#x4F7F;&#x7528;nm&#x547D;&#x4EE4;&#x53EF;&#x4EE5;&#x67E5;&#x770B;&#x66F4;&#x591A;&#x4FE1;&#x606F;&#xFF1A;<br>nm - list symbols from object files<br>| &#x7C7B;&#x578B;    | &#x8BF4;&#x660E; |<br>| &#x2014;&#x2014;&#x2014;&#x2014;- | &#x2014;&#x2014;&#x2014;&#x2014;- |<br>| A      | The symbol&#x2019;s value is absolute, and will not be changed by further linking |<br>| B b | The symbol is in the uninitialized data section(known as BS  |<br>| C  | The symbol is common. Common symbols are uninitialized data. When linking, multiple common symbols may appear with the same name. If the symbol is defined anywhere, the common symbols are treated as undefined references. |<br>| D d  | The symbol is in the initialized data section. |<br>| G g  | The symbol is in an initialized data section for small objects. Some object file formats permit more efficient access to small data objects, such as a global int variable as opposed to a large global array. |<br>| i  | For PE format files this indicates that the symbol is in a section specific to the implementation of DLLs. For ELF format files this indicates that the symbol is an indirect function. This is a GNU extension to the standard set of ELF symbol types. It indicates a symbol which if referenced by a relocation does not evaluate to its address, but instead must be invoked at runtime. The runtime execution will then return the value to be used in the relocation. |<br>| N  | The symbol is a debugging symbol. |<br>| p  | The symbols is in a stack unwind section. |<br>| R r  | The symbol is in a read only data section. |<br>| S s  | The symbol is in an uninitialized data section for small objects. |<br>| T t  | The symbol is in the text (code) section. |<br>| U  | The symbol is undefined. |<br>| u  | The symbol is a unique global symbol. This is a GNU extension to the standard set of ELF symbol bindings. For such a symbol the dynamic linker will make sure that in the entire process there is just one symbol with this name and type in use. |<br>| V v  | The symbol is a weak object. When a weak defined symbol is linked with a normal defined symbol, the normal defined symbol is used with no error. When a weak undefined symbol is linked and the symbol is not defined, the value of the weak symbol becomes zero with no error. On some systems, uppercase indicates that a default value has been specified. |<br>| W w  | The symbol is a weak symbol that has not been specifically tagged as a weak object symbol. When a weak defined symbol is linked with a normal defined symbol, the normal defined symbol is used with no error. When a weak undefined symbol is linked and the symbol is not defined, the value of the symbol is determined in a system-specific manner without error. On some systems, uppercase indicates that a default value has been specified. |<br>| -  | The symbol is a stabs symbol in an a.out object file. In this case, the next values printed are the stabs other field, the stabs desc field, and the stab type. Stabs symbols are used to hold debugging information. |<br>| ?  | The symbol type is unknown, or object file format specific. |</p>
+<a id="more"></a>
+<h4 id="proc-kallsysms"><a href="#proc-kallsysms" class="headerlink" title="/proc/kallsysms"></a>/proc/kallsysms</h4><blockquote>
+<p>/proc/kallsysms have symbols of dynamically loaded modules as well static code and system.map is symbol tables of only static code. kallsyms&#x5305;&#x542B;&#x4E86;<code>kernel image</code>&#x548C;&#x52A8;&#x6001;&#x52A0;&#x8F7D;&#x6A21;&#x5757;&#x7684;&#x7B26;&#x53F7;&#x8868;&#xFF0C;&#x51FD;&#x6570;&#x5982;&#x679C;&#x88AB;&#x7F16;&#x8BD1;&#x5668;&#x5185;&#x8054;&#xFF08;inline&#xFF09;&#x6216;&#x4F18;&#x5316;&#x6389;&#xFF0C;&#x5219;&#x5B83;&#x5728;/proc/kallsyms&#x6709;&#x53EF;&#x80FD;&#x627E;&#x4E0D;&#x5230;&#x3002;</p>
 </blockquote>
-<p>###&#x7B97;&#x6570;&#x8FD0;&#x7B97;&#x7684;&#x9690;&#x5F0F;&#x8F6C;&#x6362;<br>&#x7B97;&#x6570;&#x8FD0;&#x7B97;&#x7684;&#x7C7B;&#x578B;&#x8F6C;&#x6362;&#x89C4;&#x5219;&#xFF1A;</p>
-<blockquote>
-<p>1&#x3001;&#x5B57;&#x7B26;&#x5FC5;&#x987B;&#x5148;&#x8F6C;&#x6362;&#x4E3A;&#x6574;&#x6570;(C&#x8BED;&#x8A00;&#x89C4;&#x5B9A;&#x5B57;&#x7B26;&#x7C7B;&#x578B;&#x6570;&#x636E;&#x548C;&#x6574;&#x578B;&#x6570;&#x636E;&#x4E4B;&#x95F4;&#x53EF;&#x4EE5;&#x901A;&#x7528;) &#x3002;<br>2&#x3001;short&#x578B;&#x8F6C;&#x6362;&#x4E3A;int&#x578B;(&#x540C;&#x5C5E;&#x4E8E;&#x6574;&#x578B;) &#x3002;<br>3&#x3001;float&#x578B;&#x6570;&#x636E;&#x5728;&#x8FD0;&#x7B97;&#x65F6;&#x4E00;&#x5F8B;&#x8F6C;&#x6362;&#x4E3A;&#x53CC;&#x7CBE;&#x5EA6;(double)&#x578B;&#xFF0C;&#x4EE5;&#x63D0;&#x9AD8;&#x8FD0;&#x7B97;&#x7CBE;&#x5EA6;(&#x540C;&#x5C5E;&#x4E8E;&#x5B9E;&#x578B;) &#x3002;</p>
-</blockquote>
-<p>&#x5F53;&#x4E0D;&#x540C;&#x7C7B;&#x578B;&#x7684;&#x6570;&#x636E;&#x8FDB;&#x884C;&#x64CD;&#x4F5C;&#x65F6;&#xFF0C;&#x5E94;&#x5F53;&#x9996;&#x5148;&#x5C06;&#x5176;&#x8F6C;&#x6362;&#x6210;&#x76F8;&#x540C;&#x7684;&#x6570;&#x636E;&#x7C7B;&#x578B;&#xFF0C;&#x7136;&#x540E;&#x8FDB;&#x884C;&#x64CD;&#x4F5C;&#xFF0C;&#x8F6C;&#x6362;&#x89C4;&#x5219;&#x662F;&#x7531;&#x4F4E;&#x7EA7;&#x5411;&#x9AD8;&#x7EA7;&#x8F6C;&#x6362;&#x3002;</p>
-<blockquote>
-<p><strong>char,short-&gt;int-&gt;unsigned-&gt;long-&gt;double&lt;-float</strong></p>
-</blockquote>
-<p>&#x5F53;&#x8868;&#x8FBE;&#x5F0F;&#x4E2D;&#x5B58;&#x5728;&#x6709;&#x7B26;&#x53F7;&#x7C7B;&#x578B;&#x548C;&#x65E0;&#x7B26;&#x53F7;&#x7C7B;&#x578B;&#x65F6;&#x6240;&#x6709;&#x7684;&#x64CD;&#x4F5C;&#x6570;&#x90FD;&#x81EA;&#x52A8;&#x8F6C;&#x6362;&#x4E3A;&#x65E0;&#x7B26;&#x53F7;&#x7C7B;&#x578B;&#x3002;<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">unsigned</span> <span class="keyword">int</span> a = <span class="number">20</span>;</div><div class="line"><span class="keyword">int</span> b = <span class="number">-20</span>;</div></pre></td></tr></table></figure></p>
-<p>&#x6BD4;&#x8F83;a&#x548C;b&#x7684;&#x5927;&#x5C0F;&#x4F1A;&#x53D1;&#x73B0;a &lt; b,&#x56E0;&#x4E3A;&#x5728;C&#x8BED;&#x8A00;&#x64CD;&#x4F5C;&#x4E2D;&#xFF0C;&#x5982;&#x679C;&#x9047;&#x5230;&#x65E0;&#x7B26;&#x53F7;&#x6570;&#x4E0E;&#x6709;&#x7B26;&#x53F7;&#x6570;&#x4E4B;&#x95F4;&#x7684;<br>&#x64CD;&#x4F5C;&#xFF0C;&#x7F16;&#x8BD1;&#x5668;&#x4F1A;&#x81EA;&#x52A8;&#x8F6C;&#x5316;&#x4E3A;&#x65E0;&#x7B26;&#x53F7;&#x6570;&#x6765;&#x8FDB;&#x884C;&#x5904;&#x7406;&#x3002;</p>
-<p>&#x5BF9;&#x4E8E;&#x6D6E;&#x70B9;&#x6570;&#x6765;&#x8BF4;&#xFF0C;&#x6D6E;&#x70B9;&#x6570;&#xFF08;float&#xFF0C;double&#xFF09;&#x5B9E;&#x9645;&#x4E0A;&#x90FD;&#x662F;&#x6709;&#x7B26;&#x53F7;&#x6570;&#xFF0C;unsigned &#x548C;signed&#x524D;&#x7F00;&#x4E0D;&#x80FD;&#x52A0;&#x5728;float&#x548C;double&#x4E4B;&#x4E0A;&#xFF0C;&#x5F53;&#x7136;&#x5C31;&#x4E0D;&#x5B58;&#x5728;&#x6709;&#x7B26;&#x53F7;&#x6570;&#x6839;&#x65E0;&#x7B26;&#x53F7;&#x6570;&#x4E4B;&#x95F4;&#x8F6C;&#x5316;&#x7684;&#x95EE;&#x9898;&#x4E86;&#x3002;</p>
-<p>&#x5B66;&#x4E60;&#x8FD9;&#x4E9B;&#x77E5;&#x8BC6;&#x4E3A;&#x4E86;&#x4E0B;&#x4E00;&#x7BC7;&#x6587;&#x7AE0;&#x4ECB;&#x7ECD;&#x5173;&#x4E8E;cpython&#x6E90;&#x7801;&#x4E2D;&#x5224;&#x65AD;&#x6574;&#x6570;&#x6EA2;&#x51FA;&#x7684;&#x64CD;&#x4F5C;&#x505A;&#x51C6;&#x5907;&#x3002;</p>
-<p><em>&#x53C2;&#x8003;&#x94FE;&#x63A5;</em><br>(<a href="http://blog.csdn.net/zhuimengzh/article/details/6728492" target="_blank" rel="external">http://blog.csdn.net/zhuimengzh/article/details/6728492</a>)</p>
+<p>&#x6B63;&#x5728;&#x8FD0;&#x884C;&#x7684;&#x5185;&#x6838;&#x53EF;&#x80FD;&#x548C;System.map&#x4E0D;&#x5339;&#x914D;&#xFF0C;&#x51FA;&#x73B0;<code>System.map does not match actual kernel</code>&#xFF0C;&#x6240;&#x4EE5;/proc/kallsyms&#x624D;&#x662F;&#x53C2;&#x8003;&#x7684;&#x4E3B;&#x8981;&#x6765;&#x6E90;&#xFF0C;&#x6211;&#x4EEC;&#x5E94;&#x8BE5;&#x901A;&#x8FC7;/proc/kallsyms&#x83B7;&#x5F97;&#x7B26;&#x53F7;&#x7684;&#x5730;&#x5740;&#x3002;</p>
+<p>/proc/kallsyms&#x7684;&#x5F62;&#x6210;&#x8FC7;&#x7A0B;&#x4E3A;&#xFF1A;</p>
+<ul>
+<li><a href="https://github.com/torvalds/linux/blob/master/scripts/kallsyms.c" target="_blank" rel="external">/scripts/kallsyms.c</a> &#x751F;&#x6210;System.map</li>
+<li><a href="https://github.com/torvalds/linux/blob/master/kernel/kallsyms.c" target="_blank" rel="external">/kernel/kallsyms.c</a> &#x751F;&#x6210;/proc/kallsyms</li>
+<li><p><a href="https://github.com/torvalds/linux/blob/master/scripts/kallsyms.c" target="_blank" rel="external">/scripts/kallsyms.c</a> &#x89E3;&#x6790;vmlinux(.tmp_vmlinux)&#x751F;&#x6210;kallsyms.S(.tmp_kallsyms.S)&#xFF0C;&#x7136;&#x540E;&#x5185;&#x6838;&#x7F16;&#x8BD1;&#x8FC7;&#x7A0B;&#x4E2D;&#x5C06;kallsyms.S(&#x5185;&#x6838;&#x7B26;&#x53F7;&#x8868;)&#x7F16;&#x5165;&#x5185;&#x6838;&#x955C;&#x50CF;uImage</p>
+</li>
+<li><p>&#x5185;&#x6838;&#x542F;&#x52A8;&#x540E;./kernel/kallsyms.c&#x89E3;&#x6790;uImage&#x5F62;&#x6210;/proc/kallsyms</p>
+</li>
+<li><p>/proc/kallsyms&#x5305;&#x542B;&#x4E86;&#x5185;&#x6838;&#x4E2D;&#x7684;&#x51FD;&#x6570;&#x7B26;&#x53F7;(&#x5305;&#x62EC;&#x6CA1;&#x6709;EXPORT_SYMBOL)&#x3001;&#x5168;&#x5C40;&#x53D8;&#x91CF;(&#x7528;EXPORT_SYMBOL&#x5BFC;&#x51FA;&#x7684;&#x5168;&#x5C40;&#x53D8;&#x91CF;)</p>
+</li>
+</ul>
+<p>&#x53C2;&#x8003;&#x8D44;&#x6599;<br><a href="http://blog.csdn.net/darling757267/article/details/9405113" target="_blank" rel="external">/proc/kallsys</a><br><a href="http://blog.chinaunix.net/uid-27717694-id-3985448.html" target="_blank" rel="external"> linux&#x5185;&#x6838;kallsyms&#x673A;&#x5236;&#x5206;&#x6790;</a><br><a href="https://lwn.net/Articles/420403/" target="_blank" rel="external">kptr_restrict for hiding kernel pointers</a><br><a href="https://www.kernel.org/doc/Documentation/sysctl/kernel.txt" target="_blank" rel="external">documentation for the sysctl files</a><br><a href="http://www.cnblogs.com/richardustc/archive/2013/04/25/3043674.html" target="_blank" rel="external">&#x83B7;&#x53D6;Linux&#x5185;&#x6838;&#x672A;&#x5BFC;&#x51FA;&#x7B26;&#x53F7;&#x7684;&#x51E0;&#x79CD;&#x65B9;&#x5F0F;</a><br><a href="http://stackoverflow.com/questions/32965535/kernel-symbol-marked-with-t-in-proc-kallsyms-is-not-exported" target="_blank" rel="external">kernel symbol marked with &#x201C;T&#x201D; in /proc/kallsyms is not exported</a></p>
 
       
     </div>
@@ -377,18 +369,24 @@ C&amp;#x8BED;&amp;#x8A00;&amp;#x4E2D;&amp;#x7684;&amp;#x6570;&amp;#x503C;&amp;#x
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/Linux-kernel/" rel="tag">#Linux kernel</a>
+          
+        </div>
+      
 
       
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
+              <a href="/2017/03/12/get-shell-script-name/" rel="next" title="获取当前shell执行脚本的名字的几种方法">
+                <i class="fa fa-chevron-left"></i> 获取当前shell执行脚本的名字的几种方法
+              </a>
+            
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2015/01/16/python-class/" rel="prev" title="python中的__class__">
-                python中的__class__ <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -414,8 +412,8 @@ C&amp;#x8BED;&amp;#x8A00;&amp;#x4E2D;&amp;#x7684;&amp;#x6570;&amp;#x503C;&amp;#x
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2015/01/14/c-number/"
-           data-title="C语言中的数值" data-url="http://luobuda.github.io/2015/01/14/c-number/">
+      <div class="ds-thread" data-thread-key="2017/04/23/System-map和kallsyms文件/"
+           data-title="System.map和kallsyms文件" data-url="http://luobuda.github.io/2017/04/23/System-map和kallsyms文件/">
       </div>
     
   </div>
@@ -535,7 +533,7 @@ C&amp;#x8BED;&amp;#x8A00;&amp;#x4E2D;&amp;#x7684;&amp;#x6570;&amp;#x503C;&amp;#x
               
             
             
-              <p class="post-toc-empty">此文章未包含目录</p>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#System-map文件和-proc-kallsyms"><span class="nav-number">1.</span> <span class="nav-text">System.map文件和/proc/kallsyms</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#System-map"><span class="nav-number">1.1.</span> <span class="nav-text">System.map</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#proc-kallsysms"><span class="nav-number">1.2.</span> <span class="nav-text">/proc/kallsysms</span></a></li></ol></li></ol></div>
             
           </div>
         </section>
