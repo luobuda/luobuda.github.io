@@ -259,6 +259,136 @@
             
               
                 
+                <a class="post-title-link" href="/2015/01/19/cpython-overflow/" itemprop="url">
+                  cpython整型溢出
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2015-01-19T22:40:49+08:00" content="2015-01-19">
+              2015-01-19
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/c-python/" itemprop="url" rel="index">
+                    <span itemprop="name">c,python</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2015/01/19/cpython-overflow/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/01/19/cpython-overflow/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>##C&#x8BED;&#x8A00;&#x4E2D;&#x7684;&#x6574;&#x578B;&#x6EA2;&#x51FA;</p>
+<blockquote>
+<p><em>&#x5982;&#x679C;&#x8BF4;&#x6211;&#x6BD4;&#x522B;&#x4EBA;&#x770B;&#x5F97;&#x66F4;&#x8FDC;&#x4E9B;,&#x90A3;&#x662F;&#x56E0;&#x4E3A;&#x6211;&#x7AD9;&#x5728;&#x4E86;&#x5DE8;&#x4EBA;&#x7684;&#x80A9;&#x4E0A;. &#x2014;&#x2014;&#x725B;&#x987F;</em></p>
+</blockquote>
+<p>&#x5728;C&#x8BED;&#x8A00;&#x4E2D;&#xFF0C;&#x6574;&#x578B;&#x6EA2;&#x51FA;&#x5206;&#x4E3A;&#x6709;&#x7B26;&#x53F7;&#x548C;&#x65E0;&#x7B26;&#x53F7;&#x4E24;&#x79CD;&#xFF1A;</p>
+<blockquote>
+<p><strong>1. signed integer overflow : undefined behavior</strong><br><strong>2. unsigned integer overflow : safely wraps around (UINT_MAX + 1 yeild 0)</strong></p>
+</blockquote>
+<p>&#x5BF9;&#x4E8E;unsigned&#x6574;&#x578B;&#x6EA2;&#x51FA;&#xFF0C;C&#x7684;&#x89C4;&#x8303;&#x662F;&#x6709;&#x5B9A;&#x4E49;&#x7684;&#x2014;&#x2014;&#x201C;&#x6EA2;&#x51FA;&#x540E;&#x7684;&#x6570;&#x4F1A;&#x4EE5;2^(8*sizeof(type))&#x4F5C;&#x6A21;&#x8FD0;&#x7B97;&#x201D;;&#x5BF9;&#x4E8E;signed&#x6574;&#x578B;&#x7684;&#x6EA2;&#x51FA;&#xFF0C;C&#x7684;&#x89C4;&#x8303;&#x5B9A;&#x4E49;&#x662F;&#x201C;undefined behavior&#x201D;&#x3002;&#x8BE6;&#x7EC6;&#x4ECB;&#x7ECD;&#x8BF7;&#x53C2;&#x8003;<a href="http://www.gnu.org/savannah-checkouts/gnu/autoconf/manual/autoconf-2.69/html_node/Integer-Overflow-Basics.html#Integer-Overflow-Basics">Basics of Integer Overflow</a>&#x548C;<a href="http://coolshell.cn/articles/11466.html">C&#x8BED;&#x8A00;&#x7684;&#x6574;&#x578B;&#x6EA2;&#x51FA;&#x95EE;&#x9898;</a>&#x3002;<br></p>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2015/01/19/cpython-overflow/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2015/01/16/python-class/" itemprop="url">
                   python中的__class__
                 </a>
@@ -539,7 +669,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">12</span>
+              <span class="site-state-item-count">13</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
