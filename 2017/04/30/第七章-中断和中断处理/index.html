@@ -93,7 +93,7 @@
 <meta property="og:description" content="&amp;#x4E2D;&amp;#x65AD;&amp;#x548C;&amp;#x4E2D;&amp;#x65AD;&amp;#x5904;&amp;#x7406;
 &amp;#x5904;&amp;#x7406;&amp;#x5668;&amp;#x548C;&amp;#x5916;&amp;#x90E8;&amp;#x786C;&amp;#x4EF6;&amp;#x7684;&amp;#x901F;&amp;#x5EA6;&amp;#x5F80;&amp;#x5F80;&amp;#x4E0D;&amp;#x5728;&amp;#x4E00;&amp;#x4E2A;&amp;#x6570">
 <meta property="og:image" content="http://luobuda.github.io/2017/04/30/第七章-中断和中断处理/./images/interrupt_paths.png">
-<meta property="og:updated_time" content="2017-04-30T14:56:06.025Z">
+<meta property="og:updated_time" content="2017-04-30T15:00:31.687Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="第七章 中断和中断处理">
 <meta name="twitter:description" content="&amp;#x4E2D;&amp;#x65AD;&amp;#x548C;&amp;#x4E2D;&amp;#x65AD;&amp;#x5904;&amp;#x7406;
@@ -386,7 +386,57 @@
 </ul>
 <p><img src="/2017/04/30/&#x7B2C;&#x4E03;&#x7AE0;-&#x4E2D;&#x65AD;&#x548C;&#x4E2D;&#x65AD;&#x5904;&#x7406;/./images/interrupt_paths.png" alt=""></p>
 <p>Linux&#x5185;&#x6838;&#x63D0;&#x4F9B;&#x4E86;&#x4E00;&#x7EC4;&#x63A5;&#x53E3;&#x7528;&#x4E8E;&#x64CD;&#x4F5C;&#x673A;&#x5668;&#x4E0A;&#x7684;&#x4E2D;&#x65AD;&#x72B6;&#x6001;&#xFF0C;&#x5BF9;&#x4E8E;&#x4E00;&#x4E2A;&#x591A;&#x5904;&#x7406;&#x5668;&#x5185;&#x6838;&#xFF0C;&#x5185;&#x6838;&#x4EE3;&#x7801;&#x901A;&#x8FC7;&#x9501;&#x9632;&#x6B62;&#x6765;&#x81EA;&#x5176;&#x4ED6;&#x5904;&#x7406;&#x5668;&#x7684;&#x5E76;&#x53D1;&#x8BBF;&#x95EE;&#xFF0C;&#x901A;&#x8FC7;&#x7981;&#x6B62;&#x4E2D;&#x65AD;&#x9632;&#x6B62;&#x6765;&#x81EA;&#x5176;&#x4ED6;&#x4E2D;&#x65AD;&#x5904;&#x7406;&#x7A0B;&#x5E8F;&#x7684;&#x5E76;&#x53D1;&#x8BBF;&#x95EE;&#x3002;</p>
-<p>&#x4E2D;&#x65AD;&#x63A7;&#x5236;&#x65B9;&#x6CD5;&#x5217;&#x8868;<br>| &#x51FD;&#x6570;  | &#x8BF4;&#x660E; |<br>| &#x2014;&#x2014;&#x2014;&#x2014;- | &#x2014;&#x2014;&#x2014;&#x2014;- |<br>| local_irq_disable()  | &#x7981;&#x6B62;&#x672C;&#x5730;&#x4E2D;&#x65AD;&#x4F20;&#x9012;  |<br>| local_irq_enable()  | &#x6FC0;&#x6D3B;&#x672C;&#x5730;&#x4E2D;&#x65AD;&#x4F20;&#x9012;  |<br>| local_irq_save()  | &#x4FDD;&#x5B58;&#x672C;&#x5730;&#x4E2D;&#x65AD;&#x4F20;&#x9012;&#x7684;&#x5F53;&#x524D;&#x72B6;&#x6001;&#xFF0C;&#x7136;&#x540E;&#x7981;&#x6B62;&#x672C;&#x5730;&#x4E2D;&#x65AD;&#x4F20;&#x9012;  |<br>| local_irq_restore()  | &#x6062;&#x590D;&#x672C;&#x5730;&#x4E2D;&#x65AD;&#x4F20;&#x9012;&#x5230;&#x7ED9;&#x5B9A;&#x72B6;&#x6001;  |<br>| disable_irq()  | &#x7981;&#x6B62;&#x7ED9;&#x5B9A;&#x4E2D;&#x65AD;&#x7EBF;&#xFF0C;&#x5E76;&#x786E;&#x4FDD;&#x8BE5;&#x51FD;&#x6570;&#x8FD4;&#x56DE;&#x4E4B;&#x524D;&#x5728;&#x8BE5;&#x4E2D;&#x65AD;&#x7EBF;&#x4E0A;&#x6CA1;&#x6709;&#x5904;&#x7406;&#x7A0B;&#x5E8F;&#x5728;&#x8FD0;&#x884C;  |<br>| disable_irq_nosync()  | &#x7981;&#x6B62;&#x7ED9;&#x5B9A;&#x4E2D;&#x65AD;&#x7EBF;  |<br>| enable_irq()  | &#x6FC0;&#x6D3B;&#x7ED9;&#x5B9A;&#x4E2D;&#x65AD;&#x7EBF;  |<br>| irqs_disabled()  | &#x5982;&#x679C;&#x672C;&#x5730;&#x4E2D;&#x65AD;&#x4F20;&#x9012;&#x88AB;&#x7981;&#x6B62;&#xFF0C;&#x8FD4;&#x56DE;&#x975E;0&#xFF0C;&#x5426;&#x5219;&#x8FD4;&#x56DE;0  |<br>| in_interrupt()  | &#x5982;&#x679C;&#x5728;&#x4E2D;&#x65AD;&#x4E0A;&#x4E0B;&#x6587;&#x4E2D;&#xFF0C;&#x8FD4;&#x56DE;&#x975E;0&#xFF1B;&#x5728;&#x8FDB;&#x7A0B;&#x4E0A;&#x4E0B;&#x6587;&#x4E2D;&#xFF0C;&#x8FD4;&#x56DE;0  |<br>| in_irq()  | &#x5982;&#x679C;&#x5F53;&#x524D;&#x6B63;&#x5728;&#x6267;&#x884C;&#x4E2D;&#x65AD;&#x5904;&#x7406;&#x7A0B;&#x5E8F;&#xFF0C;&#x8FD4;&#x56DE;&#x975E;0&#xFF1B;&#x5426;&#x5219;&#x8FD4;&#x56DE;0 |</p>
+<p>&#x4E2D;&#x65AD;&#x63A7;&#x5236;&#x65B9;&#x6CD5;&#x5217;&#x8868;</p>
+<table>
+<thead>
+<tr>
+<th>&#x51FD;&#x6570;</th>
+<th>&#x8BF4;&#x660E;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>local_irq_disable()</td>
+<td>&#x7981;&#x6B62;&#x672C;&#x5730;&#x4E2D;&#x65AD;&#x4F20;&#x9012;</td>
+</tr>
+<tr>
+<td>local_irq_enable()</td>
+<td>&#x6FC0;&#x6D3B;&#x672C;&#x5730;&#x4E2D;&#x65AD;&#x4F20;&#x9012;</td>
+</tr>
+<tr>
+<td>local_irq_save()</td>
+<td>&#x4FDD;&#x5B58;&#x672C;&#x5730;&#x4E2D;&#x65AD;&#x4F20;&#x9012;&#x7684;&#x5F53;&#x524D;&#x72B6;&#x6001;&#xFF0C;&#x7136;&#x540E;&#x7981;&#x6B62;&#x672C;&#x5730;&#x4E2D;&#x65AD;&#x4F20;&#x9012;</td>
+</tr>
+<tr>
+<td>local_irq_restore()</td>
+<td>&#x6062;&#x590D;&#x672C;&#x5730;&#x4E2D;&#x65AD;&#x4F20;&#x9012;&#x5230;&#x7ED9;&#x5B9A;&#x72B6;&#x6001;</td>
+</tr>
+<tr>
+<td>disable_irq()</td>
+<td>&#x7981;&#x6B62;&#x7ED9;&#x5B9A;&#x4E2D;&#x65AD;&#x7EBF;&#xFF0C;&#x5E76;&#x786E;&#x4FDD;&#x8BE5;&#x51FD;&#x6570;&#x8FD4;&#x56DE;&#x4E4B;&#x524D;&#x5728;&#x8BE5;&#x4E2D;&#x65AD;&#x7EBF;&#x4E0A;&#x6CA1;&#x6709;&#x5904;&#x7406;&#x7A0B;&#x5E8F;&#x5728;&#x8FD0;&#x884C;</td>
+</tr>
+<tr>
+<td>disable_irq_nosync()</td>
+<td>&#x7981;&#x6B62;&#x7ED9;&#x5B9A;&#x4E2D;&#x65AD;&#x7EBF;</td>
+</tr>
+<tr>
+<td>enable_irq()</td>
+<td>&#x6FC0;&#x6D3B;&#x7ED9;&#x5B9A;&#x4E2D;&#x65AD;&#x7EBF;</td>
+</tr>
+<tr>
+<td>irqs_disabled()</td>
+<td>&#x5982;&#x679C;&#x672C;&#x5730;&#x4E2D;&#x65AD;&#x4F20;&#x9012;&#x88AB;&#x7981;&#x6B62;&#xFF0C;&#x8FD4;&#x56DE;&#x975E;0&#xFF0C;&#x5426;&#x5219;&#x8FD4;&#x56DE;0</td>
+</tr>
+<tr>
+<td>in_interrupt()</td>
+<td>&#x5982;&#x679C;&#x5728;&#x4E2D;&#x65AD;&#x4E0A;&#x4E0B;&#x6587;&#x4E2D;&#xFF0C;&#x8FD4;&#x56DE;&#x975E;0&#xFF1B;&#x5728;&#x8FDB;&#x7A0B;&#x4E0A;&#x4E0B;&#x6587;&#x4E2D;&#xFF0C;&#x8FD4;&#x56DE;0</td>
+</tr>
+<tr>
+<td>in_irq()</td>
+<td>&#x5982;&#x679C;&#x5F53;&#x524D;&#x6B63;&#x5728;&#x6267;&#x884C;&#x4E2D;&#x65AD;&#x5904;&#x7406;&#x7A0B;&#x5E8F;&#xFF0C;&#x8FD4;&#x56DE;&#x975E;0&#xFF1B;&#x5426;&#x5219;&#x8FD4;&#x56DE;0</td>
+</tr>
+</tbody>
+</table>
 
       
     </div>
