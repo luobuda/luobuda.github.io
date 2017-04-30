@@ -92,7 +92,7 @@
 <meta property="og:site_name" content="洛卜哒的博客">
 <meta property="og:description" content="&amp;#x5185;&amp;#x6838;&amp;#x6570;&amp;#x636E;&amp;#x7ED3;&amp;#x6784;
 &amp;#x5185;&amp;#x6838;&amp;#x4E2D;&amp;#x5B9E;&amp;#x73B0;&amp;#x4E86;&amp;#x5F88;&amp;#x591A;&amp;#x901A;&amp;#x7528;&amp;#x6570;&amp;#x636E;&amp;#x7ED3;&amp;#x6784;&amp;#xFF0C;&amp;#x5305;&amp;#x62EC;Linked list&amp;#x3">
-<meta property="og:updated_time" content="2017-04-30T09:10:23.818Z">
+<meta property="og:updated_time" content="2017-04-30T09:15:25.074Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="第六章 内核数据结构">
 <meta name="twitter:description" content="&amp;#x5185;&amp;#x6838;&amp;#x6570;&amp;#x636E;&amp;#x7ED3;&amp;#x6784;
@@ -335,10 +335,114 @@
 <p>&#x5185;&#x6838;&#x5E38;&#x7528;&#x7684;&#x4E00;&#x4E2A;&#x5B8F;&#xFF0C;&#x83B7;&#x5F97;&#x5305;&#x542B;member&#x7684;&#x7ED3;&#x6784;&#x4F53;&#x7684;&#x6307;&#x9488;&#xFF1A;<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">define</span> container_of(ptr, type, member) ({			\</span></div><div class="line">	const typeof( ((type *)0)-&gt;member ) *__mptr = (ptr);	\</div><div class="line">	(type *)( (char *)__mptr - offsetof(type,member) );})</div></pre></td></tr></table></figure></p>
 <p>&#x5229;&#x7528;&#x8FD9;&#x4E2A;&#x5B8F;&#xFF0C;&#x53EF;&#x4EE5;&#x65B9;&#x4FBF;&#x5730;&#x5F97;&#x5230;&#x5305;&#x542B;&#x94FE;&#x8868;&#x7684;&#x7ED3;&#x6784;&#x4F53;&#xFF1A;<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * list_entry - get the struct for this entry</div><div class="line"> * @ptr:	the &amp;struct list_head pointer.</div><div class="line"> * @type:	the type of the struct this is embedded in.</div><div class="line"> * @member:	the name of the list_struct within the struct.</div><div class="line"> */</div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> list_entry(ptr, type, member) \</span></div><div class="line">	container_of(ptr, type, member)</div></pre></td></tr></table></figure></p>
 <a id="more"></a>
-<p><strong>&#x94FE;&#x8868;&#x64CD;&#x4F5C;</strong><br>| &#x51FD;&#x6570;  | &#x8BF4;&#x660E; |<br>| &#x2014;&#x2014;&#x2014;&#x2014;- | &#x2014;&#x2014;&#x2014;&#x2014;- |<br>| list_add      | &#x6DFB;&#x52A0;&#x8282;&#x70B9; |<br>| list_add_tail | &#x6DFB;&#x52A0;&#x5230;&#x94FE;&#x8868;&#x5C3E;  |<br>| list_del| &#x5220;&#x9664;&#x4E00;&#x4E2A;&#x8282;&#x70B9;&#xFF0C;&#x8BE5;&#x8282;&#x70B9;&#x7684;&#x5185;&#x5B58;&#x91CA;&#x653E;&#x7B49;&#x5DE5;&#x4F5C;&#x9700;&#x8981;&#x81EA;&#x5DF1;&#x5B8C;&#x6210;  |<br>| list_del_init | deletes entry from list and reinitialize it  |<br>| list_move&#x3001;list_move_tail| &#x628A;&#x8282;&#x70B9;&#x79FB;&#x52A8;&#x5230;&#x53E6;&#x4E00;&#x4E2A;&#x94FE;&#x8868; |<br>| list_empty | &#x68C0;&#x67E5;&#x94FE;&#x8868;&#x662F;&#x5426;&#x4E3A;&#x7A7A; |<br>| list_splice&#x3001;list_splice_tail  | &#x5408;&#x5E76;&#x94FE;&#x8868;  |<br>| list_splice_init&#x3001;list_splice_tail_init  | &#x5408;&#x5E76;&#x94FE;&#x8868;&#x5E76;&#x521D;&#x59CB;&#x5316;  |<br>| list_for_each&#x3001;list_for_each_entry | &#x904D;&#x5386;&#x94FE;&#x8868; |<br>| list_for_each_entry_reverse | &#x53CD;&#x5411;&#x904D;&#x5386;  |<br>| list_for_each_entry_safe | &#x904D;&#x5386;&#x7684;&#x540C;&#x65F6;&#x5220;&#x9664;  |<br>| list_for_each_entry_safe_reverse  | &#x53CD;&#x5411;&#x904D;&#x5386;&#x7684;&#x540C;&#x65F6;&#x5220;&#x9664; |</p>
+<p><strong>&#x94FE;&#x8868;&#x64CD;&#x4F5C;</strong>    </p>
+<table>
+<thead>
+<tr>
+<th>&#x51FD;&#x6570;</th>
+<th>&#x8BF4;&#x660E;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>list_add</td>
+<td>&#x6DFB;&#x52A0;&#x8282;&#x70B9;</td>
+</tr>
+<tr>
+<td>list_add_tail</td>
+<td>&#x6DFB;&#x52A0;&#x5230;&#x94FE;&#x8868;&#x5C3E;</td>
+</tr>
+<tr>
+<td>list_del</td>
+<td>&#x5220;&#x9664;&#x4E00;&#x4E2A;&#x8282;&#x70B9;&#xFF0C;&#x8BE5;&#x8282;&#x70B9;&#x7684;&#x5185;&#x5B58;&#x91CA;&#x653E;&#x7B49;&#x5DE5;&#x4F5C;&#x9700;&#x8981;&#x81EA;&#x5DF1;&#x5B8C;&#x6210;</td>
+</tr>
+<tr>
+<td>list_del_init</td>
+<td>deletes entry from list and reinitialize it</td>
+</tr>
+<tr>
+<td>list_move&#x3001;list_move_tail</td>
+<td>&#x628A;&#x8282;&#x70B9;&#x79FB;&#x52A8;&#x5230;&#x53E6;&#x4E00;&#x4E2A;&#x94FE;&#x8868;</td>
+</tr>
+<tr>
+<td>list_empty</td>
+<td>&#x68C0;&#x67E5;&#x94FE;&#x8868;&#x662F;&#x5426;&#x4E3A;&#x7A7A;</td>
+</tr>
+<tr>
+<td>list_splice&#x3001;list_splice_tail</td>
+<td>&#x5408;&#x5E76;&#x94FE;&#x8868;</td>
+</tr>
+<tr>
+<td>list_splice_init&#x3001;list_splice_tail_init</td>
+<td>&#x5408;&#x5E76;&#x94FE;&#x8868;&#x5E76;&#x521D;&#x59CB;&#x5316;</td>
+</tr>
+<tr>
+<td>list_for_each&#x3001;list_for_each_entry</td>
+<td>&#x904D;&#x5386;&#x94FE;&#x8868;</td>
+</tr>
+<tr>
+<td>list_for_each_entry_reverse</td>
+<td>&#x53CD;&#x5411;&#x904D;&#x5386;</td>
+</tr>
+<tr>
+<td>list_for_each_entry_safe</td>
+<td>&#x904D;&#x5386;&#x7684;&#x540C;&#x65F6;&#x5220;&#x9664;</td>
+</tr>
+<tr>
+<td>list_for_each_entry_safe_reverse</td>
+<td>&#x53CD;&#x5411;&#x904D;&#x5386;&#x7684;&#x540C;&#x65F6;&#x5220;&#x9664;</td>
+</tr>
+</tbody>
+</table>
 <h4 id="2-&#x961F;&#x5217;"><a href="#2-&#x961F;&#x5217;" class="headerlink" title="2. &#x961F;&#x5217;"></a>2. &#x961F;&#x5217;</h4><p>&#x961F;&#x5217;&#x5E38;&#x7528;&#x6765;&#x5B9E;&#x73B0;&#x751F;&#x4EA7;&#x8005;&#x6D88;&#x8D39;&#x8005;&#x6A21;&#x578B;&#x3002;Linux&#x5185;&#x6838;&#x901A;&#x7528;&#x961F;&#x5217;&#x6210;&#x4E3A;kfifo&#xFF0C;&#x7533;&#x660E;:<a href="https://github.com/torvalds/linux/blob/master/include/linux/kfifo.h" target="_blank" rel="external">linux/kfifo.h</a>&#xFF0C;&#x5B9E;&#x73B0;&#xFF1A;<a href="https://github.com/torvalds/linux/blob/master/lib/kfifo.c" target="_blank" rel="external">lib/kfifo.c</a></p>
 <p>Linux&#x63D0;&#x4F9B;&#x4E24;&#x4E2A;&#x4E3B;&#x8981;&#x64CD;&#x4F5C;&#xFF1A;enqueue&#x548C;dequeue&#xFF0C;&#x7EF4;&#x62A4;&#x4E86;&#x4E24;&#x4E2A;&#x504F;&#x79FB;&#x91CF;&#xFF1A;&#x5165;&#x53E3;&#x504F;&#x79FB;&#x548C;&#x51FA;&#x53E3;&#x504F;&#x79FB;&#x3002;<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">struct</span> __kfifo {</div><div class="line">	<span class="keyword">unsigned</span> <span class="keyword">int</span>	in;</div><div class="line">	<span class="keyword">unsigned</span> <span class="keyword">int</span>	out;</div><div class="line">	<span class="keyword">unsigned</span> <span class="keyword">int</span>	mask;</div><div class="line">	<span class="keyword">unsigned</span> <span class="keyword">int</span>	esize;</div><div class="line">	<span class="keyword">void</span>		*data;</div><div class="line">};</div></pre></td></tr></table></figure></p>
-<p><strong>&#x961F;&#x5217;&#x64CD;&#x4F5C;</strong><br>| &#x51FD;&#x6570;  | &#x8BF4;&#x660E; |<br>| &#x2014;&#x2014;&#x2014;&#x2014;- | &#x2014;&#x2014;&#x2014;&#x2014;- |<br>| kfifo_alloc      | &#x52A8;&#x6001;&#x5206;&#x914D;&#x5E76;&#x521D;&#x59CB;&#x5316; |<br>|kfifo_init|&#x4F7F;&#x7528;&#x9884;&#x5148;&#x5206;&#x914D;&#x7684;buf|<br>|kfifo_put&#x3001;kfifo_in|put data into the fifo|<br>|kfifo_get&#x3001;kfifo_out|get data from the fifo|<br>|kfifo_size|kfifo&#x5927;&#x5C0F;|<br>|kfifo_avail|kfifo&#x53EF;&#x7528;&#x5927;&#x5C0F;|<br>|kfifo_is_empty&#x3001;kfifo_is_full|&#x961F;&#x5217;&#x5224;&#x65AD;|<br>|kfifo_reset|removes the entire fifo content|<br>|kfifo_free|frees the fifo|</p>
+<p><strong>&#x961F;&#x5217;&#x64CD;&#x4F5C;</strong>  </p>
+<table>
+<thead>
+<tr>
+<th>&#x51FD;&#x6570;</th>
+<th>&#x8BF4;&#x660E;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>kfifo_alloc</td>
+<td>&#x52A8;&#x6001;&#x5206;&#x914D;&#x5E76;&#x521D;&#x59CB;&#x5316;</td>
+</tr>
+<tr>
+<td>kfifo_init</td>
+<td>&#x4F7F;&#x7528;&#x9884;&#x5148;&#x5206;&#x914D;&#x7684;buf</td>
+</tr>
+<tr>
+<td>kfifo_put&#x3001;kfifo_in</td>
+<td>put data into the fifo</td>
+</tr>
+<tr>
+<td>kfifo_get&#x3001;kfifo_out</td>
+<td>get data from the fifo</td>
+</tr>
+<tr>
+<td>kfifo_size</td>
+<td>kfifo&#x5927;&#x5C0F;</td>
+</tr>
+<tr>
+<td>kfifo_avail</td>
+<td>kfifo&#x53EF;&#x7528;&#x5927;&#x5C0F;</td>
+</tr>
+<tr>
+<td>kfifo_is_empty&#x3001;kfifo_is_full</td>
+<td>&#x961F;&#x5217;&#x5224;&#x65AD;</td>
+</tr>
+<tr>
+<td>kfifo_reset</td>
+<td>removes the entire fifo content</td>
+</tr>
+<tr>
+<td>kfifo_free</td>
+<td>frees the fifo</td>
+</tr>
+</tbody>
+</table>
 <h4 id="3-&#x6620;&#x5C04;"><a href="#3-&#x6620;&#x5C04;" class="headerlink" title="3. &#x6620;&#x5C04;"></a>3. &#x6620;&#x5C04;</h4><blockquote>
 <p>idr&#x6570;&#x636E;&#x7ED3;&#x6784;&#x7528;&#x4E8E;&#x6620;&#x5C04;&#x7528;&#x6237;&#x7A7A;&#x95F4;&#x7684;UID&#x3002;</p>
 </blockquote>
