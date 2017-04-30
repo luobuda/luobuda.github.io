@@ -1,0 +1,729 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Linux kernel," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.2" />
+
+
+
+
+
+
+<meta name="description" content="&amp;#x4E2D;&amp;#x65AD;&amp;#x548C;&amp;#x4E2D;&amp;#x65AD;&amp;#x5904;&amp;#x7406;
+&amp;#x5904;&amp;#x7406;&amp;#x5668;&amp;#x548C;&amp;#x5916;&amp;#x90E8;&amp;#x786C;&amp;#x4EF6;&amp;#x7684;&amp;#x901F;&amp;#x5EA6;&amp;#x5F80;&amp;#x5F80;&amp;#x4E0D;&amp;#x5728;&amp;#x4E00;&amp;#x4E2A;&amp;#x6570">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第七章 中断和中断处理">
+<meta property="og:url" content="http://luobuda.github.io/2017/04/30/第七章-中断和中断处理/index.html">
+<meta property="og:site_name" content="洛卜哒的博客">
+<meta property="og:description" content="&amp;#x4E2D;&amp;#x65AD;&amp;#x548C;&amp;#x4E2D;&amp;#x65AD;&amp;#x5904;&amp;#x7406;
+&amp;#x5904;&amp;#x7406;&amp;#x5668;&amp;#x548C;&amp;#x5916;&amp;#x90E8;&amp;#x786C;&amp;#x4EF6;&amp;#x7684;&amp;#x901F;&amp;#x5EA6;&amp;#x5F80;&amp;#x5F80;&amp;#x4E0D;&amp;#x5728;&amp;#x4E00;&amp;#x4E2A;&amp;#x6570">
+<meta property="og:image" content="http://luobuda.github.io/2017/04/30/第七章-中断和中断处理/./images/interrupt_paths.png">
+<meta property="og:updated_time" content="2017-04-30T14:56:06.025Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="第七章 中断和中断处理">
+<meta name="twitter:description" content="&amp;#x4E2D;&amp;#x65AD;&amp;#x548C;&amp;#x4E2D;&amp;#x65AD;&amp;#x5904;&amp;#x7406;
+&amp;#x5904;&amp;#x7406;&amp;#x5668;&amp;#x548C;&amp;#x5916;&amp;#x90E8;&amp;#x786C;&amp;#x4EF6;&amp;#x7684;&amp;#x901F;&amp;#x5EA6;&amp;#x5F80;&amp;#x5F80;&amp;#x4E0D;&amp;#x5728;&amp;#x4E00;&amp;#x4E2A;&amp;#x6570">
+<meta name="twitter:image" content="http://luobuda.github.io/2017/04/30/第七章-中断和中断处理/./images/interrupt_paths.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://luobuda.github.io/2017/04/30/第七章-中断和中断处理/"/>
+
+
+  <title> 第七章 中断和中断处理 | 洛卜哒的博客 </title>
+</head>
+
+<body itemscope itemtype="//schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="//schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">洛卜哒的博客</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">戒骄戒躁，沉淀技术</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                第七章 中断和中断处理
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-04-30T22:53:01+08:00" content="2017-04-30">
+              2017-04-30
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2017/04/30/第七章-中断和中断处理/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/04/30/第七章-中断和中断处理/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="&#x4E2D;&#x65AD;&#x548C;&#x4E2D;&#x65AD;&#x5904;&#x7406;"><a href="#&#x4E2D;&#x65AD;&#x548C;&#x4E2D;&#x65AD;&#x5904;&#x7406;" class="headerlink" title="&#x4E2D;&#x65AD;&#x548C;&#x4E2D;&#x65AD;&#x5904;&#x7406;"></a>&#x4E2D;&#x65AD;&#x548C;&#x4E2D;&#x65AD;&#x5904;&#x7406;</h3><blockquote>
+<p>&#x5904;&#x7406;&#x5668;&#x548C;&#x5916;&#x90E8;&#x786C;&#x4EF6;&#x7684;&#x901F;&#x5EA6;&#x5F80;&#x5F80;&#x4E0D;&#x5728;&#x4E00;&#x4E2A;&#x6570;&#x91CF;&#x7EA7;&#xFF0C;&#x5982;&#x4F55;&#x9AD8;&#x6548;&#x5730;&#x8BA9;&#x5904;&#x7406;&#x5668;&#x548C;&#x8FD9;&#x4E9B;&#x5916;&#x90E8;&#x8BBE;&#x5907;&#x534F;&#x8C03;&#x5DE5;&#x4F5C;&#xFF1F;</p>
+</blockquote>
+<h4 id="1-&#x4E2D;&#x65AD;"><a href="#1-&#x4E2D;&#x65AD;" class="headerlink" title="1. &#x4E2D;&#x65AD;"></a>1. <a href="https://en.wikipedia.org/wiki/Interrupt" target="_blank" rel="external">&#x4E2D;&#x65AD;</a></h4><p>&#x5904;&#x7406;&#x5668;&#x548C;&#x5916;&#x90E8;&#x8BBE;&#x5907;&#x534F;&#x8C03;&#x7684;&#x65B9;&#x5F0F;&#xFF0C;&#x4ECE;&#x5904;&#x7406;&#x5668;&#x51FA;&#x53D1;&#xFF0C;&#x5F88;&#x5BB9;&#x6613;&#x60F3;&#x5230;&#x7684;&#x662F;&#x8F6E;&#x8BE2;&#x7684;&#x65B9;&#x5F0F;&#xFF0C;&#x4F46;&#x662F;&#x8F6E;&#x8BE2;&#x80AF;&#x5B9A;&#x4F1A;&#x505A;&#x5F88;&#x591A;&#x65E0;&#x7528;&#x529F;&#xFF1B;&#x6240;&#x4EE5;&#x5E94;&#x8BE5;&#x4ECE;&#x5916;&#x90E8;&#x8BBE;&#x5907;&#x89D2;&#x5EA6;&#xFF0C;&#x8BA9;&#x786C;&#x4EF6;&#x5728;&#x9700;&#x8981;&#x7684;&#x65F6;&#x5019;&#x5411;&#x5185;&#x6838;&#x53D1;&#x51FA;&#x4FE1;&#x53F7;&#xFF0C;&#x5373;&#x4E2D;&#x65AD;&#x673A;&#x5236;&#x3002;</p>
+<p>&#x4E2D;&#x65AD;&#x672C;&#x8D28;&#x4E0A;&#x662F;&#x4E00;&#x79CD;&#x7279;&#x6B8A;&#x7535;&#x4FE1;&#x53F7;&#xFF0C;&#x7531;&#x786C;&#x4EF6;&#x8BBE;&#x5907;&#x4EA7;&#x751F;&#xFF0C;&#x76F4;&#x63A5;&#x9001;&#x5165;&#x4E2D;&#x65AD;&#x63A7;&#x5236;&#x5668;&#x8F93;&#x5165;&#x5F15;&#x811A;&#xFF0C;&#x518D;&#x53D1;&#x5411;&#x5904;&#x7406;&#x5668;&#xFF0C;&#x5904;&#x7406;&#x5668;&#x63A5;&#x6536;&#x5230;&#x4E2D;&#x65AD;&#x9A6C;&#x4E0A;&#x5411;&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;&#x53CD;&#x6620;&#x4FE1;&#x53F7;&#x7684;&#x5230;&#x6765;&#xFF0C;&#x7136;&#x540E;&#x7531;&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;&#x6267;&#x884C;&#x5BF9;&#x5E94;&#x7684;&#x4E2D;&#x65AD;&#x5904;&#x7406;&#x7A0B;&#x5E8F;&#x3002;</p>
+<p>&#x6BCF;&#x4E2A;&#x4E2D;&#x65AD;&#x90FD;&#x6709;&#x4E00;&#x4E2A;&#x4E2D;&#x65AD;&#x53F7;&#xFF0C;&#x88AB;&#x79F0;&#x4E3A;&#x4E2D;&#x65AD;&#x8BF7;&#x6C42;<a href="https://en.wikipedia.org/wiki/Interrupt_request_(PC_architecture)" target="_blank" rel="external">IRQ</a>&#x3002; </p>
+<p><em>&#x4E2D;&#x65AD;&#x4E0E;&#x5F02;&#x5E38;</em></p>
+<blockquote>
+<p>&#x5F02;&#x5E38;&#x4EA7;&#x751F;&#x9700;&#x8981;&#x8003;&#x8651;&#x5904;&#x7406;&#x5668;&#x65F6;&#x949F;&#x540C;&#x6B65;&#xFF0C;&#x5E38;&#x5E38;&#x88AB;&#x79F0;&#x4E3A;&#x540C;&#x6B65;&#x4E2D;&#x65AD;&#x3002;&#x8FD9;&#x6837;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x628A;&#x4E2D;&#x65AD;&#x5206;&#x4E3A;&#x5F02;&#x6B65;&#x4E2D;&#x65AD;&#x548C;&#x540C;&#x6B65;&#x4E2D;&#x65AD;.</p>
+</blockquote>
+<a id="more"></a>
+<h4 id="2-&#x4E2D;&#x65AD;&#x5904;&#x7406;&#x7A0B;&#x5E8F;"><a href="#2-&#x4E2D;&#x65AD;&#x5904;&#x7406;&#x7A0B;&#x5E8F;" class="headerlink" title="2. &#x4E2D;&#x65AD;&#x5904;&#x7406;&#x7A0B;&#x5E8F;"></a>2. &#x4E2D;&#x65AD;&#x5904;&#x7406;&#x7A0B;&#x5E8F;</h4><p>&#x54CD;&#x5E94;&#x4E00;&#x4E2A;&#x7279;&#x5B9A;&#x4E2D;&#x65AD;&#x65F6;&#xFF0C;&#x5185;&#x6838;&#x4F1A;&#x6267;&#x884C;&#x5BF9;&#x5E94;&#x7684;<a href="https://en.wikipedia.org/wiki/Interrupt_handler" target="_blank" rel="external">&#x4E2D;&#x65AD;&#x5904;&#x7406;&#x7A0B;&#x5E8F;(interrupt handler)</a>&#x6216;&#x4E2D;&#x65AD;&#x670D;&#x52A1;&#x4F8B;&#x7A0B;(interrupt service routine, ISR)&#xFF0C;&#x4E00;&#x4E2A;&#x8BBE;&#x5907;&#x7684;&#x4E2D;&#x65AD;&#x5904;&#x7406;&#x7A0B;&#x5E8F;&#x662F;&#x5B83;&#x8BBE;&#x5907;&#x9A71;&#x52A8;&#x7A0B;&#x5E8F;&#x7684;&#x4E00;&#x90E8;&#x5206;&#x3002;</p>
+<p>&#x4E2D;&#x65AD;&#x7A0B;&#x5E8F;&#x7A0B;&#x5E8F;&#x8FD0;&#x884C;&#x5728;&#x4E2D;&#x65AD;&#x4E0A;&#x4E0B;&#x6587;&#xFF0C;&#x8FD9;&#x4E2A;&#x4E0A;&#x4E0B;&#x6587;&#x4E2D;&#x6267;&#x884C;&#x7684;&#x4EE3;&#x7801;&#x4E0D;&#x80FD;&#x963B;&#x585E;&#xFF0C;&#x800C;&#x4E14;&#x4E2D;&#x65AD;&#x968F;&#x65F6;&#x53EF;&#x80FD;&#x53D1;&#x751F;&#xFF0C;&#x5FC5;&#x987B;&#x4FDD;&#x8BC1;&#x4E2D;&#x65AD;&#x5904;&#x7406;&#x7A0B;&#x5E8F;&#x5FEB;&#x901F;&#x6267;&#x884C;&#x3002;&#x53C8;&#x60F3;&#x4E2D;&#x65AD;&#x5904;&#x7406;&#x7A0B;&#x5E8F;&#x8FD0;&#x884C;&#x5FEB;&#xFF0C;&#x53C8;&#x60F3;&#x4E2D;&#x65AD;&#x5904;&#x7406;&#x7A0B;&#x5E8F;&#x5B8C;&#x6210;&#x7684;&#x5DE5;&#x4F5C;&#x91CF;&#x591A;&#xFF0C;&#x8FD9;&#x662F;&#x77DB;&#x76FE;&#x7684;&#xFF0C;&#x4E3A;&#x4E86;&#x89E3;&#x51B3;&#x8FD9;&#x4E2A;&#x77DB;&#x76FE;&#xFF0C;&#x4E2D;&#x65AD;&#x88AB;&#x5206;&#x6210;&#x4E86;&#x4E24;&#x4E2A;&#x90E8;&#x5206;&#xFF1A;</p>
+<ul>
+<li>top half&#xFF1A;&#x4E2D;&#x65AD;&#x5230;&#x6765;&#x5C31;&#x7ACB;&#x5373;&#x6267;&#x884C;&#xFF0C;&#x4F46;&#x53EA;&#x505A;&#x4E25;&#x683C;&#x65F6;&#x9650;&#x7684;&#x5DE5;&#x4F5C;&#xFF0C;&#x5982;&#x5BF9;&#x63A5;&#x6536;&#x7684;&#x4E2D;&#x65AD;&#x8FDB;&#x884C;&#x5E94;&#x7B54;&#x6216;&#x590D;&#x4F4D;&#x786C;&#x4EF6;&#xFF0C;&#x8FD9;&#x4E9B;&#x5DE5;&#x4F5C;&#x90FD;&#x662F;&#x5728;&#x6240;&#x6709;&#x4E2D;&#x65AD;&#x88AB;&#x7981;&#x6B62;&#x7684;&#x60C5;&#x51B5;&#x4E0B;&#x5B8C;&#x6210;&#x3002;</li>
+<li>bottom half&#xFF1A;&#x5141;&#x8BB8;&#x7A0D;&#x540E;&#x5B8C;&#x6210;&#x7684;&#x5DE5;&#x4F5C;&#x4F1A;&#x653E;&#x5728;&#x8FD9;&#x90E8;&#x5206;&#xFF0C;&#x5728;&#x5408;&#x9002;&#x7684;&#x65F6;&#x673A;&#xFF0C;&#x88AB;&#x6267;&#x884C;&#x3002;</li>
+</ul>
+<h4 id="3-&#x6CE8;&#x518C;&#x4E2D;&#x65AD;&#x5904;&#x7406;&#x7A0B;&#x5E8F;"><a href="#3-&#x6CE8;&#x518C;&#x4E2D;&#x65AD;&#x5904;&#x7406;&#x7A0B;&#x5E8F;" class="headerlink" title="3. &#x6CE8;&#x518C;&#x4E2D;&#x65AD;&#x5904;&#x7406;&#x7A0B;&#x5E8F;"></a>3. &#x6CE8;&#x518C;&#x4E2D;&#x65AD;&#x5904;&#x7406;&#x7A0B;&#x5E8F;</h4><blockquote>
+<p>&#x5982;&#x679C;&#x8BBE;&#x5907;&#x8981;&#x4F7F;&#x7528;&#x4E2D;&#x65AD;&#xFF0C;&#x90A3;&#x4E48;&#x76F8;&#x5E94;&#x7684;&#x9A71;&#x52A8;&#x7A0B;&#x5E8F;&#x5C31;&#x8981;&#x6CE8;&#x518C;&#x4E00;&#x4E2A;&#x4E2D;&#x65AD;&#x5904;&#x7406;&#x7A0B;&#x5E8F;&#x3002;</p>
+</blockquote>
+<p>&#x9A71;&#x52A8;&#x7A0B;&#x5E8F;&#x901A;&#x8FC7;request_irq()&#x51FD;&#x6570;&#x6CE8;&#x518C;&#x4E00;&#x4E2A;&#x4E2D;&#x65AD;&#x5904;&#x7406;&#x7A0B;&#x5E8F;&#xFF0C;<a href="https://github.com/torvalds/linux/blob/master/include/linux/interrupt.h#L144" target="_blank" rel="external"><linux interrupt.h=""></linux></a></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* &#x5206;&#x914D;&#x4E00;&#x6761;&#x7ED9;&#x5B9A;&#x7684;&#x4E2D;&#x65AD;&#x7EBF; */</span></div><div class="line"><span class="keyword">static</span> <span class="keyword">inline</span> <span class="keyword">int</span> __<span class="function">must_check</span></div><div class="line"><span class="title">request_irq</span><span class="params">(<span class="keyword">unsigned</span> <span class="keyword">int</span> irq,  <span class="comment">//&#x8981;&#x5206;&#x914D;&#x7684;&#x4E2D;&#x65AD;&#x53F7;</span></span></div><div class="line">            <span class="keyword">irq_handler_t</span> handler, <span class="comment">//&#x5B9E;&#x9645;&#x7684;&#x4E2D;&#x65AD;&#x5904;&#x7406;&#x7A0B;&#x5E8F;</span></div><div class="line">            <span class="keyword">unsigned</span> <span class="keyword">long</span> flags,  <span class="comment">//&#x6807;&#x5FD7;&#x4F4D;&#xFF0C;&#x4E2D;&#x65AD;&#x7684;&#x5177;&#x6709;&#x7279;&#x6027;</span></div><div class="line">	    <span class="keyword">const</span> <span class="keyword">char</span> *name,   <span class="comment">/*&#x4E2D;&#x65AD;&#x8BBE;&#x5907;&#x540D;&#x79F0;&#x7684;ASCII &#x8868;&#x793A;&#xFF0C;&#x88AB;/proc/irq&#x548C;/proc/interrupts&#x6587;&#x4EF6;&#x4F7F;&#x7528;*/</span></div><div class="line">	    <span class="keyword">void</span> *dev   <span class="comment">//&#x7528;&#x4E8E;&#x5171;&#x4EAB;&#x4E2D;&#x65AD;&#x7EBF;&#xFF0C;&#x591A;&#x4E2A;&#x4E2D;&#x65AD;&#x7A0B;&#x5E8F;&#x5171;&#x4EAB;&#x4E00;&#x4E2A;&#x4E2D;&#x65AD;&#x7EBF;&#x65F6;(&#x5171;&#x7528;&#x4E00;&#x4E2A;&#x4E2D;&#x65AD;&#x53F7;)&#xFF0C;&#x4F9D;&#x9760;dev&#x6765;&#x533A;&#x522B;&#x5404;&#x4E2A;&#x4E2D;&#x65AD;&#x7A0B;&#x5E8F;</span></div><div class="line">	   )</div></pre></td></tr></table></figure>
+<ul>
+<li><p>&#x5B9E;&#x9645;&#x4E2D;&#x65AD;&#x5904;&#x7406;&#x51FD;&#x6570;&#x7684;&#x539F;&#x578B;&#x4E3A;&#xFF1A;</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">typedef</span> <span class="title">irqreturn_t</span> <span class="params">(*<span class="keyword">irq_handler_t</span>)</span><span class="params">(<span class="keyword">int</span>, <span class="keyword">void</span> *)</span></span>;</div></pre></td></tr></table></figure>
+</li>
+<li><p>&#x4E2D;&#x65AD;&#x5904;&#x7406;&#x7A0B;&#x5E8F;&#x6807;&#x5FD7;&#xFF1A;&#x5B9A;&#x4E49;&#x5728;<a href="https://github.com/torvalds/linux/blob/master/include/linux/interrupt.h#L38-L90" target="_blank" rel="external"><linux interrupt.h=""></linux></a></p>
+</li>
+<li>request_irq()&#x51FD;&#x6570;&#x53EF;&#x80FD;&#x4F1A;&#x7761;&#x7720;</li>
+<li>&#x91CA;&#x653E;&#x4E2D;&#x65AD;&#x5904;&#x7406;&#x7A0B;&#x5E8F;&#xFF1A;&#x5378;&#x8F7D;&#x9A71;&#x52A8;&#x7A0B;&#x5E8F;&#x9700;&#x8981;&#x6CE8;&#x9500;&#x76F8;&#x5E94;&#x7684;&#x4E2D;&#x65AD;&#x5904;&#x7406;&#x7A0B;&#x5E8F;&#xFF0C;&#x91CA;&#x653E;&#x4E2D;&#x65AD;&#x7EBF;<ul>
+<li>free_irq(unsigned int irq, void *dev)</li>
+</ul>
+</li>
+</ul>
+<h4 id="4-&#x7F16;&#x5199;&#x4E2D;&#x65AD;&#x5904;&#x7406;&#x7A0B;&#x5E8F;"><a href="#4-&#x7F16;&#x5199;&#x4E2D;&#x65AD;&#x5904;&#x7406;&#x7A0B;&#x5E8F;" class="headerlink" title="4. &#x7F16;&#x5199;&#x4E2D;&#x65AD;&#x5904;&#x7406;&#x7A0B;&#x5E8F;"></a>4. &#x7F16;&#x5199;&#x4E2D;&#x65AD;&#x5904;&#x7406;&#x7A0B;&#x5E8F;</h4><ul>
+<li>&#x4E2D;&#x65AD;&#x5904;&#x7406;&#x7A0B;&#x5E8F;&#x8FD4;&#x56DE;&#x503C;&#x7C7B;&#x578B;&#x4E3A;&#xFF1A;irqreturn_t&#xFF0C;&#x8FD4;&#x56DE;IRQ_NONE&#x6216;IRQ_HANDLED</li>
+<li>&#x4E2D;&#x65AD;&#x5904;&#x7406;&#x7A0B;&#x5E8F;&#x4E0D;&#x9700;&#x8981;&#x662F;&#x91CD;&#x5165;&#x7684;&#xFF0C;&#x56E0;&#x4E3A;&#x5F53;&#x4E00;&#x4E2A;&#x4E2D;&#x65AD;&#x6267;&#x884C;&#x65F6;&#x76F8;&#x5E94;&#x4E2D;&#x65AD;&#x7EBF;&#x4F1A;&#x88AB;&#x5C4F;&#x853D;&#xFF0C;&#x56E0;&#x6B64;&#x540C;&#x4E00;&#x4E2A;&#x4E2D;&#x65AD;&#x5904;&#x7406;&#x7A0B;&#x5E8F;&#x4E0D;&#x53EF;&#x80FD;&#x88AB;&#x540C;&#x65F6;&#x8C03;&#x7528;&#x5904;&#x7406;&#x5D4C;&#x5957;&#x4E2D;&#x65AD;</li>
+<li>&#x5171;&#x4EAB;&#x4E2D;&#x65AD;&#x5904;&#x7406;&#x7A0B;&#x5E8F;<ul>
+<li>request_irq()&#x7684;flags&#x5FC5;&#x987B;&#x8BBE;&#x7F6E;IRQF_SHARED</li>
+<li>dev&#x53C2;&#x6570;&#x5FC5;&#x987B;&#x552F;&#x4E00;&#xFF0C;&#x901A;&#x5E38;&#x9009;&#x62E9;&#x8BBE;&#x5907;&#x7ED3;&#x6784;</li>
+<li>&#x4E2D;&#x65AD;&#x5904;&#x7406;&#x7A0B;&#x5E8F;&#x5FC5;&#x987B;&#x80FD;&#x591F;&#x533A;&#x5206;&#x5B83;&#x7684;&#x8BBE;&#x5907;&#x662F;&#x5426;&#x771F;&#x7684;&#x4EA7;&#x751F;&#x4E86;&#x4E2D;&#x65AD;</li>
+<li>&#x4E2D;&#x65AD;&#x7EBF;&#x5171;&#x4EAB;&#x5FC5;&#x987B;&#x6EE1;&#x8DB3;&#xFF1A;&#x4E2D;&#x65AD;&#x7EBF;&#x5F53;&#x524D;&#x672A;&#x88AB;&#x6CE8;&#x518C;&#x6216;&#x5728;&#x8BE5;&#x7EBF;&#x4E0A;&#x7684;&#x6240;&#x6709;&#x5DF2;&#x6CE8;&#x518C;&#x5904;&#x7406;&#x7A0B;&#x5E8F;&#x90FD;&#x6307;&#x5B9A;&#x4E86;IRQF_SHARED</li>
+</ul>
+</li>
+</ul>
+<h4 id="5-&#x4E2D;&#x65AD;&#x4E0A;&#x4E0B;&#x6587;"><a href="#5-&#x4E2D;&#x65AD;&#x4E0A;&#x4E0B;&#x6587;" class="headerlink" title="5. &#x4E2D;&#x65AD;&#x4E0A;&#x4E0B;&#x6587;"></a>5. &#x4E2D;&#x65AD;&#x4E0A;&#x4E0B;&#x6587;</h4><blockquote>
+<p>&#x5F53;&#x6267;&#x884C;&#x4E00;&#x4E2A;&#x4E2D;&#x65AD;&#x5904;&#x7406;&#x7A0B;&#x5E8F;&#x65F6;&#xFF0C;&#x5185;&#x6838;&#x5904;&#x4E8E;&#x4E2D;&#x65AD;&#x4E0A;&#x4E0B;&#x6587;(interrupt context)</p>
+</blockquote>
+<p>&#x4E2D;&#x65AD;&#x4E0A;&#x4E0B;&#x6587;&#x4E0D;&#x53EF;&#x4EE5;&#x7761;&#x7720;&#xFF0C;&#x5177;&#x6709;&#x8F83;&#x4E25;&#x683C;&#x7684;&#x65F6;&#x95F4;&#x9650;&#x5236;&#xFF0C;&#x56E0;&#x4E3A;&#xFF1A;&#x4E2D;&#x65AD;&#x5904;&#x7406;&#x7A0B;&#x5E8F;&#x6253;&#x65AD;&#x4E86;&#x5176;&#x4ED6;&#x7684;&#x4EE3;&#x7801;&#x3002;&#x7531;&#x4E8E;&#x5F02;&#x6B65;&#x6267;&#x884C;&#x7684;&#x5173;&#x7CFB;&#xFF0C;&#x4E2D;&#x65AD;&#x5904;&#x7406;&#x7A0B;&#x5E8F;&#x5E94;&#x8BE5;&#x8FC5;&#x901F;&#x3001;&#x7B80;&#x6D01;&#xFF0C;&#x5C3D;&#x91CF;&#x628A;&#x5DE5;&#x4F5C;&#x4ECE;&#x4E2D;&#x65AD;&#x5904;&#x7406;&#x7A0B;&#x5E8F;&#x4E2D;&#x5206;&#x79BB;&#x3002;</p>
+<p>&#x4E2D;&#x65AD;&#x5904;&#x7406;&#x7A0B;&#x5E8F;&#x62E5;&#x6709;&#x81EA;&#x5DF1;&#x7684;&#x4E2D;&#x65AD;&#x6808;&#x3002;</p>
+<h4 id="6-&#x4E2D;&#x65AD;&#x5904;&#x7406;&#x673A;&#x5236;"><a href="#6-&#x4E2D;&#x65AD;&#x5904;&#x7406;&#x673A;&#x5236;" class="headerlink" title="6. &#x4E2D;&#x65AD;&#x5904;&#x7406;&#x673A;&#x5236;"></a>6. &#x4E2D;&#x65AD;&#x5904;&#x7406;&#x673A;&#x5236;</h4><p>&#x4E2D;&#x65AD;&#x5904;&#x7406;&#x7684;&#x8FC7;&#x7A0B;&#x4E3B;&#x8981;&#x5305;&#x542B;&#xFF1A;</p>
+<ul>
+<li>do_IRQ</li>
+<li><a href="https://github.com/torvalds/linux/blob/master/kernel/irq/handle.c#L194" target="_blank" rel="external">handle_IRQ_event</a></li>
+<li>ret_from_intr</li>
+</ul>
+<p><img src="/2017/04/30/&#x7B2C;&#x4E03;&#x7AE0;-&#x4E2D;&#x65AD;&#x548C;&#x4E2D;&#x65AD;&#x5904;&#x7406;/./images/interrupt_paths.png" alt=""></p>
+<p>Linux&#x5185;&#x6838;&#x63D0;&#x4F9B;&#x4E86;&#x4E00;&#x7EC4;&#x63A5;&#x53E3;&#x7528;&#x4E8E;&#x64CD;&#x4F5C;&#x673A;&#x5668;&#x4E0A;&#x7684;&#x4E2D;&#x65AD;&#x72B6;&#x6001;&#xFF0C;&#x5BF9;&#x4E8E;&#x4E00;&#x4E2A;&#x591A;&#x5904;&#x7406;&#x5668;&#x5185;&#x6838;&#xFF0C;&#x5185;&#x6838;&#x4EE3;&#x7801;&#x901A;&#x8FC7;&#x9501;&#x9632;&#x6B62;&#x6765;&#x81EA;&#x5176;&#x4ED6;&#x5904;&#x7406;&#x5668;&#x7684;&#x5E76;&#x53D1;&#x8BBF;&#x95EE;&#xFF0C;&#x901A;&#x8FC7;&#x7981;&#x6B62;&#x4E2D;&#x65AD;&#x9632;&#x6B62;&#x6765;&#x81EA;&#x5176;&#x4ED6;&#x4E2D;&#x65AD;&#x5904;&#x7406;&#x7A0B;&#x5E8F;&#x7684;&#x5E76;&#x53D1;&#x8BBF;&#x95EE;&#x3002;</p>
+<p>&#x4E2D;&#x65AD;&#x63A7;&#x5236;&#x65B9;&#x6CD5;&#x5217;&#x8868;<br>| &#x51FD;&#x6570;  | &#x8BF4;&#x660E; |<br>| &#x2014;&#x2014;&#x2014;&#x2014;- | &#x2014;&#x2014;&#x2014;&#x2014;- |<br>| local_irq_disable()  | &#x7981;&#x6B62;&#x672C;&#x5730;&#x4E2D;&#x65AD;&#x4F20;&#x9012;  |<br>| local_irq_enable()  | &#x6FC0;&#x6D3B;&#x672C;&#x5730;&#x4E2D;&#x65AD;&#x4F20;&#x9012;  |<br>| local_irq_save()  | &#x4FDD;&#x5B58;&#x672C;&#x5730;&#x4E2D;&#x65AD;&#x4F20;&#x9012;&#x7684;&#x5F53;&#x524D;&#x72B6;&#x6001;&#xFF0C;&#x7136;&#x540E;&#x7981;&#x6B62;&#x672C;&#x5730;&#x4E2D;&#x65AD;&#x4F20;&#x9012;  |<br>| local_irq_restore()  | &#x6062;&#x590D;&#x672C;&#x5730;&#x4E2D;&#x65AD;&#x4F20;&#x9012;&#x5230;&#x7ED9;&#x5B9A;&#x72B6;&#x6001;  |<br>| disable_irq()  | &#x7981;&#x6B62;&#x7ED9;&#x5B9A;&#x4E2D;&#x65AD;&#x7EBF;&#xFF0C;&#x5E76;&#x786E;&#x4FDD;&#x8BE5;&#x51FD;&#x6570;&#x8FD4;&#x56DE;&#x4E4B;&#x524D;&#x5728;&#x8BE5;&#x4E2D;&#x65AD;&#x7EBF;&#x4E0A;&#x6CA1;&#x6709;&#x5904;&#x7406;&#x7A0B;&#x5E8F;&#x5728;&#x8FD0;&#x884C;  |<br>| disable_irq_nosync()  | &#x7981;&#x6B62;&#x7ED9;&#x5B9A;&#x4E2D;&#x65AD;&#x7EBF;  |<br>| enable_irq()  | &#x6FC0;&#x6D3B;&#x7ED9;&#x5B9A;&#x4E2D;&#x65AD;&#x7EBF;  |<br>| irqs_disabled()  | &#x5982;&#x679C;&#x672C;&#x5730;&#x4E2D;&#x65AD;&#x4F20;&#x9012;&#x88AB;&#x7981;&#x6B62;&#xFF0C;&#x8FD4;&#x56DE;&#x975E;0&#xFF0C;&#x5426;&#x5219;&#x8FD4;&#x56DE;0  |<br>| in_interrupt()  | &#x5982;&#x679C;&#x5728;&#x4E2D;&#x65AD;&#x4E0A;&#x4E0B;&#x6587;&#x4E2D;&#xFF0C;&#x8FD4;&#x56DE;&#x975E;0&#xFF1B;&#x5728;&#x8FDB;&#x7A0B;&#x4E0A;&#x4E0B;&#x6587;&#x4E2D;&#xFF0C;&#x8FD4;&#x56DE;0  |<br>| in_irq()  | &#x5982;&#x679C;&#x5F53;&#x524D;&#x6B63;&#x5728;&#x6267;&#x884C;&#x4E2D;&#x65AD;&#x5904;&#x7406;&#x7A0B;&#x5E8F;&#xFF0C;&#x8FD4;&#x56DE;&#x975E;0&#xFF1B;&#x5426;&#x5219;&#x8FD4;&#x56DE;0 |</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Linux-kernel/" rel="tag">#Linux kernel</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/04/30/第六章-内核数据结构/" rel="next" title="第六章 内核数据结构">
+                <i class="fa fa-chevron-left"></i> 第六章 内核数据结构
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/04/30/第七章-中断和中断处理/"
+           data-title="第七章 中断和中断处理" data-url="http://luobuda.github.io/2017/04/30/第七章-中断和中断处理/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="//schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="https://projecteuler.net/profile/luobuda.png"
+               alt="洛卜哒" />
+          <p class="site-author-name" itemprop="name">洛卜哒</p>
+          <p class="site-description motion-element" itemprop="description">大约，孔乙己的确死了！</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">18</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/luobuda" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://github.com/luobuda" title="Github" target="_blank">Github</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://projecteuler.net/" title="Project Euler" target="_blank">Project Euler</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#中断和中断处理"><span class="nav-number">1.</span> <span class="nav-text">中断和中断处理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-中断"><span class="nav-number">1.1.</span> <span class="nav-text">1. 中断</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-中断处理程序"><span class="nav-number">1.2.</span> <span class="nav-text">2. 中断处理程序</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-注册中断处理程序"><span class="nav-number">1.3.</span> <span class="nav-text">3. 注册中断处理程序</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-编写中断处理程序"><span class="nav-number">1.4.</span> <span class="nav-text">4. 编写中断处理程序</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-中断上下文"><span class="nav-number">1.5.</span> <span class="nav-text">5. 中断上下文</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-中断处理机制"><span class="nav-number">1.6.</span> <span class="nav-text">6. 中断处理机制</span></a></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">洛卜哒</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.2"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"luobuda"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>
