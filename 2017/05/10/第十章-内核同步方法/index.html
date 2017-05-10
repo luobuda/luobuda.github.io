@@ -1,0 +1,953 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Linux kernel," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.2" />
+
+
+
+
+
+
+<meta name="description" content="&amp;#x5185;&amp;#x6838;&amp;#x540C;&amp;#x6B65;&amp;#x65B9;&amp;#x6CD5;
+Linux&amp;#x5185;&amp;#x6838;&amp;#x63D0;&amp;#x4F9B;&amp;#x4E86;&amp;#x4E00;&amp;#x7EC4;&amp;#x76F8;&amp;#x5F53;&amp;#x5B8C;&amp;#x5907;&amp;#x8C03;&amp;#x5EA6;&amp;#x540C;&amp;#x6B65;&amp;#x65B9;&amp;#x6CD5;&amp;#x3002;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第十章 内核同步方法">
+<meta property="og:url" content="http://luobuda.github.io/2017/05/10/第十章-内核同步方法/index.html">
+<meta property="og:site_name" content="洛卜哒的博客">
+<meta property="og:description" content="&amp;#x5185;&amp;#x6838;&amp;#x540C;&amp;#x6B65;&amp;#x65B9;&amp;#x6CD5;
+Linux&amp;#x5185;&amp;#x6838;&amp;#x63D0;&amp;#x4F9B;&amp;#x4E86;&amp;#x4E00;&amp;#x7EC4;&amp;#x76F8;&amp;#x5F53;&amp;#x5B8C;&amp;#x5907;&amp;#x8C03;&amp;#x5EA6;&amp;#x540C;&amp;#x6B65;&amp;#x65B9;&amp;#x6CD5;&amp;#x3002;">
+<meta property="og:updated_time" content="2017-05-10T15:29:10.497Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="第十章 内核同步方法">
+<meta name="twitter:description" content="&amp;#x5185;&amp;#x6838;&amp;#x540C;&amp;#x6B65;&amp;#x65B9;&amp;#x6CD5;
+Linux&amp;#x5185;&amp;#x6838;&amp;#x63D0;&amp;#x4F9B;&amp;#x4E86;&amp;#x4E00;&amp;#x7EC4;&amp;#x76F8;&amp;#x5F53;&amp;#x5B8C;&amp;#x5907;&amp;#x8C03;&amp;#x5EA6;&amp;#x540C;&amp;#x6B65;&amp;#x65B9;&amp;#x6CD5;&amp;#x3002;">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://luobuda.github.io/2017/05/10/第十章-内核同步方法/"/>
+
+
+  <title> 第十章 内核同步方法 | 洛卜哒的博客 </title>
+</head>
+
+<body itemscope itemtype="//schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="//schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">洛卜哒的博客</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">戒骄戒躁，沉淀技术</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                第十章 内核同步方法
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-05-10T23:21:49+08:00" content="2017-05-10">
+              2017-05-10
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2017/05/10/第十章-内核同步方法/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/05/10/第十章-内核同步方法/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="&#x5185;&#x6838;&#x540C;&#x6B65;&#x65B9;&#x6CD5;"><a href="#&#x5185;&#x6838;&#x540C;&#x6B65;&#x65B9;&#x6CD5;" class="headerlink" title="&#x5185;&#x6838;&#x540C;&#x6B65;&#x65B9;&#x6CD5;"></a>&#x5185;&#x6838;&#x540C;&#x6B65;&#x65B9;&#x6CD5;</h3><blockquote>
+<p>Linux&#x5185;&#x6838;&#x63D0;&#x4F9B;&#x4E86;&#x4E00;&#x7EC4;&#x76F8;&#x5F53;&#x5B8C;&#x5907;&#x8C03;&#x5EA6;&#x540C;&#x6B65;&#x65B9;&#x6CD5;&#x3002;</p>
+</blockquote>
+<h4 id="1-&#x539F;&#x5B50;&#x64CD;&#x4F5C;"><a href="#1-&#x539F;&#x5B50;&#x64CD;&#x4F5C;" class="headerlink" title="1. &#x539F;&#x5B50;&#x64CD;&#x4F5C;"></a>1. <a href="https://en.wikipedia.org/wiki/Linearizability" target="_blank" rel="external">&#x539F;&#x5B50;&#x64CD;&#x4F5C;</a></h4><blockquote>
+<p>&#x539F;&#x5B50;&#x64CD;&#x4F5C;&#x53EF;&#x4EE5;&#x4FDD;&#x8BC1;&#x6307;&#x4EE4;&#x4EE5;&#x539F;&#x5B50;&#x65B9;&#x5F0F;&#x6267;&#x884C;&#x2014;&#x2014;&#x6267;&#x884C;&#x8FC7;&#x7A0B;&#x4E0D;&#x88AB;&#x6253;&#x65AD;&#x3002;  </p>
+</blockquote>
+<p>&#x5185;&#x6838;&#x63D0;&#x4F9B;&#x4E86;&#x4E24;&#x7EC4;&#x539F;&#x5B50;&#x64CD;&#x4F5C;&#x63A5;&#x53E3;&#xFF1A;&#x4E00;&#x7EC4;&#x9488;&#x5BF9;&#x6574;&#x6570;&#x8FDB;&#x884C;&#x64CD;&#x4F5C;&#xFF0C;&#x4E00;&#x7EC4;&#x9488;&#x5BF9;&#x5355;&#x72EC;&#x7684;&#x4F4D;&#x8FDB;&#x884C;&#x64CD;&#x4F5C;&#x3002;</p>
+<a id="more"></a>
+<ul>
+<li>&#x9488;&#x5BF9;&#x6574;&#x6570;&#x7684;&#x539F;&#x5B50;&#x64CD;&#x4F5C;&#xFF1A;&#x53EA;&#x80FD;&#x5BF9;atomic_t&#x7C7B;&#x578B;&#x7684;&#x6570;&#x636E;&#x8FDB;&#x884C;&#x5904;&#x7406;&#xFF0C;atomic_t&#x7C7B;&#x578B;&#x5B9A;&#x4E49;&#x5728;<a href="https://github.com/torvalds/linux/blob/master/include/linux/types.h#L174" target="_blank" rel="external"><linux types.h=""></linux></a></li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> {</div><div class="line">	<span class="keyword">int</span> counter;</div><div class="line">} <span class="keyword">atomic_t</span>;</div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> CONFIG_64BIT</span></div><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> {</div><div class="line">	<span class="keyword">long</span> counter;</div><div class="line">} <span class="keyword">atomic64_t</span>;</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div></pre></td></tr></table></figure>
+<p>&#x4F7F;&#x7528;&#x539F;&#x5B50;&#x6574;&#x578B;&#x64CD;&#x4F5C;&#x7684;&#x58F0;&#x660E;&#x5728;<a href="https://github.com/torvalds/linux/blob/master/include/asm-generic/atomic.h" target="_blank" rel="external"><asm atomic.h=""></asm></a>&#xFF0C;&#x6240;&#x6709;&#x7684;&#x64CD;&#x4F5C;&#x90FD;&#x5728;&#x91CC;&#x9762;&#xFF0C;&#x4E0B;&#x9762;&#x662F;&#x51E0;&#x4E2A;&#x7B80;&#x5355;&#x7684;&#x64CD;&#x4F5C;&#xFF1A;<br>|&#x64CD;&#x4F5C;|&#x8BF4;&#x660E;|<br>|&#x2014;-|&#x2014;-|<br>|ATOMIC_INIT(i)|&#x521D;&#x59CB;&#x5316;|<br>|atomic_set(&amp;v, 4)| v = 4|<br>|atomic_add(2, &amp;v)| v = v + 2|<br>|atomic_inc(&amp;v)| v = v + 1 |<br>|atomic_dec(&amp;v)| v = v - 1 |<br>|atomic_read(&amp;v)| &#x8BFB;&#x53D6;v |</p>
+<p>&#x539F;&#x5B50;&#x64CD;&#x4F5C;&#x901A;&#x5E38;&#x662F;&#x5185;&#x8054;&#x51FD;&#x6570;&#xFF0C;&#x5F80;&#x5F80;&#x662F;&#x901A;&#x8FC7;&#x5185;&#x5D4C;&#x6C47;&#x7F16;&#x6307;&#x4EE4;&#x6765;&#x5B9E;&#x73B0;&#x7684;&#xFF0C;&#x5982;&#x679C;&#x67D0;&#x4E2A;&#x51FD;&#x6570;&#x672C;&#x8EAB;&#x5C31;&#x662F;&#x539F;&#x5B50;&#x7684;&#xFF0C;&#x5B83;&#x5F80;&#x5F80;&#x88AB;&#x5B9A;&#x4E49;&#x6210;&#x4E00;&#x4E2A;&#x5B8F;&#x3002;</p>
+<p><strong>&#x539F;&#x5B50;&#x6027;&#x548C;&#x987A;&#x5E8F;&#x6027;</strong></p>
+<blockquote>
+<p>&#x539F;&#x5B50;&#x6027;&#x786E;&#x4FDD;&#x6307;&#x4EE4;&#x6267;&#x884C;&#x671F;&#x95F4;&#x4E0D;&#x88AB;&#x6253;&#x65AD;&#xFF0C;&#x8981;&#x4E48;&#x5168;&#x90E8;&#x6267;&#x884C;&#x5B8C;&#xFF0C;&#x8981;&#x4E48;&#x90FD;&#x4E0D;&#x6267;&#x884C;&#xFF1B;&#x987A;&#x5E8F;&#x6027;&#x786E;&#x4FDD;&#x5373;&#x4F7F;&#x591A;&#x6761;&#x6307;&#x4EE4;&#x51FA;&#x73B0;&#x5728;&#x72EC;&#x7ACB;&#x7684;&#x6267;&#x884C;&#x7EBF;&#x7A0B;&#x4E2D;&#xFF0C;&#x751A;&#x81F3;&#x72EC;&#x7ACB;&#x7684;&#x5904;&#x7406;&#x5668;&#x4E0A;&#xFF0C;&#x5B83;&#x4EEC;&#x6267;&#x884C;&#x7684;&#x987A;&#x5E8F;&#x4F9D;&#x7136;&#x4FDD;&#x6301;&#xFF0C;&#x987A;&#x5E8F;&#x6027;&#x901A;&#x8FC7;&#x5C4F;&#x969C;(<a href="https://en.wikipedia.org/wiki/Memory_barrier" target="_blank" rel="external">barrier</a>)&#x6307;&#x4EE4;&#x5B9E;&#x65BD;&#x3002;</p>
+</blockquote>
+<ul>
+<li>&#x539F;&#x5B50;&#x4F4D;&#x64CD;&#x4F5C;&#xFF1A;&#x5185;&#x6838;&#x63D0;&#x4F9B;&#x4E00;&#x7EC4;&#x9488;&#x5BF9;&#x4F4D;&#x7684;&#x539F;&#x5B50;&#x64CD;&#x4F5C;&#xFF0C;&#x5B9A;&#x4E49;&#x5728;<a href="https://github.com/torvalds/linux/tree/master/include/asm-generic/bitops" target="_blank" rel="external"><asm bitops.h=""></asm></a></li>
+</ul>
+<h4 id="2-&#x81EA;&#x65CB;&#x9501;"><a href="#2-&#x81EA;&#x65CB;&#x9501;" class="headerlink" title="2. &#x81EA;&#x65CB;&#x9501;"></a>2. <a href="https://en.wikipedia.org/wiki/Spinlock" target="_blank" rel="external">&#x81EA;&#x65CB;&#x9501;</a></h4><p>Linux&#x5185;&#x6838;&#x4E2D;&#x6700;&#x5E38;&#x89C1;&#x7684;&#x9501;&#x662F;&#x81EA;&#x65CB;&#x9501;&#xFF0C;&#x81EA;&#x65CB;&#x9501;&#x6700;&#x591A;&#x53EA;&#x80FD;&#x88AB;&#x4E00;&#x4E2A;&#x53EF;&#x6267;&#x884C;&#x7EBF;&#x7A0B;&#x6301;&#x6709;&#x3002;&#x5982;&#x679C;&#x4E00;&#x4E2A;&#x7EBF;&#x7A0B;&#x8BD5;&#x56FE;&#x83B7;&#x53D6;&#x4E00;&#x4E2A;&#x5DF2;&#x88AB;&#x6301;&#x6709;&#x7684;&#x81EA;&#x65CB;&#x9501;&#xFF0C;&#x8FD9;&#x4E2A;&#x7EBF;&#x7A0B;&#x4F1A;&#x8FDB;&#x884C;&#x5FD9;&#x5FAA;&#x73AF;&#x2014;&#x2014;&#x65CB;&#x8F6C;&#x7B49;&#x5F85;(&#x4F1A;&#x6D6A;&#x8D39;&#x5904;&#x7406;&#x5668;&#x65F6;&#x95F4;)&#x9501;&#x91CD;&#x65B0;&#x53EF;&#x7528;&#x3002;&#x81EA;&#x65CB;&#x9501;&#x7684;&#x521D;&#x8877;&#xFF1A;&#x5728;&#x77ED;&#x671F;&#x5185;&#x8FDB;&#x884C;&#x8F7B;&#x91CF;&#x7EA7;&#x52A0;&#x9501;&#x3002;</p>
+<p>&#x53E6;&#x4E00;&#x79CD;&#x5904;&#x7406;&#x9501;&#x4E89;&#x7528;&#x7684;&#x65B9;&#x5F0F;&#xFF1A;&#x8BA9;&#x7B49;&#x5F85;&#x7EBF;&#x7A0B;&#x7761;&#x7720;&#xFF0C;&#x76F4;&#x5230;&#x9501;&#x91CD;&#x65B0;&#x53EF;&#x7528;&#x65F6;&#x518D;&#x5524;&#x9192;&#x5B83;&#xFF0C;&#x8FD9;&#x6837;&#x5904;&#x7406;&#x5668;&#x4E0D;&#x5FC5;&#x5FAA;&#x73AF;&#x7B49;&#x5F85;&#xFF0C;&#x53EF;&#x4EE5;&#x53BB;&#x6267;&#x884C;&#x5176;&#x4ED6;&#x4EE3;&#x7801;&#xFF0C;&#x4F46;&#x662F;&#x8FD9;&#x4F1A;&#x6709;&#x4E24;&#x6B21;&#x660E;&#x663E;&#x7684;&#x4E0A;&#x4E0B;&#x6587;&#x5207;&#x6362;&#x7684;&#x5F00;&#x9500;&#xFF0C;&#x4FE1;&#x53F7;&#x91CF;&#x4FBF;&#x63D0;&#x4F9B;&#x4E86;&#x8FD9;&#x79CD;&#x9501;&#x673A;&#x5236;&#x3002;</p>
+<p>&#x81EA;&#x65CB;&#x9501;&#x7684;&#x63A5;&#x53E3;&#x5B9A;&#x4E49;&#x5728;<a href="https://github.com/torvalds/linux/blob/master/include/linux/spinlock.h" target="_blank" rel="external"><linux spinlock.h=""></linux></a></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">DEFINE_SPINLOCK(mr_lock);</div><div class="line">spin_lock(&amp;mr_lock);</div><div class="line"><span class="comment">/* &#x4E34;&#x754C;&#x533A; */</span></div><div class="line">spin_unlock(&amp;mr_lock);</div></pre></td></tr></table></figure>
+<blockquote>
+<p>&#x6CE8;&#x610F;Linux&#x5185;&#x6838;&#x81EA;&#x65CB;&#x9501;&#x4E0D;&#x80FD;&#x9012;&#x5F52;&#x8C03;&#x7528;&#x3002;</p>
+</blockquote>
+<p><strong>&#x81EA;&#x65CB;&#x9501;&#x65B9;&#x6CD5;&#x5217;&#x8868;</strong></p>
+<table>
+<thead>
+<tr>
+<th>&#x64CD;&#x4F5C;</th>
+<th>&#x8BF4;&#x660E;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>spin_lock()</td>
+<td>&#x83B7;&#x53D6;&#x6307;&#x5B9A;&#x7684;&#x81EA;&#x65CB;&#x9501;</td>
+</tr>
+<tr>
+<td>spin_lock_irq()</td>
+<td>&#x7981;&#x6B62;&#x672C;&#x5730;&#x4E2D;&#x65AD;&#x5E76;&#x83B7;&#x53D6;&#x6307;&#x5B9A;&#x7684;&#x9501;</td>
+</tr>
+<tr>
+<td>spin_lock_irqsave()</td>
+<td>&#x4FDD;&#x5B58;&#x672C;&#x5730;&#x4E2D;&#x65AD;&#x5F53;&#x524D;&#x72B6;&#x6001;&#xFF0C;&#x7981;&#x6B62;&#x672C;&#x5730;&#x4E2D;&#x65AD;&#xFF0C;&#x83B7;&#x53D6;&#x6307;&#x5B9A;&#x7684;&#x9501;</td>
+</tr>
+<tr>
+<td>spin_unlock()</td>
+<td>&#x91CA;&#x653E;&#x6307;&#x5B9A;&#x7684;&#x9501;</td>
+</tr>
+<tr>
+<td>spin_unlock_irq()</td>
+<td>&#x91CA;&#x653E;&#x6307;&#x5B9A;&#x7684;&#x9501;&#xFF0C;&#x5E76;&#x6FC0;&#x6D3B;&#x672C;&#x5730;&#x4E2D;&#x65AD;</td>
+</tr>
+<tr>
+<td>spin_unlock_irqrestore()</td>
+<td>&#x91CA;&#x653E;&#x6307;&#x5B9A;&#x7684;&#x9501;&#xFF0C;&#x5E76;&#x8BA9;&#x672C;&#x5730;&#x4E2D;&#x65AD;&#x6062;&#x590D;&#x4EE5;&#x524D;&#x72B6;&#x6001;</td>
+</tr>
+<tr>
+<td>spin_lock_init()</td>
+<td>&#x52A8;&#x6001;&#x521D;&#x59CB;&#x5316;&#x6307;&#x5B9A;&#x7684;&#x9501;</td>
+</tr>
+<tr>
+<td>spin_trylock()</td>
+<td>&#x8BD5;&#x56FE;&#x83B7;&#x53D6;&#x6307;&#x5B9A;&#x7684;&#x9501;&#xFF0C;&#x6210;&#x529F;&#x8FD4;&#x56DE;0&#xFF0C;&#x5426;&#x5219;&#x8FD4;&#x56DE;&#x975E;0</td>
+</tr>
+<tr>
+<td>spin_is_locked()</td>
+<td>&#x6D4B;&#x8BD5;&#x6307;&#x5B9A;&#x7684;&#x9501;&#x662F;&#x5426;&#x5DF2;&#x88AB;&#x5360;&#x7528;&#xFF0C;&#x5DF2;&#x88AB;&#x5360;&#x7528;&#x8FD4;&#x56DE;&#x975E;0&#xFF0C;&#x5426;&#x5219;&#x8FD4;&#x56DE;0</td>
+</tr>
+</tbody>
+</table>
+<h4 id="3-&#x8BFB;&#x5199;&#x81EA;&#x65CB;&#x9501;"><a href="#3-&#x8BFB;&#x5199;&#x81EA;&#x65CB;&#x9501;" class="headerlink" title="3. &#x8BFB;&#x5199;&#x81EA;&#x65CB;&#x9501;"></a>3. &#x8BFB;&#x5199;&#x81EA;&#x65CB;&#x9501;</h4><blockquote>
+<p>Linux&#x4E13;&#x95E8;&#x63D0;&#x4F9B;&#x8BFB;&#x5199;&#x81EA;&#x65CB;&#x9501;&#xFF0C;&#x4E00;&#x4E2A;&#x6216;&#x591A;&#x4E2A;&#x8BFB;&#x4EFB;&#x52A1;&#x53EF;&#x4EE5;&#x5E76;&#x53D1;&#x6301;&#x6709;&#x8BFB;&#x9501;&#xFF1B;&#x5199;&#x9501;&#x540C;&#x4E00;&#x65F6;&#x95F4;&#x53EA;&#x80FD;&#x88AB;&#x4E00;&#x4E2A;&#x7EBF;&#x7A0B;&#x6301;&#x6709;&#xFF0C;&#x800C;&#x4E14;&#x6B64;&#x65F6;&#x4E0D;&#x80FD;&#x6709;&#x5E76;&#x53D1;&#x7684;&#x8BFB;&#x64CD;&#x4F5C;&#x3002;&#x5728;&#x7533;&#x8BF7;&#x5199;&#x9501;&#x65F6;&#xFF0C;&#x4F1A;&#x7B49;&#x5F85;&#x5DF2;&#x7ECF;&#x52A0;&#x7684;&#x8BFB;&#x9501;&#x91CA;&#x653E;&#xFF0C;&#x800C;&#x8BFB;&#x9501;&#x53EF;&#x4EE5;&#x7EE7;&#x7EED;&#x6210;&#x529F;&#x5730;&#x5360;&#x7528;&#x9501;&#xFF0C;&#x56E0;&#x6B64;&#x9700;&#x8981;&#x6CE8;&#x610F;&#x5199;&#x9501;&#x997F;&#x6B7B;&#x3002;</p>
+</blockquote>
+<p><strong>&#x8BFB;&#x5199;&#x81EA;&#x65CB;&#x9501;&#x64CD;&#x4F5C;</strong></p>
+<table>
+<thead>
+<tr>
+<th>&#x65B9;&#x6CD5;</th>
+<th>&#x63CF;&#x8FF0;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>read_lock()</td>
+<td>&#x83B7;&#x53D6;&#x6307;&#x5B9A;&#x7684;&#x8BFB;&#x9501;</td>
+</tr>
+<tr>
+<td>read_lock_irq()</td>
+<td>&#x7981;&#x6B62;&#x672C;&#x5730;&#x4E2D;&#x65AD;&#x5E76;&#x83B7;&#x53D6;&#x6307;&#x5B9A;&#x8BFB;&#x9501;</td>
+</tr>
+<tr>
+<td>read_lock_irqsave()</td>
+<td>&#x5B58;&#x50A8;&#x672C;&#x5730;&#x4E2D;&#x65AD;&#x5F53;&#x524D;&#x72B6;&#x6001;&#xFF0C;&#x7981;&#x6B62;&#x672C;&#x5730;&#x4E2D;&#x65AD;&#x5E76;&#x83B7;&#x53D6;&#x6307;&#x5B9A;&#x8BFB;&#x9501;</td>
+</tr>
+<tr>
+<td>read_unlock()</td>
+<td>&#x91CA;&#x653E;&#x6307;&#x5B9A;&#x7684;&#x8BFB;&#x9501;</td>
+</tr>
+<tr>
+<td>read_unlock_irq()</td>
+<td>&#x91CA;&#x653E;&#x6307;&#x5B9A;&#x7684;&#x8BFB;&#x9501;&#x5E76;&#x6FC0;&#x6D3B;&#x672C;&#x5730;&#x4E2D;&#x65AD;</td>
+</tr>
+<tr>
+<td>read_unlock_irqrestore()</td>
+<td>&#x91CA;&#x653E;&#x6307;&#x5B9A;&#x7684;&#x8BFB;&#x9501;&#xFF0C;&#x6FC0;&#x6D3B;&#x672C;&#x5730;&#x4E2D;&#x65AD;&#x5E76;&#x5C06;&#x672C;&#x5730;&#x4E2D;&#x65AD;&#x6062;&#x590D;&#x5230;&#x6307;&#x5B9A;&#x72B6;&#x6001;</td>
+</tr>
+<tr>
+<td>write_lock()</td>
+<td>&#x83B7;&#x53D6;&#x6307;&#x5B9A;&#x5199;&#x9501;</td>
+</tr>
+<tr>
+<td>write_lock_irq()</td>
+<td>&#x7981;&#x6B62;&#x672C;&#x5730;&#x4E2D;&#x65AD;&#x5E76;&#x83B7;&#x53D6;&#x6307;&#x5B9A;&#x5199;&#x9501;</td>
+</tr>
+<tr>
+<td>write_lock_irqsave()</td>
+<td>&#x5B58;&#x50A8;&#x672C;&#x5730;&#x4E2D;&#x65AD;&#x5F53;&#x524D;&#x72B6;&#x6001;&#xFF0C;&#x7981;&#x6B62;&#x672C;&#x5730;&#x4E2D;&#x65AD;&#x5E76;&#x83B7;&#x53D6;&#x6307;&#x5B9A;&#x5199;&#x9501;</td>
+</tr>
+<tr>
+<td>write_unlock()</td>
+<td>&#x91CA;&#x653E;&#x6307;&#x5B9A;&#x5199;&#x9501;</td>
+</tr>
+<tr>
+<td>write_unlock_irq()</td>
+<td>&#x91CA;&#x653E;&#x6307;&#x5B9A;&#x5199;&#x9501;&#x5E76;&#x6FC0;&#x6D3B;&#x672C;&#x5730;&#x4E2D;&#x65AD;</td>
+</tr>
+<tr>
+<td>write_unlock_irqrestore()</td>
+<td>&#x91CA;&#x653E;&#x6307;&#x5B9A;&#x5199;&#x9501;&#x5E76;&#x5C06;&#x672C;&#x5730;&#x4E2D;&#x65AD;&#x6062;&#x590D;&#x5230;&#x6307;&#x5B9A;&#x72B6;&#x6001;</td>
+</tr>
+<tr>
+<td>write_trylock()</td>
+<td>&#x89C6;&#x56FE;&#x83B7;&#x53D6;&#x6307;&#x5B9A;&#x5199;&#x9501;&#xFF1A;&#x5982;&#x679C;&#x4E0D;&#x53EF;&#x7528;&#xFF0C;&#x8FD4;&#x56DE;&#x975E;0&#x503C;</td>
+</tr>
+<tr>
+<td>rwlock_init()</td>
+<td>&#x521D;&#x59CB;&#x5316;&#x6307;&#x5B9A;&#x7684;rwlock_t</td>
+</tr>
+</tbody>
+</table>
+<h4 id="4-&#x4FE1;&#x53F7;&#x91CF;"><a href="#4-&#x4FE1;&#x53F7;&#x91CF;" class="headerlink" title="4. &#x4FE1;&#x53F7;&#x91CF;"></a>4. <a href="https://en.wikipedia.org/wiki/Semaphore_(programming)" target="_blank" rel="external">&#x4FE1;&#x53F7;&#x91CF;</a></h4><blockquote>
+<p>Linux&#x4E2D;&#x7684;&#x4FE1;&#x53F7;&#x91CF;&#x662F;&#x4E00;&#x79CD;&#x7761;&#x7720;&#x9501;&#x3002;&#x5982;&#x679C;&#x4E00;&#x4E2A;&#x4EFB;&#x52A1;&#x89C6;&#x56FE;&#x83B7;&#x5F97;&#x4E00;&#x4E2A;&#x5DF2;&#x88AB;&#x5360;&#x7528;&#x7684;&#x4FE1;&#x53F7;&#x91CF;&#x65F6;&#xFF0C;&#x4FE1;&#x53F7;&#x91CF;&#x4F1A;&#x5C06;&#x5176;&#x63A8;&#x8FDB;&#x4E00;&#x4E2A;&#x7B49;&#x5F85;&#x961F;&#x5217;&#xFF0C;&#x7136;&#x540E;&#x8BA9;&#x5176;&#x7761;&#x7720;&#x3002;&#x8BA9;&#x6301;&#x6709;&#x4FE1;&#x53F7;&#x91CF;&#x88AB;&#x91CA;&#x653E;&#x540E;&#xFF0C;&#x5904;&#x4E8E;&#x7B49;&#x5F85;&#x961F;&#x5217;&#x4E2D;&#x7684;&#x4EFB;&#x52A1;&#x4F1A;&#x88AB;&#x5524;&#x9192;&#xFF0C;&#x5E76;&#x83B7;&#x5F97;&#x8BE5;&#x4FE1;&#x53F7;&#x91CF;&#x3002;</p>
+</blockquote>
+<p>&#x7531;&#x4E8E;&#x4FE1;&#x53F7;&#x91CF;&#x7684;&#x7761;&#x7720;&#x7279;&#x6027;&#xFF0C;&#x6240;&#x4EE5;&#xFF1A;</p>
+<ul>
+<li>&#x7531;&#x4E8E;&#x4E89;&#x7528;&#x4FE1;&#x53F7;&#x91CF;&#x7684;&#x8FDB;&#x7A0B;&#x5728;&#x7B49;&#x5F85;&#x9501;&#x91CD;&#x65B0;&#x53D8;&#x4E3A;&#x53EF;&#x7528;&#x65F6;&#x4F1A;&#x7761;&#x7720;&#xFF0C;&#x6240;&#x4EE5;&#x4FE1;&#x53F7;&#x91CF;&#x9002;&#x7528;&#x4E8E;&#x9501;&#x4F1A;&#x88AB;&#x957F;&#x65F6;&#x95F4;&#x6301;&#x6709;&#x7684;&#x60C5;&#x51B5;</li>
+<li>&#x5728;&#x9501;&#x88AB;&#x77ED;&#x65F6;&#x95F4;&#x6301;&#x6709;&#x65F6;&#xFF0C;&#x4F7F;&#x7528;&#x4FE1;&#x53F7;&#x91CF;&#x5C31;&#x4E0D;&#x592A;&#x5408;&#x9002;&#xFF0C;&#x56E0;&#x4E3A;&#x7761;&#x7720;&#x3001;&#x7EF4;&#x62A4;&#x7B49;&#x5F85;&#x961F;&#x5217;&#x4EE5;&#x53CA;&#x5524;&#x9192;&#x82B1;&#x8D39;&#x7684;&#x5F00;&#x9500;&#x53EF;&#x80FD;&#x6BD4;&#x9501;&#x88AB;&#x5360;&#x7528;&#x7684;&#x5168;&#x90E8;&#x65F6;&#x95F4;&#x8FD8;&#x957F;</li>
+<li>&#x7531;&#x4E8E;&#x6267;&#x884C;&#x7EBF;&#x7A0B;&#x5728;&#x9501;&#x88AB;&#x4E89;&#x7528;&#x65F6;&#x4F1A;&#x7761;&#x7720;&#xFF0C;&#x6240;&#x4EE5;&#x53EA;&#x80FD;&#x5728;&#x8FDB;&#x7A0B;&#x4E0A;&#x4E0B;&#x6587;&#x4E2D;&#x624D;&#x80FD;&#x83B7;&#x53D6;&#x4FE1;&#x53F7;&#x91CF;&#x9501;&#xFF0C;&#x56E0;&#x4E3A;&#x5728;&#x4E2D;&#x65AD;&#x4E0A;&#x4E0B;&#x6587;&#x4E2D;&#x662F;&#x4E0D;&#x80FD;&#x8FDB;&#x7A0B;&#x8C03;&#x5EA6;&#x7684;</li>
+<li>&#x5728;&#x5360;&#x7528;&#x4FE1;&#x53F7;&#x91CF;&#x65F6;&#x4E0D;&#x80FD;&#x5360;&#x7528;&#x81EA;&#x65CB;&#x9501;</li>
+</ul>
+<p>&#x4FE1;&#x53F7;&#x91CF;&#x7684;&#x5B9E;&#x73B0;&#x4E0E;&#x4F53;&#x7CFB;&#x7ED3;&#x6784;&#x76F8;&#x5173;&#xFF0C;&#x5177;&#x4F53;&#x5B9E;&#x73B0;&#x5B9A;&#x4E49;&#x5728;<a href="https://github.com/torvalds/linux/blob/master/include/linux/semaphore.h" target="_blank" rel="external"><linux semaphore.h=""></linux></a>&#x4E2D;&#x3002;</p>
+<h4 id="5-&#x8BFB;&#x5199;&#x4FE1;&#x53F7;&#x91CF;"><a href="#5-&#x8BFB;&#x5199;&#x4FE1;&#x53F7;&#x91CF;" class="headerlink" title="5. &#x8BFB;&#x5199;&#x4FE1;&#x53F7;&#x91CF;"></a>5. &#x8BFB;&#x5199;&#x4FE1;&#x53F7;&#x91CF;</h4><blockquote>
+<p>&#x4E0E;&#x8BFB;&#x5199;&#x81EA;&#x65CB;&#x9501;&#x7C7B;&#x4F3C;&#xFF0C;&#x4FE1;&#x53F7;&#x91CF;&#x4E5F;&#x53EF;&#x4EE5;&#x533A;&#x5206;&#x4E3A;&#x8BFB;&#x5199;&#x4FE1;&#x53F7;&#x91CF;&#x3002;</p>
+</blockquote>
+<p>rw_semaphore&#x7ED3;&#x6784;&#xFF0C;&#x5B9A;&#x4E49;&#x5728;<a href="https://github.com/torvalds/linux/blob/master/include/linux/rwsem.h" target="_blank" rel="external"><linux rwsem.h=""></linux></a>&#xFF0C;&#x6240;&#x6709;&#x7684;&#x8BFB;&#x5199;&#x4FE1;&#x53F7;&#x91CF;&#x90FD;&#x662F;&#x4E92;&#x65A5;&#x4FE1;&#x53F7;&#x91CF;&#xFF0C;&#x5B83;&#x4EEC;&#x7684;&#x5F15;&#x7528;&#x8BA1;&#x6570;&#x4E3A;1&#xFF0C;&#x5BF9;&#x5199;&#x8005;&#x4E92;&#x65A5;&#xFF0C;&#x4E0D;&#x5BF9;&#x8BFB;&#x8005;&#x3002;</p>
+<h4 id="6-&#x4E92;&#x65A5;&#x91CF;"><a href="#6-&#x4E92;&#x65A5;&#x91CF;" class="headerlink" title="6. &#x4E92;&#x65A5;&#x91CF;"></a>6. &#x4E92;&#x65A5;&#x91CF;</h4><blockquote>
+<p>mutex&#x4E3A;&#x4E92;&#x65A5;&#x7684;&#x7761;&#x7720;&#x9501;&#xFF0C;&#x5728;&#x5185;&#x6838;&#x4E2D;&#x5BF9;&#x5E94;&#x6570;&#x636E;&#x7ED3;&#x6784;mutex&#xFF0C;&#x5B9A;&#x4E49;&#x5728;<a href="https://github.com/torvalds/linux/blob/master/include/linux/mutex.h#L53" target="_blank" rel="external"><linux mutex.h=""></linux></a></p>
+</blockquote>
+<p><strong>&#x5E38;&#x7528;&#x65B9;&#x6CD5;</strong></p>
+<table>
+<thead>
+<tr>
+<th>&#x65B9;&#x6CD5;</th>
+<th>&#x8BF4;&#x660E;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>mutex_lock(struct mutex*)</td>
+<td>&#x4E3A;&#x6307;&#x5B9A;&#x7684;mutex&#x4E0A;&#x9501;&#xFF0C;&#x5982;&#x679C;&#x9501;&#x4E0D;&#x53EF;&#x7528;&#x5219;&#x7761;&#x7720;</td>
+</tr>
+<tr>
+<td>mutex_unlock(struct mutex*)</td>
+<td>&#x89E3;&#x9501;</td>
+</tr>
+<tr>
+<td>mutex_trylock(struct mutex*)</td>
+<td>&#x8BD5;&#x56FE;&#x83B7;&#x53D6;&#x6307;&#x5B9A;&#x7684;mutex&#xFF0C;&#x6210;&#x529F;&#x8FD4;&#x56DE;1&#x5E76;&#x83B7;&#x5F97;&#x9501;&#xFF1B;&#x5426;&#x5219;&#x8FD4;&#x56DE;0</td>
+</tr>
+<tr>
+<td>mutex_is_locked(struct mutex*)</td>
+<td>&#x5982;&#x679C;&#x9501;&#x5DF2;&#x88AB;&#x5360;&#x7528;&#x8FD4;&#x56DE;1&#xFF1B;&#x5426;&#x5219;&#x8FD4;&#x56DE;0</td>
+</tr>
+</tbody>
+</table>
+<p>&#x6CE8;&#x610F;&#xFF1A;</p>
+<ul>
+<li>&#x4EFB;&#x4F55;&#x65F6;&#x523B;&#x53EA;&#x6709;&#x4E00;&#x4E2A;&#x4EFB;&#x52A1;&#x6301;&#x6709;mutex</li>
+<li>&#x7ED9;mutex&#x52A0;&#x9501;&#x89E3;&#x9501;&#x5FC5;&#x987B;&#x662F;&#x540C;&#x4E00;&#x7EBF;&#x7A0B;&#xFF0C;&#x5FC5;&#x987B;&#x5728;&#x540C;&#x4E00;&#x4E2A;&#x4E0A;&#x4E0B;&#x6587;&#x4E2D;</li>
+<li>&#x4E0D;&#x80FD;&#x9012;&#x5F52;&#x52A0;&#x9501;&#x89E3;&#x9501;&#xFF0C;&#x5373;&#x4E0D;&#x80FD;&#x9012;&#x5F52;&#x5730;&#x6301;&#x6709;&#x540C;&#x4E00;&#x628A;&#x9501;&#xFF0C;&#x4E5F;&#x4E0D;&#x80FD;&#x5BF9;&#x5DF2;&#x7ECF;&#x89E3;&#x9501;&#x7684;mutex&#x518D;&#x6B21;&#x89E3;&#x9501;</li>
+<li>&#x5F53;&#x6301;&#x6709;&#x4E00;&#x4E2A;mutex&#x65F6;&#xFF0C;&#x8FDB;&#x7A0B;&#x4E0D;&#x53EF;&#x4EE5;&#x9000;&#x51FA;</li>
+<li>mutex&#x4E0D;&#x80FD;&#x5728;&#x4E2D;&#x65AD;&#x6216;&#x8005;&#x4E0B;&#x534A;&#x90E8;&#x4E2D;&#x4F7F;&#x7528;</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>&#x9700;&#x6C42;</th>
+<th>&#x5EFA;&#x8BAE;&#x7684;&#x52A0;&#x9501;&#x65B9;&#x6CD5;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&#x4F4E;&#x5F00;&#x9500;&#x52A0;&#x9501;</td>
+<td>&#x8003;&#x8651;&#x81EA;&#x65CB;&#x9501;</td>
+</tr>
+<tr>
+<td>&#x77ED;&#x671F;&#x9501;&#x5B9A;</td>
+<td>&#x8003;&#x8651;&#x81EA;&#x65CB;&#x9501;</td>
+</tr>
+<tr>
+<td>&#x957F;&#x671F;&#x52A0;&#x9501;</td>
+<td>&#x8003;&#x8651;&#x4E92;&#x65A5;&#x91CF;</td>
+</tr>
+<tr>
+<td>&#x4E2D;&#x65AD;&#x4E0A;&#x4E0B;&#x6587;&#x4E2D;&#x52A0;&#x4E0A;</td>
+<td>&#x81EA;&#x65CB;&#x9501;</td>
+</tr>
+<tr>
+<td>&#x6301;&#x6709;&#x9501;&#x9700;&#x8981;&#x7761;&#x7720;</td>
+<td>&#x4E92;&#x65A5;&#x91CF;</td>
+</tr>
+</tbody>
+</table>
+<h4 id="7-completion-variables"><a href="#7-completion-variables" class="headerlink" title="7. completion variables"></a>7. completion variables</h4><blockquote>
+<p>&#x5728;&#x5185;&#x6838;&#x4E2D;&#x4E00;&#x4E2A;&#x4EFB;&#x52A1;&#x9700;&#x8981;&#x53D1;&#x51FA;&#x4FE1;&#x53F7;&#x901A;&#x77E5;&#x53E6;&#x4E00;&#x4E2A;&#x4EFB;&#x52A1;&#x53D1;&#x751F;&#x4E86;&#x67D0;&#x4E2A;&#x7279;&#x5B9A;&#x4E8B;&#x4EF6;&#x65F6;&#x4F7F;&#x7528;&#xFF0C;&#x662F;&#x540C;&#x6B65;&#x4E24;&#x4E2A;&#x4EFB;&#x52A1;&#x7684;&#x7B80;&#x5355;&#x65B9;&#x6CD5;&#x3002;<br>&#x7ED3;&#x6784;completion&#x5B9A;&#x4E49;&#x5728;<a href="https://github.com/torvalds/linux/blob/master/include/linux/completion.h" target="_blank" rel="external"><linux completion.h=""></linux></a>  </p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>&#x65B9;&#x6CD5;</th>
+<th>&#x8BF4;&#x660E;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>init_completion(struct completion *)</td>
+<td>&#x521D;&#x59CB;&#x5316;</td>
+</tr>
+<tr>
+<td>wait_for_completion(struct completion*)</td>
+<td>&#x7B49;&#x5F85;&#x6307;&#x5B9A;&#x7684;&#x5B8C;&#x6210;&#x53D8;&#x91CF;&#x63A5;&#x6536;&#x4FE1;&#x53F7;</td>
+</tr>
+<tr>
+<td>complete(struct completion*)</td>
+<td>&#x53D1;&#x51FA;&#x4FE1;&#x53F7;&#x5524;&#x9192;&#x7B49;&#x5F85;&#x4EFB;&#x52A1;</td>
+</tr>
+</tbody>
+</table>
+<p><strong>&#x5185;&#x6838;&#x62A2;&#x5360;&#x76F8;&#x5173;&#x51FD;&#x6570;</strong></p>
+<table>
+<thead>
+<tr>
+<th>&#x51FD;&#x6570;</th>
+<th>&#x8BF4;&#x660E;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>preempt_disable()</td>
+<td>&#x589E;&#x52A0;&#x62A2;&#x5360;&#x8BA1;&#x6570;&#x503C;&#xFF0C;&#x4ECE;&#x800C;&#x7981;&#x6B62;&#x5185;&#x6838;&#x62A2;&#x5360;</td>
+</tr>
+<tr>
+<td>preempt_enable()</td>
+<td>&#x51CF;&#x5C11;&#x62A2;&#x5360;&#x8BA1;&#x6570;&#xFF0C;&#x5F53;&#x8BA1;&#x6570;&#x964D;&#x4E3A;0&#x65F6;&#x68C0;&#x67E5;&#x548C;&#x6267;&#x884C;&#x88AB;&#x6302;&#x8D77;&#x7684;&#x9700;&#x8C03;&#x5EA6;&#x7684;&#x4EFB;&#x52A1;</td>
+</tr>
+<tr>
+<td>preempt_enable_no_resched()</td>
+<td>&#x6FC0;&#x6D3B;&#x5185;&#x6838;&#x62A2;&#x5360;&#x4F46;&#x4E0D;&#x518D;&#x68C0;&#x67E5;&#x4EFB;&#x4F55;&#x88AB;&#x6302;&#x8D77;&#x7684;&#x9700;&#x8C03;&#x5EA6;&#x4EFB;&#x52A1;</td>
+</tr>
+<tr>
+<td>preempt_count()</td>
+<td>&#x8FD4;&#x56DE;&#x62A2;&#x5360;&#x8BA1;&#x6570;</td>
+</tr>
+</tbody>
+</table>
+<h4 id="8-&#x987A;&#x5E8F;&#x548C;&#x5C4F;&#x969C;"><a href="#8-&#x987A;&#x5E8F;&#x548C;&#x5C4F;&#x969C;" class="headerlink" title="8. &#x987A;&#x5E8F;&#x548C;&#x5C4F;&#x969C;"></a>8. &#x987A;&#x5E8F;&#x548C;&#x5C4F;&#x969C;</h4><blockquote>
+<p>&#x5F53;&#x5904;&#x7406;&#x591A;&#x5904;&#x7406;&#x5668;&#x4E4B;&#x95F4;&#x6216;&#x786C;&#x4EF6;&#x4E4B;&#x95F4;&#x7684;&#x540C;&#x6B65;&#x95EE;&#x9898;&#x65F6;&#xFF0C;&#x6709;&#x65F6;&#x9700;&#x8981;&#x7A0B;&#x5E8F;&#x4EE3;&#x7801;&#x4EE5;&#x6307;&#x5B9A;&#x7684;&#x987A;&#x5E8F;&#x53D1;&#x51FA;&#x8BFB;&#x5185;&#x5B58;&#x548C;&#x5199;&#x5185;&#x5B58;&#x6307;&#x4EE4;&#x3002;</p>
+</blockquote>
+<p>&#x7F16;&#x8BD1;&#x5668;&#x548C;&#x5904;&#x7406;&#x5668;&#x4E3A;&#x4E86;&#x63D0;&#x9AD8;&#x6548;&#x7387;&#xFF0C;&#x53EF;&#x80FD;&#x5BF9;&#x8BFB;&#x548C;&#x5199;&#x91CD;&#x65B0;&#x6392;&#x5E8F;&#xFF0C;&#x6B64;&#x65F6;&#x53EF;&#x80FD;&#x9700;&#x8981;&#x786E;&#x4FDD;<a href="https://en.wikipedia.org/wiki/Memory_ordering" target="_blank" rel="external">&#x987A;&#x5E8F;</a>&#x7684;&#x6307;&#x4EE4;&#x5C4F;&#x969C;(<a href="https://en.wikipedia.org/wiki/Memory_barrier" target="_blank" rel="external">barriers</a>)</p>
+<p>&#x8D44;&#x6599;&#xFF1A;<br><a href="http://www.cnblogs.com/icanth/archive/2012/06/10/2544300.html" target="_blank" rel="external">http://www.cnblogs.com/icanth/archive/2012/06/10/2544300.html</a><br><a href="https://www.kernel.org/doc/Documentation/memory-barriers.txt" target="_blank" rel="external">https://www.kernel.org/doc/Documentation/memory-barriers.txt</a><br><a href="http://blog.csdn.net/cheng_fangang/article/details/41849067" target="_blank" rel="external">http://blog.csdn.net/cheng_fangang/article/details/41849067</a><br><a href="http://blog.sina.com.cn/s/blog_6d7fa49b01014q86.html" target="_blank" rel="external">http://blog.sina.com.cn/s/blog_6d7fa49b01014q86.html</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Linux-kernel/" rel="tag">#Linux kernel</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/07/第九章-内核同步介绍/" rel="next" title="第九章 内核同步介绍">
+                <i class="fa fa-chevron-left"></i> 第九章 内核同步介绍
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/05/10/第十章-内核同步方法/"
+           data-title="第十章 内核同步方法" data-url="http://luobuda.github.io/2017/05/10/第十章-内核同步方法/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="//schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="https://projecteuler.net/profile/luobuda.png"
+               alt="洛卜哒" />
+          <p class="site-author-name" itemprop="name">洛卜哒</p>
+          <p class="site-description motion-element" itemprop="description">大约，孔乙己的确死了！</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">21</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/luobuda" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://github.com/luobuda" title="Github" target="_blank">Github</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://projecteuler.net/" title="Project Euler" target="_blank">Project Euler</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#内核同步方法"><span class="nav-number">1.</span> <span class="nav-text">内核同步方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-原子操作"><span class="nav-number">1.1.</span> <span class="nav-text">1. 原子操作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-自旋锁"><span class="nav-number">1.2.</span> <span class="nav-text">2. 自旋锁</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-读写自旋锁"><span class="nav-number">1.3.</span> <span class="nav-text">3. 读写自旋锁</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-信号量"><span class="nav-number">1.4.</span> <span class="nav-text">4. 信号量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-读写信号量"><span class="nav-number">1.5.</span> <span class="nav-text">5. 读写信号量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-互斥量"><span class="nav-number">1.6.</span> <span class="nav-text">6. 互斥量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-completion-variables"><span class="nav-number">1.7.</span> <span class="nav-text">7. completion variables</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8-顺序和屏障"><span class="nav-number">1.8.</span> <span class="nav-text">8. 顺序和屏障</span></a></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">洛卜哒</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.2"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"luobuda"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>

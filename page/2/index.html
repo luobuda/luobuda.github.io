@@ -259,6 +259,211 @@
             
               
                 
+                <a class="post-title-link" href="/2017/04/23/System-map和kallsyms文件/" itemprop="url">
+                  System.map和kallsyms文件
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-04-23T16:06:40+08:00" content="2017-04-23">
+              2017-04-23
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2017/04/23/System-map和kallsyms文件/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/04/23/System-map和kallsyms文件/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h3 id="System-map&#x6587;&#x4EF6;&#x548C;-proc-kallsyms"><a href="#System-map&#x6587;&#x4EF6;&#x548C;-proc-kallsyms" class="headerlink" title="System.map&#x6587;&#x4EF6;&#x548C;/proc/kallsyms"></a>System.map&#x6587;&#x4EF6;&#x548C;/proc/kallsyms</h3><h4 id="System-map"><a href="#System-map" class="headerlink" title="System.map"></a>System.map</h4><blockquote>
+<p>&#x8BE5;&#x6587;&#x4EF6;&#x662F;&#x662F;&#x4E00;&#x4EFD;&#x5185;&#x6838;&#x7B26;&#x53F7;&#x8868;kernel symbol table&#xFF0C;&#x5305;&#x542B;&#x4E86;&#x5185;&#x6838;&#x4E2D;&#x7684;&#x53D8;&#x91CF;&#x540D;&#x548C;&#x51FD;&#x6570;&#x540D;&#x5730;&#x5740;&#xFF0C;&#x5728;&#x6BCF;&#x6B21;&#x7F16;&#x8BD1;&#x5185;&#x6838;&#x65F6;&#xFF0C;&#x81EA;&#x52A8;&#x751F;&#x6210;&#x3002;<br>&#x76F8;&#x5173;&#x8D44;&#x6599;&#xFF1A;<br><a href="https://en.wikipedia.org/wiki/GNU_Binutils">GNU Binutils wiki</a><br><a href="https://www.gnu.org/software/binutils/">GNU Binutils</a><br><a href="http://dirac.org/linux/system.map/">What Are Symbols?</a></p>
+</blockquote>
+<p>System.map&#x6587;&#x4EF6;&#x683C;&#x5F0F;&#xFF1A;&#x5730;&#x5740; &#x7C7B;&#x578B; &#x7B26;&#x53F7;  </p>
+<p>&#x7C7B;&#x578B;&#x662F;&#x5C0F;&#x5199;&#x8868;&#x793A;local symbol&#xFF0C;&#x5927;&#x5199;&#x8868;&#x793A;global(external)<br>&#x91CD;&#x70B9;&#x4E86;&#x89E3;&#x51E0;&#x4E2A;&#x7C7B;&#x578B;&#xFF1A;<br>T   The symbol is in the text(code) section<br>D   The symbol is in the initialized data   section<br>R   The sysbol is in a read only data section<br>t   static<br>d   static<br>R   const<br>r   static const  </p>
+<p>&#x4F7F;&#x7528;nm&#x547D;&#x4EE4;&#x53EF;&#x4EE5;&#x67E5;&#x770B;&#x66F4;&#x591A;&#x4FE1;&#x606F;&#xFF1A;<br>nm - list symbols from object files    </p>
+<table>
+<thead>
+<tr>
+<th>&#x7C7B;&#x578B;</th>
+<th>&#x8BF4;&#x660E;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>The symbol&#x2019;s value is absolute, and will not be changed by further linking</td>
+</tr>
+<tr>
+<td>B b</td>
+<td>The symbol is in the uninitialized data section(known as BS</td>
+</tr>
+<tr>
+<td>C</td>
+<td>The symbol is common. Common symbols are uninitialized data. When linking, multiple common symbols may appear with the same name. If the symbol is defined anywhere, the common symbols are treated as undefined references.</td>
+</tr>
+<tr>
+<td>D d</td>
+<td>The symbol is in the initialized data section.</td>
+</tr>
+<tr>
+<td>G g</td>
+<td>The symbol is in an initialized data section for small objects. Some object file formats permit more efficient access to small data objects, such as a global int variable as opposed to a large global array.</td>
+</tr>
+<tr>
+<td>i</td>
+<td>For PE format files this indicates that the symbol is in a section specific to the implementation of DLLs. For ELF format files this indicates that the symbol is an indirect function. This is a GNU extension to the standard set of ELF symbol types. It indicates a symbol which if referenced by a relocation does not evaluate to its address, but instead must be invoked at runtime. The runtime execution will then return the value to be used in the relocation.</td>
+</tr>
+<tr>
+<td>N</td>
+<td>The symbol is a debugging symbol.</td>
+</tr>
+<tr>
+<td>p</td>
+<td>The symbols is in a stack unwind section.</td>
+</tr>
+<tr>
+<td>R r</td>
+<td>The symbol is in a read only data section.</td>
+</tr>
+<tr>
+<td>S s</td>
+<td>The symbol is in an uninitialized data section for small objects.</td>
+</tr>
+<tr>
+<td>T t</td>
+<td>The symbol is in the text (code) section.</td>
+</tr>
+<tr>
+<td>U</td>
+<td>The symbol is undefined.</td>
+</tr>
+<tr>
+<td>u</td>
+<td>The symbol is a unique global symbol. This is a GNU extension to the standard set of ELF symbol bindings. For such a symbol the dynamic linker will make sure that in the entire process there is just one symbol with this name and type in use.</td>
+</tr>
+<tr>
+<td>V v</td>
+<td>The symbol is a weak object. When a weak defined symbol is linked with a normal defined symbol, the normal defined symbol is used with no error. When a weak undefined symbol is linked and the symbol is not defined, the value of the weak symbol becomes zero with no error. On some systems, uppercase indicates that a default value has been specified.</td>
+</tr>
+<tr>
+<td>W w</td>
+<td>The symbol is a weak symbol that has not been specifically tagged as a weak object symbol. When a weak defined symbol is linked with a normal defined symbol, the normal defined symbol is used with no error. When a weak undefined symbol is linked and the symbol is not defined, the value of the symbol is determined in a system-specific manner without error. On some systems, uppercase indicates that a default value has been specified.</td>
+</tr>
+<tr>
+<td>-</td>
+<td>The symbol is a stabs symbol in an a.out object file. In this case, the next values printed are the stabs other field, the stabs desc field, and the stab type. Stabs symbols are used to hold debugging information.</td>
+</tr>
+<tr>
+<td>?</td>
+<td>The symbol type is unknown, or object file format specific.</td>
+</tr>
+</tbody>
+</table>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2017/04/23/System-map和kallsyms文件/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2017/03/12/get-shell-script-name/" itemprop="url">
                   获取当前shell执行脚本的名字的几种方法
                 </a>
@@ -1406,139 +1611,11 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/01/14/c-number/" itemprop="url">
-                  C语言中的数值
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2015-01-14T22:30:19+08:00" content="2015-01-14">
-              2015-01-14
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/C/" itemprop="url" rel="index">
-                    <span itemprop="name">C</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2015/01/14/c-number/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/01/14/c-number/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>##&#x6570;&#x503C;&#x7684;&#x7C7B;&#x578B;</p>
-<p>C&#x8BED;&#x8A00;&#x4E2D;&#x7684;&#x6570;&#x503C;&#x7C7B;&#x578B;&#x6709;</p>
-<blockquote>
-<p>&#x6574;&#x578B;&#xFF1A;short int&#xFF0C;int&#xFF0C; long int<br>&#x6D6E;&#x70B9;&#x578B;&#xFF1A;float&#xFF0C; double<br>&#x5B57;&#x7B26;&#x578B;&#xFF1A;char</p>
-</blockquote>
-<p>&#x5176;&#x4E2D;&#x53C8;&#x5206;&#x4E3A;&#x6709;&#x7B26;&#x53F7;&#x6570;signed&#x548C;&#x65E0;&#x7B26;&#x53F7;&#x6570;unsigned&#x3002;<br>&#x5176;&#x5B9E;&#x6570;&#x503C;&#x5728;&#x5185;&#x5B58;&#x4E2D;&#x5B58;&#x50A8;&#x65F6;&#x53EA;&#x662F;&#x4E00;&#x4E32;&#x4E8C;&#x8FDB;&#x5236;&#x4E32;&#xFF0C;&#x6CA1;&#x6709;&#x6B63;&#x8D1F;&#x4E4B;&#x5206;&#xFF0C;&#x6240;&#x8C13;&#x7684;&#x6B63;&#x8D1F;&#x662F;&#x5982;&#x4F55;&#x53BB;&#x89E3;&#x91CA;&#x8FD9;&#x4E2A;&#x4E8C;&#x8FDB;&#x5236;&#x4E32;&#x3002;&#x4F8B;&#x5982;&#xFF1A;<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">unsigned</span> <span class="keyword">int</span> a = <span class="number">-1</span>;</div><div class="line"><span class="built_in">printf</span>(<span class="string">&quot;%u %d\n&quot;</span>, a, a);</div></pre></td></tr></table></figure></p>
-<p>&#x6211;&#x4EEC;&#x6307;&#x5B9A;%u&#x548C;%d&#x4E24;&#x79CD;&#x65B9;&#x5F0F;&#x8F93;&#x51FA;&#xFF0C;&#x5F97;&#x5230;&#x7ED3;&#x679C;&#xFF1A;<strong>4294967295 -1</strong><br>&#x6211;&#x4EEC;&#x5B9A;&#x4E49;&#x53D8;&#x91CF;&#x7684;&#x7C7B;&#x578B;&#x662F;&#x7ED9;&#x7F16;&#x8BD1;&#x5668;&#x770B;&#x7684;&#xFF0C;&#x800C;&#x53D8;&#x91CF;&#x672C;&#x8EAB;&#x53EA;&#x662F;&#x5185;&#x5B58;&#x7A7A;&#x95F4;&#xFF0C;&#x4F60;&#x60F3;&#x8BA9;&#x5B83;&#x540E;&#x6765;&#x89E3;&#x91CA;&#x6210;&#x4EC0;&#x4E48;&#x7C7B;&#x578B;&#x5C31;&#x89E3;&#x91CA;&#x6210;&#x4EC0;&#x4E48;&#x7C7B;&#x578B;&#x3002;<br></p>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2015/01/14/c-number/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1579,7 +1656,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">20</span>
+              <span class="site-state-item-count">21</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
