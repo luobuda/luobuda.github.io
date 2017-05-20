@@ -92,7 +92,7 @@ Linux&amp;#x5185;&amp;#x6838;&amp;#x63D0;&amp;#x4F9B;&amp;#x4E86;&amp;#x4E00;&am
 <meta property="og:site_name" content="洛卜哒的博客">
 <meta property="og:description" content="&amp;#x5185;&amp;#x6838;&amp;#x540C;&amp;#x6B65;&amp;#x65B9;&amp;#x6CD5;
 Linux&amp;#x5185;&amp;#x6838;&amp;#x63D0;&amp;#x4F9B;&amp;#x4E86;&amp;#x4E00;&amp;#x7EC4;&amp;#x76F8;&amp;#x5F53;&amp;#x5B8C;&amp;#x5907;&amp;#x8C03;&amp;#x5EA6;&amp;#x540C;&amp;#x6B65;&amp;#x65B9;&amp;#x6CD5;&amp;#x3002;">
-<meta property="og:updated_time" content="2017-05-10T15:29:10.497Z">
+<meta property="og:updated_time" content="2017-05-20T16:03:38.297Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="第十章 内核同步方法">
 <meta name="twitter:description" content="&amp;#x5185;&amp;#x6838;&amp;#x540C;&amp;#x6B65;&amp;#x65B9;&amp;#x6CD5;
@@ -335,21 +335,55 @@ Linux&amp;#x5185;&amp;#x6838;&amp;#x63D0;&amp;#x4F9B;&amp;#x4E86;&amp;#x4E00;&am
 <p>&#x5185;&#x6838;&#x63D0;&#x4F9B;&#x4E86;&#x4E24;&#x7EC4;&#x539F;&#x5B50;&#x64CD;&#x4F5C;&#x63A5;&#x53E3;&#xFF1A;&#x4E00;&#x7EC4;&#x9488;&#x5BF9;&#x6574;&#x6570;&#x8FDB;&#x884C;&#x64CD;&#x4F5C;&#xFF0C;&#x4E00;&#x7EC4;&#x9488;&#x5BF9;&#x5355;&#x72EC;&#x7684;&#x4F4D;&#x8FDB;&#x884C;&#x64CD;&#x4F5C;&#x3002;</p>
 <a id="more"></a>
 <ul>
-<li>&#x9488;&#x5BF9;&#x6574;&#x6570;&#x7684;&#x539F;&#x5B50;&#x64CD;&#x4F5C;&#xFF1A;&#x53EA;&#x80FD;&#x5BF9;atomic_t&#x7C7B;&#x578B;&#x7684;&#x6570;&#x636E;&#x8FDB;&#x884C;&#x5904;&#x7406;&#xFF0C;atomic_t&#x7C7B;&#x578B;&#x5B9A;&#x4E49;&#x5728;<a href="https://github.com/torvalds/linux/blob/master/include/linux/types.h#L174" target="_blank" rel="external"><linux types.h=""></linux></a></li>
+<li>&#x9488;&#x5BF9;&#x6574;&#x6570;&#x7684;&#x539F;&#x5B50;&#x64CD;&#x4F5C;&#xFF1A;&#x53EA;&#x80FD;&#x5BF9;atomic_t&#x7C7B;&#x578B;&#x7684;&#x6570;&#x636E;&#x8FDB;&#x884C;&#x5904;&#x7406;&#xFF0C;atomic_t&#x7C7B;&#x578B;&#x5B9A;&#x4E49;&#x5728;<a href="https://github.com/torvalds/linux/blob/master/include/linux/types.h#L174" target="_blank" rel="external">linux/types.h</a></li>
 </ul>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> {</div><div class="line">	<span class="keyword">int</span> counter;</div><div class="line">} <span class="keyword">atomic_t</span>;</div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> CONFIG_64BIT</span></div><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> {</div><div class="line">	<span class="keyword">long</span> counter;</div><div class="line">} <span class="keyword">atomic64_t</span>;</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div></pre></td></tr></table></figure>
-<p>&#x4F7F;&#x7528;&#x539F;&#x5B50;&#x6574;&#x578B;&#x64CD;&#x4F5C;&#x7684;&#x58F0;&#x660E;&#x5728;<a href="https://github.com/torvalds/linux/blob/master/include/asm-generic/atomic.h" target="_blank" rel="external"><asm atomic.h=""></asm></a>&#xFF0C;&#x6240;&#x6709;&#x7684;&#x64CD;&#x4F5C;&#x90FD;&#x5728;&#x91CC;&#x9762;&#xFF0C;&#x4E0B;&#x9762;&#x662F;&#x51E0;&#x4E2A;&#x7B80;&#x5355;&#x7684;&#x64CD;&#x4F5C;&#xFF1A;<br>|&#x64CD;&#x4F5C;|&#x8BF4;&#x660E;|<br>|&#x2014;-|&#x2014;-|<br>|ATOMIC_INIT(i)|&#x521D;&#x59CB;&#x5316;|<br>|atomic_set(&amp;v, 4)| v = 4|<br>|atomic_add(2, &amp;v)| v = v + 2|<br>|atomic_inc(&amp;v)| v = v + 1 |<br>|atomic_dec(&amp;v)| v = v - 1 |<br>|atomic_read(&amp;v)| &#x8BFB;&#x53D6;v |</p>
+<p>&#x4F7F;&#x7528;&#x539F;&#x5B50;&#x6574;&#x578B;&#x64CD;&#x4F5C;&#x7684;&#x58F0;&#x660E;&#x5728;<a href="https://github.com/torvalds/linux/blob/master/include/asm-generic/atomic.h" target="_blank" rel="external">asm/atomic.h</a>&#xFF0C;&#x6240;&#x6709;&#x7684;&#x64CD;&#x4F5C;&#x90FD;&#x5728;&#x91CC;&#x9762;&#xFF0C;&#x4E0B;&#x9762;&#x662F;&#x51E0;&#x4E2A;&#x7B80;&#x5355;&#x7684;&#x64CD;&#x4F5C;&#xFF1A;</p>
+<table>
+<thead>
+<tr>
+<th>&#x64CD;&#x4F5C;</th>
+<th>&#x8BF4;&#x660E;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ATOMIC_INIT(i)</td>
+<td>&#x521D;&#x59CB;&#x5316;</td>
+</tr>
+<tr>
+<td>atomic_set(&amp;v, 4)</td>
+<td>v = 4</td>
+</tr>
+<tr>
+<td>atomic_add(2, &amp;v)</td>
+<td>v = v + 2</td>
+</tr>
+<tr>
+<td>atomic_inc(&amp;v)</td>
+<td>v = v + 1</td>
+</tr>
+<tr>
+<td>atomic_dec(&amp;v)</td>
+<td>v = v - 1</td>
+</tr>
+<tr>
+<td>atomic_read(&amp;v)</td>
+<td>&#x8BFB;&#x53D6;v</td>
+</tr>
+</tbody>
+</table>
 <p>&#x539F;&#x5B50;&#x64CD;&#x4F5C;&#x901A;&#x5E38;&#x662F;&#x5185;&#x8054;&#x51FD;&#x6570;&#xFF0C;&#x5F80;&#x5F80;&#x662F;&#x901A;&#x8FC7;&#x5185;&#x5D4C;&#x6C47;&#x7F16;&#x6307;&#x4EE4;&#x6765;&#x5B9E;&#x73B0;&#x7684;&#xFF0C;&#x5982;&#x679C;&#x67D0;&#x4E2A;&#x51FD;&#x6570;&#x672C;&#x8EAB;&#x5C31;&#x662F;&#x539F;&#x5B50;&#x7684;&#xFF0C;&#x5B83;&#x5F80;&#x5F80;&#x88AB;&#x5B9A;&#x4E49;&#x6210;&#x4E00;&#x4E2A;&#x5B8F;&#x3002;</p>
 <p><strong>&#x539F;&#x5B50;&#x6027;&#x548C;&#x987A;&#x5E8F;&#x6027;</strong></p>
 <blockquote>
 <p>&#x539F;&#x5B50;&#x6027;&#x786E;&#x4FDD;&#x6307;&#x4EE4;&#x6267;&#x884C;&#x671F;&#x95F4;&#x4E0D;&#x88AB;&#x6253;&#x65AD;&#xFF0C;&#x8981;&#x4E48;&#x5168;&#x90E8;&#x6267;&#x884C;&#x5B8C;&#xFF0C;&#x8981;&#x4E48;&#x90FD;&#x4E0D;&#x6267;&#x884C;&#xFF1B;&#x987A;&#x5E8F;&#x6027;&#x786E;&#x4FDD;&#x5373;&#x4F7F;&#x591A;&#x6761;&#x6307;&#x4EE4;&#x51FA;&#x73B0;&#x5728;&#x72EC;&#x7ACB;&#x7684;&#x6267;&#x884C;&#x7EBF;&#x7A0B;&#x4E2D;&#xFF0C;&#x751A;&#x81F3;&#x72EC;&#x7ACB;&#x7684;&#x5904;&#x7406;&#x5668;&#x4E0A;&#xFF0C;&#x5B83;&#x4EEC;&#x6267;&#x884C;&#x7684;&#x987A;&#x5E8F;&#x4F9D;&#x7136;&#x4FDD;&#x6301;&#xFF0C;&#x987A;&#x5E8F;&#x6027;&#x901A;&#x8FC7;&#x5C4F;&#x969C;(<a href="https://en.wikipedia.org/wiki/Memory_barrier" target="_blank" rel="external">barrier</a>)&#x6307;&#x4EE4;&#x5B9E;&#x65BD;&#x3002;</p>
 </blockquote>
 <ul>
-<li>&#x539F;&#x5B50;&#x4F4D;&#x64CD;&#x4F5C;&#xFF1A;&#x5185;&#x6838;&#x63D0;&#x4F9B;&#x4E00;&#x7EC4;&#x9488;&#x5BF9;&#x4F4D;&#x7684;&#x539F;&#x5B50;&#x64CD;&#x4F5C;&#xFF0C;&#x5B9A;&#x4E49;&#x5728;<a href="https://github.com/torvalds/linux/tree/master/include/asm-generic/bitops" target="_blank" rel="external"><asm bitops.h=""></asm></a></li>
+<li>&#x539F;&#x5B50;&#x4F4D;&#x64CD;&#x4F5C;&#xFF1A;&#x5185;&#x6838;&#x63D0;&#x4F9B;&#x4E00;&#x7EC4;&#x9488;&#x5BF9;&#x4F4D;&#x7684;&#x539F;&#x5B50;&#x64CD;&#x4F5C;&#xFF0C;&#x5B9A;&#x4E49;&#x5728;<a href="https://github.com/torvalds/linux/tree/master/include/asm-generic/bitops" target="_blank" rel="external">asm/bitops.h</a></li>
 </ul>
 <h4 id="2-&#x81EA;&#x65CB;&#x9501;"><a href="#2-&#x81EA;&#x65CB;&#x9501;" class="headerlink" title="2. &#x81EA;&#x65CB;&#x9501;"></a>2. <a href="https://en.wikipedia.org/wiki/Spinlock" target="_blank" rel="external">&#x81EA;&#x65CB;&#x9501;</a></h4><p>Linux&#x5185;&#x6838;&#x4E2D;&#x6700;&#x5E38;&#x89C1;&#x7684;&#x9501;&#x662F;&#x81EA;&#x65CB;&#x9501;&#xFF0C;&#x81EA;&#x65CB;&#x9501;&#x6700;&#x591A;&#x53EA;&#x80FD;&#x88AB;&#x4E00;&#x4E2A;&#x53EF;&#x6267;&#x884C;&#x7EBF;&#x7A0B;&#x6301;&#x6709;&#x3002;&#x5982;&#x679C;&#x4E00;&#x4E2A;&#x7EBF;&#x7A0B;&#x8BD5;&#x56FE;&#x83B7;&#x53D6;&#x4E00;&#x4E2A;&#x5DF2;&#x88AB;&#x6301;&#x6709;&#x7684;&#x81EA;&#x65CB;&#x9501;&#xFF0C;&#x8FD9;&#x4E2A;&#x7EBF;&#x7A0B;&#x4F1A;&#x8FDB;&#x884C;&#x5FD9;&#x5FAA;&#x73AF;&#x2014;&#x2014;&#x65CB;&#x8F6C;&#x7B49;&#x5F85;(&#x4F1A;&#x6D6A;&#x8D39;&#x5904;&#x7406;&#x5668;&#x65F6;&#x95F4;)&#x9501;&#x91CD;&#x65B0;&#x53EF;&#x7528;&#x3002;&#x81EA;&#x65CB;&#x9501;&#x7684;&#x521D;&#x8877;&#xFF1A;&#x5728;&#x77ED;&#x671F;&#x5185;&#x8FDB;&#x884C;&#x8F7B;&#x91CF;&#x7EA7;&#x52A0;&#x9501;&#x3002;</p>
 <p>&#x53E6;&#x4E00;&#x79CD;&#x5904;&#x7406;&#x9501;&#x4E89;&#x7528;&#x7684;&#x65B9;&#x5F0F;&#xFF1A;&#x8BA9;&#x7B49;&#x5F85;&#x7EBF;&#x7A0B;&#x7761;&#x7720;&#xFF0C;&#x76F4;&#x5230;&#x9501;&#x91CD;&#x65B0;&#x53EF;&#x7528;&#x65F6;&#x518D;&#x5524;&#x9192;&#x5B83;&#xFF0C;&#x8FD9;&#x6837;&#x5904;&#x7406;&#x5668;&#x4E0D;&#x5FC5;&#x5FAA;&#x73AF;&#x7B49;&#x5F85;&#xFF0C;&#x53EF;&#x4EE5;&#x53BB;&#x6267;&#x884C;&#x5176;&#x4ED6;&#x4EE3;&#x7801;&#xFF0C;&#x4F46;&#x662F;&#x8FD9;&#x4F1A;&#x6709;&#x4E24;&#x6B21;&#x660E;&#x663E;&#x7684;&#x4E0A;&#x4E0B;&#x6587;&#x5207;&#x6362;&#x7684;&#x5F00;&#x9500;&#xFF0C;&#x4FE1;&#x53F7;&#x91CF;&#x4FBF;&#x63D0;&#x4F9B;&#x4E86;&#x8FD9;&#x79CD;&#x9501;&#x673A;&#x5236;&#x3002;</p>
-<p>&#x81EA;&#x65CB;&#x9501;&#x7684;&#x63A5;&#x53E3;&#x5B9A;&#x4E49;&#x5728;<a href="https://github.com/torvalds/linux/blob/master/include/linux/spinlock.h" target="_blank" rel="external"><linux spinlock.h=""></linux></a></p>
+<p>&#x81EA;&#x65CB;&#x9501;&#x7684;&#x63A5;&#x53E3;&#x5B9A;&#x4E49;&#x5728;<a href="https://github.com/torvalds/linux/blob/master/include/linux/spinlock.h" target="_blank" rel="external">linux/spinlock.h</a></p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">DEFINE_SPINLOCK(mr_lock);</div><div class="line">spin_lock(&amp;mr_lock);</div><div class="line"><span class="comment">/* &#x4E34;&#x754C;&#x533A; */</span></div><div class="line">spin_unlock(&amp;mr_lock);</div></pre></td></tr></table></figure>
 <blockquote>
 <p>&#x6CE8;&#x610F;Linux&#x5185;&#x6838;&#x81EA;&#x65CB;&#x9501;&#x4E0D;&#x80FD;&#x9012;&#x5F52;&#x8C03;&#x7528;&#x3002;</p>
@@ -481,13 +515,13 @@ Linux&amp;#x5185;&amp;#x6838;&amp;#x63D0;&amp;#x4F9B;&amp;#x4E86;&amp;#x4E00;&am
 <li>&#x7531;&#x4E8E;&#x6267;&#x884C;&#x7EBF;&#x7A0B;&#x5728;&#x9501;&#x88AB;&#x4E89;&#x7528;&#x65F6;&#x4F1A;&#x7761;&#x7720;&#xFF0C;&#x6240;&#x4EE5;&#x53EA;&#x80FD;&#x5728;&#x8FDB;&#x7A0B;&#x4E0A;&#x4E0B;&#x6587;&#x4E2D;&#x624D;&#x80FD;&#x83B7;&#x53D6;&#x4FE1;&#x53F7;&#x91CF;&#x9501;&#xFF0C;&#x56E0;&#x4E3A;&#x5728;&#x4E2D;&#x65AD;&#x4E0A;&#x4E0B;&#x6587;&#x4E2D;&#x662F;&#x4E0D;&#x80FD;&#x8FDB;&#x7A0B;&#x8C03;&#x5EA6;&#x7684;</li>
 <li>&#x5728;&#x5360;&#x7528;&#x4FE1;&#x53F7;&#x91CF;&#x65F6;&#x4E0D;&#x80FD;&#x5360;&#x7528;&#x81EA;&#x65CB;&#x9501;</li>
 </ul>
-<p>&#x4FE1;&#x53F7;&#x91CF;&#x7684;&#x5B9E;&#x73B0;&#x4E0E;&#x4F53;&#x7CFB;&#x7ED3;&#x6784;&#x76F8;&#x5173;&#xFF0C;&#x5177;&#x4F53;&#x5B9E;&#x73B0;&#x5B9A;&#x4E49;&#x5728;<a href="https://github.com/torvalds/linux/blob/master/include/linux/semaphore.h" target="_blank" rel="external"><linux semaphore.h=""></linux></a>&#x4E2D;&#x3002;</p>
+<p>&#x4FE1;&#x53F7;&#x91CF;&#x7684;&#x5B9E;&#x73B0;&#x4E0E;&#x4F53;&#x7CFB;&#x7ED3;&#x6784;&#x76F8;&#x5173;&#xFF0C;&#x5177;&#x4F53;&#x5B9E;&#x73B0;&#x5B9A;&#x4E49;&#x5728;<a href="https://github.com/torvalds/linux/blob/master/include/linux/semaphore.h" target="_blank" rel="external">linux/semaphore.h</a>&#x4E2D;&#x3002;</p>
 <h4 id="5-&#x8BFB;&#x5199;&#x4FE1;&#x53F7;&#x91CF;"><a href="#5-&#x8BFB;&#x5199;&#x4FE1;&#x53F7;&#x91CF;" class="headerlink" title="5. &#x8BFB;&#x5199;&#x4FE1;&#x53F7;&#x91CF;"></a>5. &#x8BFB;&#x5199;&#x4FE1;&#x53F7;&#x91CF;</h4><blockquote>
 <p>&#x4E0E;&#x8BFB;&#x5199;&#x81EA;&#x65CB;&#x9501;&#x7C7B;&#x4F3C;&#xFF0C;&#x4FE1;&#x53F7;&#x91CF;&#x4E5F;&#x53EF;&#x4EE5;&#x533A;&#x5206;&#x4E3A;&#x8BFB;&#x5199;&#x4FE1;&#x53F7;&#x91CF;&#x3002;</p>
 </blockquote>
-<p>rw_semaphore&#x7ED3;&#x6784;&#xFF0C;&#x5B9A;&#x4E49;&#x5728;<a href="https://github.com/torvalds/linux/blob/master/include/linux/rwsem.h" target="_blank" rel="external"><linux rwsem.h=""></linux></a>&#xFF0C;&#x6240;&#x6709;&#x7684;&#x8BFB;&#x5199;&#x4FE1;&#x53F7;&#x91CF;&#x90FD;&#x662F;&#x4E92;&#x65A5;&#x4FE1;&#x53F7;&#x91CF;&#xFF0C;&#x5B83;&#x4EEC;&#x7684;&#x5F15;&#x7528;&#x8BA1;&#x6570;&#x4E3A;1&#xFF0C;&#x5BF9;&#x5199;&#x8005;&#x4E92;&#x65A5;&#xFF0C;&#x4E0D;&#x5BF9;&#x8BFB;&#x8005;&#x3002;</p>
+<p>rw_semaphore&#x7ED3;&#x6784;&#xFF0C;&#x5B9A;&#x4E49;&#x5728;<a href="https://github.com/torvalds/linux/blob/master/include/linux/rwsem.h" target="_blank" rel="external">linux/rwsem.h</a>&#xFF0C;&#x6240;&#x6709;&#x7684;&#x8BFB;&#x5199;&#x4FE1;&#x53F7;&#x91CF;&#x90FD;&#x662F;&#x4E92;&#x65A5;&#x4FE1;&#x53F7;&#x91CF;&#xFF0C;&#x5B83;&#x4EEC;&#x7684;&#x5F15;&#x7528;&#x8BA1;&#x6570;&#x4E3A;1&#xFF0C;&#x5BF9;&#x5199;&#x8005;&#x4E92;&#x65A5;&#xFF0C;&#x4E0D;&#x5BF9;&#x8BFB;&#x8005;&#x3002;</p>
 <h4 id="6-&#x4E92;&#x65A5;&#x91CF;"><a href="#6-&#x4E92;&#x65A5;&#x91CF;" class="headerlink" title="6. &#x4E92;&#x65A5;&#x91CF;"></a>6. &#x4E92;&#x65A5;&#x91CF;</h4><blockquote>
-<p>mutex&#x4E3A;&#x4E92;&#x65A5;&#x7684;&#x7761;&#x7720;&#x9501;&#xFF0C;&#x5728;&#x5185;&#x6838;&#x4E2D;&#x5BF9;&#x5E94;&#x6570;&#x636E;&#x7ED3;&#x6784;mutex&#xFF0C;&#x5B9A;&#x4E49;&#x5728;<a href="https://github.com/torvalds/linux/blob/master/include/linux/mutex.h#L53" target="_blank" rel="external"><linux mutex.h=""></linux></a></p>
+<p>mutex&#x4E3A;&#x4E92;&#x65A5;&#x7684;&#x7761;&#x7720;&#x9501;&#xFF0C;&#x5728;&#x5185;&#x6838;&#x4E2D;&#x5BF9;&#x5E94;&#x6570;&#x636E;&#x7ED3;&#x6784;mutex&#xFF0C;&#x5B9A;&#x4E49;&#x5728;<a href="https://github.com/torvalds/linux/blob/master/include/linux/mutex.h#L53" target="_blank" rel="external">linux/mutex.h</a></p>
 </blockquote>
 <p><strong>&#x5E38;&#x7528;&#x65B9;&#x6CD5;</strong></p>
 <table>
@@ -555,7 +589,7 @@ Linux&amp;#x5185;&amp;#x6838;&amp;#x63D0;&amp;#x4F9B;&amp;#x4E86;&amp;#x4E00;&am
 </tbody>
 </table>
 <h4 id="7-completion-variables"><a href="#7-completion-variables" class="headerlink" title="7. completion variables"></a>7. completion variables</h4><blockquote>
-<p>&#x5728;&#x5185;&#x6838;&#x4E2D;&#x4E00;&#x4E2A;&#x4EFB;&#x52A1;&#x9700;&#x8981;&#x53D1;&#x51FA;&#x4FE1;&#x53F7;&#x901A;&#x77E5;&#x53E6;&#x4E00;&#x4E2A;&#x4EFB;&#x52A1;&#x53D1;&#x751F;&#x4E86;&#x67D0;&#x4E2A;&#x7279;&#x5B9A;&#x4E8B;&#x4EF6;&#x65F6;&#x4F7F;&#x7528;&#xFF0C;&#x662F;&#x540C;&#x6B65;&#x4E24;&#x4E2A;&#x4EFB;&#x52A1;&#x7684;&#x7B80;&#x5355;&#x65B9;&#x6CD5;&#x3002;<br>&#x7ED3;&#x6784;completion&#x5B9A;&#x4E49;&#x5728;<a href="https://github.com/torvalds/linux/blob/master/include/linux/completion.h" target="_blank" rel="external"><linux completion.h=""></linux></a>  </p>
+<p>&#x5728;&#x5185;&#x6838;&#x4E2D;&#x4E00;&#x4E2A;&#x4EFB;&#x52A1;&#x9700;&#x8981;&#x53D1;&#x51FA;&#x4FE1;&#x53F7;&#x901A;&#x77E5;&#x53E6;&#x4E00;&#x4E2A;&#x4EFB;&#x52A1;&#x53D1;&#x751F;&#x4E86;&#x67D0;&#x4E2A;&#x7279;&#x5B9A;&#x4E8B;&#x4EF6;&#x65F6;&#x4F7F;&#x7528;&#xFF0C;&#x662F;&#x540C;&#x6B65;&#x4E24;&#x4E2A;&#x4EFB;&#x52A1;&#x7684;&#x7B80;&#x5355;&#x65B9;&#x6CD5;&#x3002;<br>&#x7ED3;&#x6784;completion&#x5B9A;&#x4E49;&#x5728;<a href="https://github.com/torvalds/linux/blob/master/include/linux/completion.h" target="_blank" rel="external">linux/completion.h</a>  </p>
 </blockquote>
 <table>
 <thead>
