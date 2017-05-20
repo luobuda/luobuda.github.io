@@ -259,6 +259,133 @@
             
               
                 
+                <a class="post-title-link" href="/2017/05/20/第十一章-定时器和时间管理/" itemprop="url">
+                  第十一章 定时器和时间管理
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-05-20T23:52:36+08:00" content="2017-05-20">
+              2017-05-20
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2017/05/20/第十一章-定时器和时间管理/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/05/20/第十一章-定时器和时间管理/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h3 id="&#x5B9A;&#x65F6;&#x5668;&#x548C;&#x65F6;&#x95F4;&#x7BA1;&#x7406;"><a href="#&#x5B9A;&#x65F6;&#x5668;&#x548C;&#x65F6;&#x95F4;&#x7BA1;&#x7406;" class="headerlink" title="&#x5B9A;&#x65F6;&#x5668;&#x548C;&#x65F6;&#x95F4;&#x7BA1;&#x7406;"></a>&#x5B9A;&#x65F6;&#x5668;&#x548C;&#x65F6;&#x95F4;&#x7BA1;&#x7406;</h3><blockquote>
+<p>&#x5185;&#x6838;&#x4E2D;&#x5927;&#x91CF;&#x51FD;&#x6570;&#x662F;&#x57FA;&#x4E8E;&#x65F6;&#x95F4;&#x9A71;&#x52A8;&#x7684;&#xFF0C;&#x5982;&#x5B9A;&#x671F;&#x6267;&#x884C;&#x7684;&#x51FD;&#x6570;&#xFF0C;&#x5B9A;&#x65F6;&#x6267;&#x884C;&#x7684;&#x51FD;&#x6570;&#x3002;&#x7CFB;&#x7EDF;&#x5B9A;&#x65F6;&#x5668;&#x662F;&#x4E00;&#x79CD;&#x53EF;&#x7F16;&#x7A0B;&#x786C;&#x4EF6;&#x82AF;&#x7247;&#xFF0C;&#x5B83;&#x80FD;&#x4EE5;&#x56FA;&#x5B9A;&#x9891;&#x7387;&#x4EA7;&#x751F;&#x4E2D;&#x65AD;&#x2014;&#x2014;&#x5B9A;&#x65F6;&#x4E2D;&#x65AD;&#x3002;</p>
+</blockquote>
+<h4 id="1-&#x5185;&#x6838;&#x4E2D;&#x7684;&#x65F6;&#x95F4;"><a href="#1-&#x5185;&#x6838;&#x4E2D;&#x7684;&#x65F6;&#x95F4;" class="headerlink" title="1. &#x5185;&#x6838;&#x4E2D;&#x7684;&#x65F6;&#x95F4;"></a>1. &#x5185;&#x6838;&#x4E2D;&#x7684;&#x65F6;&#x95F4;</h4><p>&#x5185;&#x6838;&#x5FC5;&#x987B;&#x5728;&#x786C;&#x4EF6;&#x5E2E;&#x52A9;&#x4E0B;&#x624D;&#x80FD;&#x8BA1;&#x7B97;&#x548C;&#x7BA1;&#x7406;&#x65F6;&#x95F4;&#xFF0C;&#x786C;&#x4EF6;&#x4E3A;&#x5185;&#x6838;&#x63D0;&#x4F9B;&#x4E00;&#x4E2A;&#x7CFB;&#x7EDF;&#x5B9A;&#x65F6;&#x5668;&#x7528;&#x6765;&#x8BA1;&#x7B97;&#x6D41;&#x901D;&#x7684;&#x65F6;&#x95F4;&#xFF0C;&#x7CFB;&#x7EDF;&#x5B9A;&#x65F6;&#x5668;&#x4EE5;&#x67D0;&#x79CD;&#x9891;&#x7387;&#x81EA;&#x884C;&#x89E6;&#x53D1;&#x65F6;&#x949F;&#x4E2D;&#x65AD;&#xFF0C;&#x8BE5;&#x9891;&#x7387;&#x53EF;&#x4EE5;&#x7F16;&#x7A0B;&#x9884;&#x5B9A;&#xFF0C;&#x79F0;&#x4F5C;&#x8282;&#x62CD;&#x7387;(tick rate)&#xFF0C;&#x53D1;&#x751F;&#x65F6;&#x949F;&#x4E2D;&#x65AD;&#x65F6;&#x5185;&#x6838;&#x4F1A;&#x8C03;&#x7528;&#x7279;&#x6B8A;&#x7684;&#x4E2D;&#x65AD;&#x5904;&#x7406;&#x7A0B;&#x5E8F;&#x3002;</p>
+<p>&#x8282;&#x62CD;&#x7387;&#x53EF;&#x4EE5;&#x7F16;&#x7A0B;&#x63A7;&#x5236;&#xFF0C;&#x90A3;&#x4E48;&#x4E24;&#x6B21;&#x8FDE;&#x7EED;&#x65F6;&#x949F;&#x4E2D;&#x65AD;&#x7684;&#x95F4;&#x9694;&#x4E5F;&#x53EF;&#x4EE5;&#x5F97;&#x5230;&#xFF0C;&#x8FD9;&#x4E2A;&#x95F4;&#x9694;&#x79F0;&#x4E3A;&#x8282;&#x62CD;(tick)&#xFF0C;&#x7B49;&#x4E8E;1/(tick rate)&#x79D2;&#x3002;</p>
+<p>&#x5185;&#x6838;&#x9760;&#x8FD9;&#x79CD;&#x5DF2;&#x77E5;&#x65F6;&#x949F;&#x4E2D;&#x65AD;&#x95F4;&#x9694;&#x8BA1;&#x7B97;&#x5B9E;&#x9645;&#x65F6;&#x95F4;&#x548C;&#x7CFB;&#x7EDF;&#x8FD0;&#x884C;&#x65F6;&#x95F4;&#x3002;</p>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2017/05/20/第十一章-定时器和时间管理/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2017/05/10/第十章-内核同步方法/" itemprop="url">
                   第十章 内核同步方法
                 </a>
@@ -1622,169 +1749,6 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/04/23/第一章-Linux内核简介/" itemprop="url">
-                  第一章 Linux内核简介
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2017-04-23T16:34:45+08:00" content="2017-04-23">
-              2017-04-23
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index">
-                    <span itemprop="name">Linux</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2017/04/23/第一章-Linux内核简介/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/04/23/第一章-Linux内核简介/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <blockquote>
-<p>&#x201C;do one thing, do it well.&#x201D; &#x2014;&#x2014; Linus Torvalds</p>
-</blockquote>
-<h3 id="1-Linux&#x7B80;&#x4ECB;"><a href="#1-Linux&#x7B80;&#x4ECB;" class="headerlink" title="1. Linux&#x7B80;&#x4ECB;"></a>1. Linux&#x7B80;&#x4ECB;</h3><p>Linux&#x8BDE;&#x751F;&#x4E8E;1991&#x5E74;&#xFF0C;&#x7531;&#x82AC;&#x5170;&#x7684;&#x5927;&#x795E;Linus&#x5F00;&#x53D1;&#xFF0C;&#x73B0;&#x5728;Linux&#x8FD9;&#x4E2A;&#x8BCD;&#x4E3B;&#x8981;&#x6307;&#x5185;&#x6838;&#x3002;<br>&#x6BCF;&#x4E2A;&#x5904;&#x7406;&#x5668;&#x5728;&#x4EFB;&#x4F55;&#x6307;&#x5B9A;&#x7684;&#x65F6;&#x95F4;&#x70B9;&#x4E0A;&#x7684;&#x6D3B;&#x52A8;&#x4E3A;&#x4E0B;&#x5217;&#x60C5;&#x51B5;&#x4E4B;&#x4E00;&#xFF1A;</p>
-<ul>
-<li>&#x8FD0;&#x884C;&#x4E8E;&#x7528;&#x6237;&#x6001;&#xFF0C;&#x6267;&#x884C;&#x7528;&#x6237;&#x8FDB;&#x7A0B;</li>
-<li>&#x8FD0;&#x884C;&#x4E8E;&#x5185;&#x6838;&#x6001;&#xFF0C;&#x5904;&#x4E8E;&#x8FDB;&#x7A0B;&#x4E0A;&#x4E0B;&#x6587;&#xFF0C;&#x6267;&#x884C;&#x67D0;&#x4E2A;&#x7279;&#x5B9A;&#x8FDB;&#x7A0B;</li>
-<li>&#x8FD0;&#x884C;&#x4E8E;&#x5185;&#x6838;&#x6001;&#xFF0C;&#x5904;&#x4E8E;&#x4E2D;&#x65AD;&#x4E0A;&#x4E0B;&#x6587;&#xFF0C;&#x5904;&#x7406;&#x67D0;&#x4E2A;&#x4E2D;&#x65AD;</li>
-</ul>
-<p><a href="https://en.wikipedia.org/wiki/Linux_kernel" target="_blank" rel="external">&#x7EF4;&#x57FA;&#x767E;&#x79D1;&#xFF1A;Linux kernel</a><br><a href="https://www.ibm.com/developerworks/cn/linux/l-linux-kernel/" target="_blank" rel="external">Linux &#x5185;&#x6838;&#x5256;&#x6790;</a></p>
-<h3 id="2-&#x5355;&#x5185;&#x6838;&#x4E0E;&#x5FAE;&#x5185;&#x6838;"><a href="#2-&#x5355;&#x5185;&#x6838;&#x4E0E;&#x5FAE;&#x5185;&#x6838;" class="headerlink" title="2. &#x5355;&#x5185;&#x6838;&#x4E0E;&#x5FAE;&#x5185;&#x6838;"></a>2. &#x5355;&#x5185;&#x6838;&#x4E0E;&#x5FAE;&#x5185;&#x6838;</h3><table>
-<thead>
-<tr>
-<th></th>
-<th>&#x6982;&#x5FF5;</th>
-<th>&#x4F18;&#x70B9;</th>
-<th>&#x7F3A;&#x70B9;</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>&#x5355;&#x5185;&#x6838;</td>
-<td>&#x5355;&#x5185;&#x6838;&#x8FD0;&#x884C;&#x5728;&#x4E00;&#x4E2A;&#x5355;&#x72EC;&#x7684;&#x5730;&#x5740;&#x7A7A;&#x95F4;&#x4E0A;&#xFF0C;&#x53EF;&#x4EE5;&#x770B;&#x505A;&#x4E00;&#x4E2A;&#x5355;&#x72EC;&#x7684;&#x6574;&#x4F53;&#xFF0C;&#x901A;&#x5E38;&#x4E3A;&#x4E00;&#x4E2A;&#x5355;&#x72EC;&#x7684;&#x4E8C;&#x8FDB;&#x5236;&#x6587;&#x4EF6;</td>
-<td>&#x5355;&#x5185;&#x6838;&#x8FD0;&#x884C;&#x5728;&#x4E00;&#x4E2A;&#x5355;&#x72EC;&#x7684;&#x5730;&#x5740;&#x7A7A;&#x95F4;&#x4E0A;&#xFF0C;&#x53EF;&#x4EE5;&#x770B;&#x505A;&#x4E00;&#x4E2A;&#x5355;&#x72EC;&#x7684;&#x6574;&#x4F53;&#xFF0C;&#x901A;&#x5E38;&#x4E3A;&#x4E00;&#x4E2A;&#x5355;&#x72EC;&#x7684;&#x4E8C;&#x8FDB;&#x5236;&#x6587;&#x4EF6;</td>
-<td>&#x4E00;&#x4E2A;&#x670D;&#x52A1;&#x5D29;&#x6E83;&#x5BFC;&#x81F4;&#x6574;&#x4E2A;&#x5185;&#x6838;&#x65E0;&#x6CD5;&#x4F7F;&#x7528;</td>
-</tr>
-<tr>
-<td>&#x5FAE;&#x5185;&#x6838;</td>
-<td>&#x5FAE;&#x5185;&#x6838;&#x6309;&#x529F;&#x80FD;&#x5212;&#x5206;&#x4E3A;&#x591A;&#x4E2A;&#x72EC;&#x7ACB;&#x7684;&#x8FC7;&#x7A0B;&#xFF0C;&#x6BCF;&#x4E2A;&#x8FC7;&#x7A0B;&#x8FD0;&#x884C;&#x5728;&#x5404;&#x81EA;&#x7684;&#x5730;&#x5740;&#x7A7A;&#x95F4;&#x4E0A;&#xFF0C;&#x670D;&#x52A1;&#x4E4B;&#x95F4;&#x901A;&#x8FC7;&#x4FE1;&#x606F;&#x4F20;&#x9012;&#x901A;&#x4FE1;</td>
-<td>1.&#x5B89;&#x5168;&#x6027;&#x63D0;&#x9AD8;&#xFF1A;&#x53EA;&#x6709;&#x5C11;&#x6570;&#x6838;&#x5FC3;&#x529F;&#x80FD;&#x8FD0;&#x884C;&#x5728;&#x7279;&#x6743;&#x6A21;&#x5F0F;&#x4E0B;&#xFF0C;&#x5176;&#x4ED6;&#x670D;&#x52A1;&#x8FD0;&#x884C;&#x5728;&#x7528;&#x6237;&#x7A7A;&#x95F4; 2. &#x4E00;&#x4E2A;&#x670D;&#x52A1;&#x5D29;&#x6E83;&#x4E0D;&#x5F71;&#x54CD;&#x5176;&#x4ED6;&#x670D;&#x52A1;</td>
-<td>&#x5404;&#x670D;&#x52A1;&#x4E4B;&#x95F4;&#x901A;&#x4FE1;&#x6BD4;&#x8F83;&#x590D;&#x6742;</td>
-</tr>
-</tbody>
-</table>
-<p>Linux&#x662F;&#x5355;&#x5185;&#x6838;&#xFF0C;&#x8FD0;&#x884C;&#x5728;&#x5355;&#x72EC;&#x7684;&#x5730;&#x5740;&#x7A7A;&#x95F4;&#x4E0A;&#xFF0C;&#x540C;&#x65F6;&#x5438;&#x6536;&#x5FAE;&#x5185;&#x6838;&#x6709;&#x70B9;&#xFF0C;&#x652F;&#x6301;&#x6A21;&#x5757;&#x5316;&#x8BBE;&#x8BA1;&#x3001;&#x62A2;&#x5360;&#x5F0F;&#x5185;&#x6838;&#x3001;&#x5185;&#x6838;&#x7EBF;&#x7A0B;&#x3001;&#x52A8;&#x6001;&#x52A0;&#x8F7D;&#x5185;&#x6838;&#x6A21;&#x5757;&#x3001;&#x5185;&#x6838;&#x6001;&#x4E0E;&#x7528;&#x6237;&#x6001;&#x7B49;&#xFF0C;&#x4E0E;&#x4F20;&#x7EDF;Unix&#x76F8;&#x6BD4;&#xFF1A;</p>
-<ul>
-<li>&#x652F;&#x6301;&#x52A8;&#x6001;&#x52A0;&#x8F7D;&#x5185;&#x6838;&#x6A21;&#x5757;</li>
-<li>&#x652F;&#x6301;&#x5BF9;&#x79F0;&#x591A;&#x5904;&#x7406;(SMP)&#x673A;&#x5236;</li>
-<li>&#x5185;&#x6838;&#x53EF;&#x4EE5;&#x62A2;&#x5360;(preemptive)&#xFF0C;&#x8FDB;&#x7A0B;&#x4F18;&#x5148;&#x7EA7;</li>
-<li>Linux&#x5185;&#x6838;&#x4E0D;&#x533A;&#x5206;&#x7EBF;&#x7A0B;&#x548C;&#x8FDB;&#x7A0B;&#xFF0C;&#x79F0;task</li>
-<li>&#x63D0;&#x4F9B;&#x5177;&#x6709;&#x8BBE;&#x5907;&#x7C7B;&#x7684;&#x9762;&#x5411;&#x5BF9;&#x8C61;&#x7684;&#x8BBE;&#x5907;&#x6A21;&#x578B;&#x3001;&#x70ED;&#x63D2;&#x62D4;&#x4E8B;&#x4EF6;&#xFF0C;&#x7528;&#x6237;&#x7A7A;&#x95F4;&#x7684;&#x8BBE;&#x5907;&#x6587;&#x4EF6;&#x7CFB;&#x7EDF;sysfs</li>
-</ul>
-<h3 id="3-&#x5185;&#x6838;&#x7248;&#x672C;"><a href="#3-&#x5185;&#x6838;&#x7248;&#x672C;" class="headerlink" title="3. &#x5185;&#x6838;&#x7248;&#x672C;"></a>3. &#x5185;&#x6838;&#x7248;&#x672C;</h3><p>linux&#x5185;&#x6838;&#x5206;&#x4E3A;&#xFF1A;stable&#x548C;development&#xFF0C;&#x4E3E;&#x4F8B;&#x8BF4;&#x660E;&#xFF1A;Linux-2.6.26.1<br>2&#xFF1A;&#x4E3B;&#x7248;&#x672C;&#x53F7;<br>6&#xFF1A;&#x526F;&#x7248;&#x672C;&#x53F7;<br>26&#xFF1A;&#x4FEE;&#x8BA2;&#x7248;&#x672C;&#x53F7;<br>1&#xFF1A;&#x7A33;&#x5B9A;&#x7248;&#x672C;&#x53F7;<br>&#x526F;&#x7248;&#x672C;&#x53F7;&#x4E3A;&#x5947;&#x6570;&#x8868;&#x793A;&#x5F00;&#x53D1;&#x7248;&#xFF0C;&#x4E3A;&#x5076;&#x6570;&#x8868;&#x793A;&#x7A33;&#x5B9A;&#x7248;</p>
-<h3 id="4-&#x5E38;&#x7528;&#x793E;&#x533A;"><a href="#4-&#x5E38;&#x7528;&#x793E;&#x533A;" class="headerlink" title="4. &#x5E38;&#x7528;&#x793E;&#x533A;"></a>4. &#x5E38;&#x7528;&#x793E;&#x533A;</h3><p><a href="https://www.kernel.org/" target="_blank" rel="external">https://www.kernel.org/</a> &#x5185;&#x6838;&#x6E90;&#x7801;<br><a href="http://lxr.free-electrons.com/" target="_blank" rel="external">http://lxr.free-electrons.com/</a>   &#x5185;&#x6838;&#x6E90;&#x7801;&#x5728;&#x7EBF;&#x9605;&#x8BFB;&#x63A8;&#x8350;<br><a href="https://kernelnewbies.org/" target="_blank" rel="external">https://kernelnewbies.org/</a> &#x5185;&#x6838;&#x5F00;&#x53D1;&#x57FA;&#x7840;&#x77E5;&#x8BC6;<br><a href="https://lkml.org/" target="_blank" rel="external">https://lkml.org/</a>  &#x5185;&#x6838; Mailing List<br><a href="https://github.com/torvalds/linux" target="_blank" rel="external">https://github.com/torvalds/linux</a> github </p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1830,7 +1794,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">21</span>
+              <span class="site-state-item-count">22</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

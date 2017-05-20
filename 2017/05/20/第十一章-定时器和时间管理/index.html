@@ -1,0 +1,750 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Linux kernel," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.2" />
+
+
+
+
+
+
+<meta name="description" content="&amp;#x5B9A;&amp;#x65F6;&amp;#x5668;&amp;#x548C;&amp;#x65F6;&amp;#x95F4;&amp;#x7BA1;&amp;#x7406;
+&amp;#x5185;&amp;#x6838;&amp;#x4E2D;&amp;#x5927;&amp;#x91CF;&amp;#x51FD;&amp;#x6570;&amp;#x662F;&amp;#x57FA;&amp;#x4E8E;&amp;#x65F6;&amp;#x95F4;&amp;#x9A71;&amp;#x52A8;&amp;#x7684;&amp;#xFF0C;&amp;#x5982">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第十一章 定时器和时间管理">
+<meta property="og:url" content="http://luobuda.github.io/2017/05/20/第十一章-定时器和时间管理/index.html">
+<meta property="og:site_name" content="洛卜哒的博客">
+<meta property="og:description" content="&amp;#x5B9A;&amp;#x65F6;&amp;#x5668;&amp;#x548C;&amp;#x65F6;&amp;#x95F4;&amp;#x7BA1;&amp;#x7406;
+&amp;#x5185;&amp;#x6838;&amp;#x4E2D;&amp;#x5927;&amp;#x91CF;&amp;#x51FD;&amp;#x6570;&amp;#x662F;&amp;#x57FA;&amp;#x4E8E;&amp;#x65F6;&amp;#x95F4;&amp;#x9A71;&amp;#x52A8;&amp;#x7684;&amp;#xFF0C;&amp;#x5982">
+<meta property="og:updated_time" content="2017-05-20T15:54:54.612Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="第十一章 定时器和时间管理">
+<meta name="twitter:description" content="&amp;#x5B9A;&amp;#x65F6;&amp;#x5668;&amp;#x548C;&amp;#x65F6;&amp;#x95F4;&amp;#x7BA1;&amp;#x7406;
+&amp;#x5185;&amp;#x6838;&amp;#x4E2D;&amp;#x5927;&amp;#x91CF;&amp;#x51FD;&amp;#x6570;&amp;#x662F;&amp;#x57FA;&amp;#x4E8E;&amp;#x65F6;&amp;#x95F4;&amp;#x9A71;&amp;#x52A8;&amp;#x7684;&amp;#xFF0C;&amp;#x5982">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://luobuda.github.io/2017/05/20/第十一章-定时器和时间管理/"/>
+
+
+  <title> 第十一章 定时器和时间管理 | 洛卜哒的博客 </title>
+</head>
+
+<body itemscope itemtype="//schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="//schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">洛卜哒的博客</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">戒骄戒躁，沉淀技术</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                第十一章 定时器和时间管理
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-05-20T23:52:36+08:00" content="2017-05-20">
+              2017-05-20
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2017/05/20/第十一章-定时器和时间管理/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/05/20/第十一章-定时器和时间管理/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="&#x5B9A;&#x65F6;&#x5668;&#x548C;&#x65F6;&#x95F4;&#x7BA1;&#x7406;"><a href="#&#x5B9A;&#x65F6;&#x5668;&#x548C;&#x65F6;&#x95F4;&#x7BA1;&#x7406;" class="headerlink" title="&#x5B9A;&#x65F6;&#x5668;&#x548C;&#x65F6;&#x95F4;&#x7BA1;&#x7406;"></a>&#x5B9A;&#x65F6;&#x5668;&#x548C;&#x65F6;&#x95F4;&#x7BA1;&#x7406;</h3><blockquote>
+<p>&#x5185;&#x6838;&#x4E2D;&#x5927;&#x91CF;&#x51FD;&#x6570;&#x662F;&#x57FA;&#x4E8E;&#x65F6;&#x95F4;&#x9A71;&#x52A8;&#x7684;&#xFF0C;&#x5982;&#x5B9A;&#x671F;&#x6267;&#x884C;&#x7684;&#x51FD;&#x6570;&#xFF0C;&#x5B9A;&#x65F6;&#x6267;&#x884C;&#x7684;&#x51FD;&#x6570;&#x3002;&#x7CFB;&#x7EDF;&#x5B9A;&#x65F6;&#x5668;&#x662F;&#x4E00;&#x79CD;&#x53EF;&#x7F16;&#x7A0B;&#x786C;&#x4EF6;&#x82AF;&#x7247;&#xFF0C;&#x5B83;&#x80FD;&#x4EE5;&#x56FA;&#x5B9A;&#x9891;&#x7387;&#x4EA7;&#x751F;&#x4E2D;&#x65AD;&#x2014;&#x2014;&#x5B9A;&#x65F6;&#x4E2D;&#x65AD;&#x3002;</p>
+</blockquote>
+<h4 id="1-&#x5185;&#x6838;&#x4E2D;&#x7684;&#x65F6;&#x95F4;"><a href="#1-&#x5185;&#x6838;&#x4E2D;&#x7684;&#x65F6;&#x95F4;" class="headerlink" title="1. &#x5185;&#x6838;&#x4E2D;&#x7684;&#x65F6;&#x95F4;"></a>1. &#x5185;&#x6838;&#x4E2D;&#x7684;&#x65F6;&#x95F4;</h4><p>&#x5185;&#x6838;&#x5FC5;&#x987B;&#x5728;&#x786C;&#x4EF6;&#x5E2E;&#x52A9;&#x4E0B;&#x624D;&#x80FD;&#x8BA1;&#x7B97;&#x548C;&#x7BA1;&#x7406;&#x65F6;&#x95F4;&#xFF0C;&#x786C;&#x4EF6;&#x4E3A;&#x5185;&#x6838;&#x63D0;&#x4F9B;&#x4E00;&#x4E2A;&#x7CFB;&#x7EDF;&#x5B9A;&#x65F6;&#x5668;&#x7528;&#x6765;&#x8BA1;&#x7B97;&#x6D41;&#x901D;&#x7684;&#x65F6;&#x95F4;&#xFF0C;&#x7CFB;&#x7EDF;&#x5B9A;&#x65F6;&#x5668;&#x4EE5;&#x67D0;&#x79CD;&#x9891;&#x7387;&#x81EA;&#x884C;&#x89E6;&#x53D1;&#x65F6;&#x949F;&#x4E2D;&#x65AD;&#xFF0C;&#x8BE5;&#x9891;&#x7387;&#x53EF;&#x4EE5;&#x7F16;&#x7A0B;&#x9884;&#x5B9A;&#xFF0C;&#x79F0;&#x4F5C;&#x8282;&#x62CD;&#x7387;(tick rate)&#xFF0C;&#x53D1;&#x751F;&#x65F6;&#x949F;&#x4E2D;&#x65AD;&#x65F6;&#x5185;&#x6838;&#x4F1A;&#x8C03;&#x7528;&#x7279;&#x6B8A;&#x7684;&#x4E2D;&#x65AD;&#x5904;&#x7406;&#x7A0B;&#x5E8F;&#x3002;</p>
+<p>&#x8282;&#x62CD;&#x7387;&#x53EF;&#x4EE5;&#x7F16;&#x7A0B;&#x63A7;&#x5236;&#xFF0C;&#x90A3;&#x4E48;&#x4E24;&#x6B21;&#x8FDE;&#x7EED;&#x65F6;&#x949F;&#x4E2D;&#x65AD;&#x7684;&#x95F4;&#x9694;&#x4E5F;&#x53EF;&#x4EE5;&#x5F97;&#x5230;&#xFF0C;&#x8FD9;&#x4E2A;&#x95F4;&#x9694;&#x79F0;&#x4E3A;&#x8282;&#x62CD;(tick)&#xFF0C;&#x7B49;&#x4E8E;1/(tick rate)&#x79D2;&#x3002;</p>
+<p>&#x5185;&#x6838;&#x9760;&#x8FD9;&#x79CD;&#x5DF2;&#x77E5;&#x65F6;&#x949F;&#x4E2D;&#x65AD;&#x95F4;&#x9694;&#x8BA1;&#x7B97;&#x5B9E;&#x9645;&#x65F6;&#x95F4;&#x548C;&#x7CFB;&#x7EDF;&#x8FD0;&#x884C;&#x65F6;&#x95F4;&#x3002;</p>
+<a id="more"></a>
+<h4 id="2-&#x8282;&#x62CD;&#x7387;&#xFF1A;HZ"><a href="#2-&#x8282;&#x62CD;&#x7387;&#xFF1A;HZ" class="headerlink" title="2. &#x8282;&#x62CD;&#x7387;&#xFF1A;HZ"></a>2. &#x8282;&#x62CD;&#x7387;&#xFF1A;HZ</h4><blockquote>
+<p>&#x7CFB;&#x7EDF;&#x5B9A;&#x65F6;&#x5668;&#x9891;&#x7387;&#x901A;&#x8FC7;&#x9759;&#x6001;&#x9884;&#x5904;&#x7406;&#x5B9A;&#x4E49;&#xFF0C;&#x4E5F;&#x5C31;&#x662F;HZ&#x8D6B;&#x5179;&#xFF0C;&#x5728;&#x7CFB;&#x7EDF;&#x542F;&#x52A8;&#x65F6;&#x6309;&#x7167;HZ&#x503C;&#x5BF9;&#x786C;&#x4EF6;&#x8FDB;&#x884C;&#x8BBE;&#x7F6E;&#x3002;</p>
+</blockquote>
+<p>&#x5185;&#x6838;&#x5728;<a href="https://github.com/torvalds/linux/blob/master/include/asm-generic/param.h" target="_blank" rel="external"><asm param.h=""></asm></a>&#x5B9A;&#x4E49;&#x4E86;&#x8FD9;&#x4E2A;&#x503C;&#x3002;&#x6700;&#x65B0;&#x5185;&#x6838;&#x5B9A;&#x4E49;&#x4E86;timekeeper&#x7ED3;&#x6784;&#x4FDD;&#x5B58;&#x5B9E;&#x9645;&#x65F6;&#x95F4;&#xFF0C;&#x5B9A;&#x4E49;&#x5728;<a href="https://github.com/torvalds/linux/blob/master/include/linux/timekeeper_internal.h" target="_blank" rel="external"><linux timekeeper_internal.h=""></linux></a></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">long</span> <span class="title">timediff</span><span class="params">(<span class="keyword">clock_t</span> t1, <span class="keyword">clock_t</span> t2)</span></span></div><div class="line">{</div><div class="line">    <span class="keyword">long</span> elapsed;</div><div class="line">    elapsed = ((<span class="keyword">double</span>)t2 - t1) / CLOCKS_PER_SEC * <span class="number">1000</span>;</div><div class="line">    <span class="keyword">return</span> elapsed;</div><div class="line">}</div></pre></td></tr></table></figure>
+<p><strong>&#x63D0;&#x9AD8;&#x8282;&#x62CD;&#x7387;&#x7684;&#x4F18;&#x52A3;</strong></p>
+<blockquote>
+<p>&#x63D0;&#x9AD8;&#x8282;&#x62CD;&#x7387;&#x4F7F;&#x65F6;&#x949F;&#x4E2D;&#x65AD;&#x4EA7;&#x751F;&#x5F97;&#x66F4;&#x9891;&#x7E41;&#xFF0C;&#x5982;&#x6B64;&#x7ED9;&#x6574;&#x4E2A;&#x7CFB;&#x7EDF;&#x5E26;&#x6765;&#x5982;&#x4E0B;&#x597D;&#x5904;&#xFF1A;</p>
+<ul>
+<li>&#x66F4;&#x9AD8;&#x7684;&#x65F6;&#x949F;&#x4E2D;&#x65AD;&#x89E3;&#x6790;&#x5EA6;(resolution)&#xFF0C;&#x53EF;&#x63D0;&#x9AD8;&#x65F6;&#x95F4;&#x9A71;&#x52A8;&#x4E8B;&#x4EF6;&#x7684;&#x89E3;&#x6790;&#x5EA6;</li>
+<li>&#x63D0;&#x9AD8;&#x4E86;&#x65F6;&#x95F4;&#x9A71;&#x52A8;&#x4E8B;&#x4EF6;&#x7684;&#x51C6;&#x786E;&#x5EA6;(accuracy)<br>&#x9AD8;HZ&#x7684;&#x4F18;&#x52A3;</li>
+</ul>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>&#x4F18;&#x52BF;</th>
+<th>&#x52A3;&#x52BF;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&#x5185;&#x6838;&#x5B9A;&#x65F6;&#x5668;&#x80FD;&#x591F;&#x4EE5;&#x66F4;&#x9AD8;&#x7684;&#x9891;&#x5EA6;&#x548C;&#x66F4;&#x9AD8;&#x7684;&#x51C6;&#x786E;&#x5EA6;&#x8FD0;&#x884C;&#xFF1B;&#x4F9D;&#x8D56;&#x5B9A;&#x65F6;&#x5668;&#x6267;&#x884C;&#x7684;&#x7CFB;&#x7EDF;&#x8C03;&#x7528;&#x5982;poll()/select()&#x80FD;&#x4EE5;&#x66F4;&#x9AD8;&#x7684;&#x7CBE;&#x5EA6;&#x8FD0;&#x884C;&#xFF1B;&#x5BF9;&#x8BF8;&#x5982;&#x8D44;&#x6E90;&#x6D88;&#x8017;&#x548C;&#x7CFB;&#x7EDF;&#x8FD0;&#x884C;&#x65F6;&#x95F4;&#x7B49;&#x7684;&#x6D4B;&#x91CF;&#x7CBE;&#x5EA6;&#x66F4;&#x9AD8;&#xFF1B;&#x63D0;&#x9AD8;&#x4E86;&#x8FDB;&#x7A0B;&#x62A2;&#x5360;&#x7684;&#x51C6;&#x786E;&#x5EA6;&#x3002;</td>
+<td>&#x8282;&#x62CD;&#x7387;&#x8D8A;&#x9AD8;&#xFF0C;&#x65F6;&#x949F;&#x4E2D;&#x65AD;&#x9891;&#x7387;&#x8D8A;&#x9AD8;&#xFF0C;&#x5BFC;&#x81F4;&#x7CFB;&#x7EDF;&#x8D1F;&#x62C5;&#x8D8A;&#x91CD;&#xFF0C;&#x56E0;&#x4E3A;&#x4E2D;&#x65AD;&#x5904;&#x7406;&#x7A0B;&#x5E8F;&#x5360;&#x7528;&#x7684;&#x5904;&#x7406;&#x5668;&#x65F6;&#x95F4;&#x589E;&#x591A;&#x3002;</td>
+</tr>
+</tbody>
+</table>
+<h4 id="3-jiffies"><a href="#3-jiffies" class="headerlink" title="3. jiffies"></a>3. <a href="https://en.wikipedia.org/wiki/Jiffy_(time)" target="_blank" rel="external">jiffies</a></h4><blockquote>
+<p>&#x5168;&#x5C40;&#x53D8;&#x91CF;jiffies&#x4FDD;&#x5B58;&#x4E86;&#x7CFB;&#x7EDF;&#x542F;&#x52A8;&#x4EE5;&#x6765;&#x7684;&#x8282;&#x62CD;&#x603B;&#x6570;&#xFF0C;jiffies&#x4E00;&#x79D2;&#x5185;&#x589E;&#x52A0;&#x7684;&#x503C;&#x4E3A;HZ&#xFF0C;&#x7CFB;&#x7EDF;&#x8FD0;&#x884C;&#x65F6;&#x95F4;&#x7B49;&#x4E8E;jiffies/HZ&#x3002;</p>
+</blockquote>
+<p>jiffies&#x662F;&#x65E0;&#x7B26;&#x53F7;&#x957F;&#x6574;&#x6570;(unsigned long)&#xFF0C;&#x5B9A;&#x4E49;&#x5728;<a href="https://github.com/torvalds/linux/blob/master/include/linux/jiffies.h" target="_blank" rel="external"><linux jiffies.h=""></linux></a>&#x3002;</p>
+<p>&#x9700;&#x8981;&#x6CE8;&#x610F;jiffies&#x56DE;&#x7ED5;&#x7684;&#x95EE;&#x9898;&#xFF0C;&#x6BD4;&#x5982;32&#x4F4D;&#x65E0;&#x7B26;&#x53F7;&#x6574;&#x578B;&#x5BB9;&#x6613;&#x6EA2;&#x51FA;&#xFF0C;&#x901A;&#x5E38;&#x7684;&#x5904;&#x7406;&#x662F;&#x5C06;&#x5176;&#x56DE;&#x7ED5;(wrap around)&#x5230;0&#xFF0C;&#x56E0;&#x6B64;&#x4E0D;&#x8981;&#x76F4;&#x63A5;&#x4E0E;jiffies&#x503C;&#x6BD4;&#x8F83;&#xFF0C;&#x5E94;&#x8BE5;&#x4F7F;&#x7528;&#x5185;&#x6838;&#x63D0;&#x4F9B;&#x7684;&#x5B8F;&#x3002;</p>
+<h4 id="4-&#x786C;&#x65F6;&#x949F;&#x548C;&#x5B9A;&#x65F6;&#x5668;"><a href="#4-&#x786C;&#x65F6;&#x949F;&#x548C;&#x5B9A;&#x65F6;&#x5668;" class="headerlink" title="4. &#x786C;&#x65F6;&#x949F;&#x548C;&#x5B9A;&#x65F6;&#x5668;"></a>4. &#x786C;&#x65F6;&#x949F;&#x548C;&#x5B9A;&#x65F6;&#x5668;</h4><blockquote>
+<p>&#x4F53;&#x7CFB;&#x7ED3;&#x6784;&#x63D0;&#x4F9B;&#x4E24;&#x79CD;&#x8BBE;&#x5907;&#x8FDB;&#x884C;&#x8BA1;&#x65F6;&#xFF1A;&#x7CFB;&#x7EDF;&#x5B9A;&#x65F6;&#x5668;&#x548C;&#x5B9E;&#x65F6;&#x65F6;&#x949F;&#x3002;</p>
+</blockquote>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Real-time_clock" target="_blank" rel="external">&#x5B9E;&#x65F6;&#x65F6;&#x949F;(RTC)</a>:&#x7528;&#x4E8E;&#x6301;&#x4E45;&#x5B58;&#x50A8;&#x7CFB;&#x7EDF;&#x65F6;&#x95F4;&#xFF0C;&#x5373;&#x4FBF;&#x7CFB;&#x7EDF;&#x5173;&#x95ED;&#xFF0C;&#x8FD8;&#x53EF;&#x4EE5;&#x4F9D;&#x9760;&#x4E3B;&#x677F;&#x4E0A;&#x7684;&#x7535;&#x6C60;&#x4FDD;&#x6301;&#x7CFB;&#x7EDF;&#x8BA1;&#x65F6;&#xFF0C;&#x5B83;&#x6700;&#x4E3B;&#x8981;&#x7684;&#x4F5C;&#x7528;&#x662F;&#x542F;&#x52A8;&#x65F6;&#x521D;&#x59CB;&#x5316;xtime&#x53D8;&#x91CF;&#x3002;</li>
+<li>&#x7CFB;&#x7EDF;&#x5B9A;&#x65F6;&#x5668;&#xFF1A;&#x6839;&#x672C;&#x601D;&#x60F3;&#x662F;&#x63D0;&#x4F9B;&#x4E00;&#x79CD;&#x5468;&#x671F;&#x6027;&#x89E6;&#x53D1;&#x4E2D;&#x65AD;&#x673A;&#x5236;&#x3002;x86&#x91C7;&#x7528;&#x53EF;&#x7F16;&#x7A0B;&#x4E2D;&#x65AD;&#x65F6;&#x949F;<a href="https://en.wikipedia.org/wiki/Programmable_interval_timer" target="_blank" rel="external">PIT</a>&#xFF0C;&#x5176;&#x4ED6;&#x65F6;&#x949F;&#x8D44;&#x6E90;&#xFF1A;&#x65F6;&#x95F4;&#x6233;&#x8BA1;&#x6570;<a href="https://en.wikipedia.org/wiki/Time_Stamp_Counter" target="_blank" rel="external">TSC</a></li>
+</ul>
+<h4 id="5-&#x65F6;&#x949F;&#x4E2D;&#x65AD;&#x5904;&#x7406;&#x7A0B;&#x5E8F;"><a href="#5-&#x65F6;&#x949F;&#x4E2D;&#x65AD;&#x5904;&#x7406;&#x7A0B;&#x5E8F;" class="headerlink" title="5. &#x65F6;&#x949F;&#x4E2D;&#x65AD;&#x5904;&#x7406;&#x7A0B;&#x5E8F;"></a>5. &#x65F6;&#x949F;&#x4E2D;&#x65AD;&#x5904;&#x7406;&#x7A0B;&#x5E8F;</h4><blockquote>
+<p>&#x65F6;&#x949F;&#x4E2D;&#x65AD;&#x5904;&#x7406;&#x7A0B;&#x5E8F;&#x5206;&#x4E3A;&#x4E24;&#x90E8;&#x5206;&#xFF1A;&#x4F53;&#x7CFB;&#x7ED3;&#x6784;&#x76F8;&#x5173;&#x90E8;&#x5206;&#x548C;&#x4F53;&#x7CFB;&#x7ED3;&#x6784;&#x65E0;&#x5173;&#x90E8;&#x5206;</p>
+</blockquote>
+<p>&#x7EDD;&#x5927;&#x90E8;&#x5206;&#x5904;&#x7406;&#x7A0B;&#x5E8F;&#x9700;&#x8981;&#x6267;&#x884C;&#x5982;&#x4E0B;&#x5DE5;&#x4F5C;&#xFF1A;</p>
+<ul>
+<li>&#x83B7;&#x53D6;xtime_lock&#x9501;&#xFF0C;&#x4FDD;&#x62A4;&#x5BF9;jiffies_64&#x548C;&#x5899;&#x4E0A;&#x65F6;&#x95F4;xtime&#x7684;&#x8BBF;&#x95EE;</li>
+<li>&#x9700;&#x8981;&#x65F6;&#x5E94;&#x7B54;&#x6216;&#x91CD;&#x65B0;&#x8BBE;&#x7F6E;&#x7CFB;&#x7EDF;&#x65F6;&#x949F;</li>
+<li>&#x5468;&#x671F;&#x6027;&#x5730;&#x4F7F;&#x7528;&#x5899;&#x4E0A;&#x65F6;&#x95F4;&#x66F4;&#x65B0;&#x5B9E;&#x65F6;&#x65F6;&#x949F;</li>
+<li>&#x8C03;&#x7528;&#x4F53;&#x7CFB;&#x7ED3;&#x6784;&#x65E0;&#x5173;&#x7684;&#x65F6;&#x949F;&#x4F8B;&#x7A0B;&#xFF1A;tick_periodic()</li>
+</ul>
+<p>tick_periodic()&#x4E3B;&#x8981;&#x6267;&#x884C;&#x5982;&#x4E0B;&#x5DE5;&#x4F5C;&#xFF1A;</p>
+<ul>
+<li>jiffies_64&#x52A0;&#x4E00;</li>
+<li>&#x66F4;&#x65B0;&#x8D44;&#x6E90;&#x6D88;&#x8017;&#x7684;&#x7EDF;&#x8BA1;&#x503C;&#xFF0C;&#x5982;&#x5F53;&#x524D;&#x8FDB;&#x7A0B;&#x6240;&#x6D88;&#x8017;&#x7684;&#x7CFB;&#x7EDF;&#x65F6;&#x95F4;&#x548C;&#x7528;&#x6237;&#x65F6;&#x95F4;</li>
+<li>&#x6267;&#x884C;&#x5DF2;&#x7ECF;&#x5230;&#x671F;&#x7684;&#x52A8;&#x6001;&#x5B9A;&#x65F6;&#x5668;</li>
+<li>&#x6267;&#x884C;sheduler_tick()&#x51FD;&#x6570;</li>
+<li>&#x66F4;&#x65B0;&#x5899;&#x4E0A;&#x65F6;&#x95F4;xtime</li>
+<li>&#x8BA1;&#x7B97;&#x5E73;&#x5747;&#x8D1F;&#x8F7D;&#x503C;</li>
+</ul>
+<p>&#x4EE5;&#x4E0A;&#x64CD;&#x4F5C;&#x6BCF;1/HZ&#x79D2;&#x53D1;&#x751F;&#x4E00;&#x6B21;&#xFF0C;&#x53EF;&#x4EE5;&#x77E5;&#x9053;&#x5728;x86&#x4E0A;&#x65F6;&#x949F;&#x4E2D;&#x65AD;&#x5904;&#x7406;&#x7A0B;&#x5E8F;&#x6BCF;&#x79D2;&#x6267;&#x884C;100&#x6B21;&#x6216;1000&#x6B21;&#x3002;</p>
+<h4 id="6-&#x5B9E;&#x9645;&#x65F6;&#x95F4;"><a href="#6-&#x5B9E;&#x9645;&#x65F6;&#x95F4;" class="headerlink" title="6. &#x5B9E;&#x9645;&#x65F6;&#x95F4;"></a>6. &#x5B9E;&#x9645;&#x65F6;&#x95F4;</h4><p>&#x5B9E;&#x9645;&#x65F6;&#x95F4;&#x4E5F;&#x5C31;&#x662F;&#x5899;&#x4E0A;&#x65F6;&#x95F4;&#xFF0C;&#x5185;&#x6838;&#x7248;&#x672C;3.3&#x4E4B;&#x524D;&#x5B9A;&#x4E49;&#x5728;<a href="https://github.com/torvalds/linux/blob/master/kernel/time/timekeeping.c" target="_blank" rel="external"><kernel time="" timekeeping.c=""></kernel></a>&#x3002;</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">struct</span> timespec xtime;</div></pre></td></tr></table></figure>
+<p>xtime&#x5B58;&#x653E;&#x4E86;1970&#x5E74;&#x4E00;&#x6708;&#x4E00;&#x65E5;(UTC)&#x4EE5;&#x6765;&#x7684;&#x65F6;&#x95F4;&#x3002;&#x7528;&#x6237;&#x7A7A;&#x95F4;&#x83B7;&#x53D6;&#x5899;&#x4E0A;&#x65F6;&#x95F4;&#x7684;&#x63A5;&#x53E3;&#x4E3A;gettimeofday()&#xFF0C;&#x5B9A;&#x4E49;&#x5728;kernel/time.c&#xFF0C;&#x6587;&#x4EF6;&#x7CFB;&#x7EDF;&#x7684;&#x5B9E;&#x73B0;&#x4EE3;&#x7801;&#x5B58;&#x653E;&#x8BBF;&#x95EE;&#x65F6;&#x95F4;&#x6233;&#x9700;&#x8981;&#x4F7F;&#x7528;xtime&#x3002;</p>
+<h4 id="7-&#x5B9A;&#x65F6;&#x5668;"><a href="#7-&#x5B9A;&#x65F6;&#x5668;" class="headerlink" title="7. &#x5B9A;&#x65F6;&#x5668;"></a>7. &#x5B9A;&#x65F6;&#x5668;</h4><blockquote>
+<p>&#x5B9A;&#x65F6;&#x5668;(&#x52A8;&#x6001;&#x5B9A;&#x65F6;&#x5668;&#x6216;&#x5185;&#x6838;&#x5B9A;&#x65F6;&#x5668;)&#x662F;&#x7BA1;&#x7406;&#x5185;&#x6838;&#x65F6;&#x95F4;&#x6D41;&#x901D;&#x7684;&#x57FA;&#x7840;&#xFF0C;&#x5B9A;&#x65F6;&#x5668;&#x5E38;&#x5E38;&#x7528;&#x4E8E;&#x5EF6;&#x8FDF;&#x7279;&#x70B9;&#x65F6;&#x95F4;&#x540E;&#x6267;&#x884C;&#x67D0;&#x4E9B;&#x4EE3;&#x7801;&#x3002;</p>
+</blockquote>
+<p>&#x5B9A;&#x65F6;&#x5668;&#x7531;&#x7ED3;&#x6784;&#x4F53;timer_list&#x8868;&#x793A;&#xFF0C;&#x5B9A;&#x4E49;&#x5728;<a href="https://github.com/torvalds/linux/blob/master/include/linux/timer.h" target="_blank" rel="external"><linux timer.h=""></linux></a>&#x4E2D;&#x3002;<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">struct</span> timer_list {</div><div class="line">	<span class="comment">/*</span></div><div class="line">	 * All fields that change during normal runtime grouped to the</div><div class="line">	 * same cacheline</div><div class="line">	 */</div><div class="line">	<span class="keyword">struct</span> hlist_node	entry;  <span class="comment">// &#x5B9A;&#x65F6;&#x5668;&#x94FE;&#x8868;&#x5165;&#x53E3;</span></div><div class="line">	<span class="keyword">unsigned</span> <span class="keyword">long</span>		expires; <span class="comment">// &#x4EE5;jiffies&#x4E3A;&#x5355;&#x4F4D;&#x7684;&#x5B9A;&#x65F6;&#x503C;</span></div><div class="line">	<span class="keyword">void</span>			(*function)(<span class="keyword">unsigned</span> <span class="keyword">long</span>); <span class="comment">// &#x5B9A;&#x65F6;&#x5668;&#x5904;&#x7406;&#x51FD;&#x6570;</span></div><div class="line">	<span class="keyword">unsigned</span> <span class="keyword">long</span>		data; <span class="comment">// &#x4F20;&#x7ED9;&#x5904;&#x7406;&#x51FD;&#x6570;&#x7684;&#x53C2;&#x6570;</span></div><div class="line">	u32			flags;</div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> CONFIG_LOCKDEP</span></div><div class="line">	<span class="keyword">struct</span> lockdep_map	lockdep_map;</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div><div class="line">};</div></pre></td></tr></table></figure></p>
+<p>&#x5185;&#x6838;&#x63D0;&#x4F9B;&#x4E86;&#x4E00;&#x7EC4;&#x4E0E;&#x5B9A;&#x65F6;&#x5668;&#x76F8;&#x5173;&#x7684;&#x63A5;&#x53E3;&#x7528;&#x4E8E;&#x5B9A;&#x65F6;&#x5668;&#x64CD;&#x4F5C;&#xFF0C;&#x58F0;&#x660E;&#x5728;<linux timer.h="">,&#x5B9E;&#x73B0;&#x5728;<a href="https://github.com/torvalds/linux/blob/master/kernel/time/timer.c" target="_blank" rel="external"><kernel time="" timer.c=""></kernel></a>;</linux></p>
+<h4 id="8-&#x5EF6;&#x8FDF;&#x6267;&#x884C;"><a href="#8-&#x5EF6;&#x8FDF;&#x6267;&#x884C;" class="headerlink" title="8. &#x5EF6;&#x8FDF;&#x6267;&#x884C;"></a>8. &#x5EF6;&#x8FDF;&#x6267;&#x884C;</h4><blockquote>
+<p>&#x5185;&#x6838;&#x9664;&#x4E86;&#x4F7F;&#x7528;&#x5B9A;&#x65F6;&#x5668;&#x6216;&#x4E0B;&#x534A;&#x90E8;&#x673A;&#x5236;&#x4EE5;&#x5916;&#xFF0C;&#x8FD8;&#x9700;&#x8981;&#x5176;&#x4ED6;&#x65B9;&#x6CD5;&#x6765;&#x63A8;&#x8FDF;&#x6267;&#x884C;&#x4EFB;&#x52A1;&#xFF0C;&#x8FD9;&#x79CD;&#x63A8;&#x8FDF;&#x901A;&#x5E38;&#x53D1;&#x751F;&#x5728;&#x7B49;&#x5F85;&#x786C;&#x4EF6;&#x5B8C;&#x6210;&#x67D0;&#x4E9B;&#x5DE5;&#x4F5C;&#xFF0C;&#x7B49;&#x5F85;&#x7684;&#x65F6;&#x95F4;&#x5F80;&#x5F80;&#x975E;&#x5E38;&#x77ED;&#x3002;</p>
+</blockquote>
+<ul>
+<li>&#x5FD9;&#x7B49;&#x5F85;</li>
+<li>&#x77ED;&#x5EF6;&#x8FDF;</li>
+<li>schedule_timeout()</li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Linux-kernel/" rel="tag">#Linux kernel</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/10/第十章-内核同步方法/" rel="next" title="第十章 内核同步方法">
+                <i class="fa fa-chevron-left"></i> 第十章 内核同步方法
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/05/20/第十一章-定时器和时间管理/"
+           data-title="第十一章 定时器和时间管理" data-url="http://luobuda.github.io/2017/05/20/第十一章-定时器和时间管理/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="//schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="https://projecteuler.net/profile/luobuda.png"
+               alt="洛卜哒" />
+          <p class="site-author-name" itemprop="name">洛卜哒</p>
+          <p class="site-description motion-element" itemprop="description">大约，孔乙己的确死了！</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">22</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/luobuda" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://github.com/luobuda" title="Github" target="_blank">Github</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://projecteuler.net/" title="Project Euler" target="_blank">Project Euler</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#定时器和时间管理"><span class="nav-number">1.</span> <span class="nav-text">定时器和时间管理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-内核中的时间"><span class="nav-number">1.1.</span> <span class="nav-text">1. 内核中的时间</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-节拍率：HZ"><span class="nav-number">1.2.</span> <span class="nav-text">2. 节拍率：HZ</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-jiffies"><span class="nav-number">1.3.</span> <span class="nav-text">3. jiffies</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-硬时钟和定时器"><span class="nav-number">1.4.</span> <span class="nav-text">4. 硬时钟和定时器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-时钟中断处理程序"><span class="nav-number">1.5.</span> <span class="nav-text">5. 时钟中断处理程序</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-实际时间"><span class="nav-number">1.6.</span> <span class="nav-text">6. 实际时间</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-定时器"><span class="nav-number">1.7.</span> <span class="nav-text">7. 定时器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8-延迟执行"><span class="nav-number">1.8.</span> <span class="nav-text">8. 延迟执行</span></a></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">洛卜哒</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.2"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"luobuda"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>
