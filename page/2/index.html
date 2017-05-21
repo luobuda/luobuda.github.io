@@ -259,6 +259,134 @@
             
               
                 
+                <a class="post-title-link" href="/2017/04/25/第三章-进程管理/" itemprop="url">
+                  第三章 进程管理
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-04-25T23:53:20+08:00" content="2017-04-25">
+              2017-04-25
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2017/04/25/第三章-进程管理/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/04/25/第三章-进程管理/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h3 id="&#x8FDB;&#x7A0B;&#x7BA1;&#x7406;"><a href="#&#x8FDB;&#x7A0B;&#x7BA1;&#x7406;" class="headerlink" title="&#x8FDB;&#x7A0B;&#x7BA1;&#x7406;"></a><a href="https://en.wikipedia.org/wiki/Process_management_(computing)">&#x8FDB;&#x7A0B;&#x7BA1;&#x7406;</a></h3><blockquote>
+<p>&#x8FDB;&#x7A0B;&#x662F;&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;&#x62BD;&#x8C61;&#x6982;&#x5FF5;&#x4E2D;&#x6700;&#x57FA;&#x672C;&#x7684;&#x4E00;&#x79CD;</p>
+</blockquote>
+<h3 id="1-&#x8FDB;&#x7A0B;&#x548C;&#x7EBF;&#x7A0B;"><a href="#1-&#x8FDB;&#x7A0B;&#x548C;&#x7EBF;&#x7A0B;" class="headerlink" title="1. &#x8FDB;&#x7A0B;&#x548C;&#x7EBF;&#x7A0B;"></a>1. &#x8FDB;&#x7A0B;&#x548C;&#x7EBF;&#x7A0B;</h3><p><a href="https://en.wikipedia.org/wiki/Process_(computing)">&#x8FDB;&#x7A0B;</a>&#x662F;&#x7A0B;&#x5E8F;&#x8FD0;&#x884C;&#x7684;&#x5B9E;&#x4F8B;&#xFF0C;&#x662F;&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;&#x5206;&#x914D;&#x8D44;&#x6E90;&#x7684;&#x57FA;&#x672C;&#x5355;&#x5143;&#xFF0C;&#x56E0;&#x6B64;&#xFF0C;&#x8FDB;&#x7A0B;&#x9664;&#x4E86;&#x53EF;&#x6267;&#x884C;&#x4EE3;&#x7801;(&#x4EE3;&#x7801;&#x6BB5;&#xFF0C;text section)&#x5916;&#xFF0C;&#x8FD8;&#x5305;&#x62EC;&#x5176;&#x4ED6;&#x8D44;&#x6E90;&#xFF0C;&#x5982;&#x6253;&#x5F00;&#x7684;&#x6587;&#x4EF6;&#x3001;&#x4FE1;&#x53F7;&#x3001;&#x6570;&#x636E;&#x6BB5;&#x3001;&#x5806;&#x6808;&#x7B49;&#xFF0C;&#x4E00;&#x4E2A;&#x8FDB;&#x7A0B;&#x5305;&#x542B;&#x4E00;&#x4E2A;&#x591A;&#x4E2A;&#x6267;&#x884C;&#x7EBF;&#x7A0B;(thread of execution)&#xFF0C;&#x5BF9;&#x8FDB;&#x7A0B;&#x7684;&#x7BA1;&#x7406;&#x7531;&#x5185;&#x6838;&#x5B8C;&#x6210;&#x3002; </p>
+<p>&#x6267;&#x884C;&#x7EBF;&#x7A0B;&#xFF0C;&#x7B80;&#x79F0;<a href="https://en.wikipedia.org/wiki/Thread_(computing)">&#x7EBF;&#x7A0B;</a>&#xFF0C;&#x7EBF;&#x7A0B;&#x5C5E;&#x4E8E;&#x67D0;&#x4E2A;&#x8FDB;&#x7A0B;&#x4E2D;&#x7684;&#x6D3B;&#x52A8;&#x5BF9;&#x8C61;&#xFF0C;&#x7EBF;&#x7A0B;&#x5171;&#x4EAB;&#x8FDB;&#x7A0B;&#x7684;&#x5730;&#x5740;&#x7A7A;&#x95F4;&#x548C;&#x6570;&#x636E;&#xFF0C;&#x4F46;&#x6BCF;&#x4E2A;&#x7EBF;&#x7A0B;&#x6709;&#x81EA;&#x5DF1;&#x7684;&#x7A0B;&#x5E8F;&#x8BA1;&#x6570;&#x5668;&#x3001;&#x7EBF;&#x7A0B;&#x6808;&#x548C;&#x5BC4;&#x5B58;&#x5668;&#xFF0C;&#x5185;&#x6838;&#x8C03;&#x5EA6;&#x7684;&#x5BF9;&#x8C61;&#x662F;&#x7EBF;&#x7A0B;&#xFF0C;&#x800C;&#x4E0D;&#x662F;&#x8FDB;&#x7A0B;&#x3002;</p>
+<p>Linux&#x5185;&#x6838;&#x4E0D;&#x533A;&#x5206;&#x7EBF;&#x7A0B;&#x548C;&#x8FDB;&#x7A0B;&#xFF0C;&#x800C;&#x662F;&#x79F0;task&#xFF0C;&#x5BF9;&#x5E94;task_struct&#x7ED3;&#x6784;&#x4F53;&#x3002;</p>
+<p>&#x8FDB;&#x7A0B;&#x63D0;&#x4F9B;&#x4E86;2&#x79CD;&#x865A;&#x62DF;&#x673A;&#x5236;&#xFF1A;&#x865A;&#x62DF;&#x5904;&#x7406;&#x5668;&#x548C;&#x865A;&#x62DF;&#x5185;&#x5B58;&#xFF0C;&#x6BCF;&#x4E2A;&#x8FDB;&#x7A0B;&#x6709;&#x72EC;&#x7ACB;&#x7684;&#x865A;&#x62DF;&#x5904;&#x7406;&#x5668;&#x548C;&#x865A;&#x62DF;&#x5185;&#x5B58;&#xFF0C;&#x6BCF;&#x4E2A;&#x7EBF;&#x7A0B;&#x6709;&#x72EC;&#x7ACB;&#x7684;&#x865A;&#x62DF;&#x5904;&#x7406;&#x5668;&#xFF0C;&#x7EBF;&#x7A0B;&#x95F4;&#x53EF;&#x80FD;&#x5171;&#x4EAB;&#x865A;&#x62DF;&#x5185;&#x5B58;&#x3002;</p>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2017/04/25/第三章-进程管理/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2017/04/23/第二章-Linux开发准备/" itemprop="url">
                   第二章 Linux开发准备
                 </a>
@@ -1644,129 +1772,6 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/04/11/trie-tree/" itemprop="url">
-                  Trie_tree
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2015-04-11T23:14:14+08:00" content="2015-04-11">
-              2015-04-11
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/algorithm/" itemprop="url" rel="index">
-                    <span itemprop="name">algorithm</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-                &nbsp; | &nbsp;
-                <a href="/2015/04/11/trie-tree/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2015/04/11/trie-tree/" itemprop="commentsCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>##&#x57FA;&#x672C;&#x7B97;&#x6CD5;&#x5B66;&#x4E60;&#x7B14;&#x8BB0;&#x4E4B;Trie&#x6811;</p>
-<p>&#x53C8;&#x79F0;&#x5355;&#x8BCD;&#x67E5;&#x627E;&#x6811;&#xFF0C;<a href="http://zh.wikipedia.org/wiki/Trie">Trie&#x6811;</a>&#xFF0C;&#x662F;&#x4E00;&#x79CD;&#x6811;&#x5F62;&#x7ED3;&#x6784;&#xFF0C;&#x662F;&#x4E00;&#x79CD;&#x54C8;&#x5E0C;&#x6811;&#x7684;&#x53D8;&#x79CD;&#x3002;&#x5178;&#x578B;&#x5E94;&#x7528;&#x662F;&#x7528;&#x4E8E;&#x7EDF;&#x8BA1;&#xFF0C;&#x6392;&#x5E8F;&#x548C;&#x4FDD;&#x5B58;<br>&#x5927;&#x91CF;&#x7684;&#x5B57;&#x7B26;&#x4E32;&#xFF08;&#x4F46;&#x4E0D;&#x4EC5;&#x9650;&#x4E8E;&#x5B57;&#x7B26;&#x4E32;&#xFF09;&#xFF0C;&#x6240;&#x4EE5;&#x7ECF;&#x5E38;&#x88AB;&#x641C;&#x7D22;&#x5F15;&#x64CE;&#x7CFB;&#x7EDF;&#x7528;&#x4E8E;&#x6587;&#x672C;&#x8BCD;&#x9891;&#x7EDF;&#x8BA1;&#x3002;&#x5B83;&#x7684;&#x4F18;&#x70B9;&#x662F;&#xFF1A;&#x5229;&#x7528;&#x5B57;&#x7B26;&#x4E32;&#x7684;&#x516C;&#x5171;&#x524D;&#x7F00;&#x6765;&#x51CF;&#x5C11;&#x67E5;&#x8BE2;&#x65F6;&#x95F4;&#xFF0C;&#x6700;&#x5927;&#x9650;<br>&#x5EA6;&#x5730;&#x51CF;&#x5C11;&#x65E0;&#x8C13;&#x7684;&#x5B57;&#x7B26;&#x4E32;&#x6BD4;&#x8F83;&#xFF0C;&#x67E5;&#x8BE2;&#x6548;&#x7387;&#x6BD4;&#x54C8;&#x5E0C;&#x6811;&#x9AD8;&#xFF0C;&#x7A7A;&#x95F4;&#x6362;&#x65F6;&#x95F4;&#x7684;&#x7B97;&#x6CD5;&#x3002;<br>&#x4F7F;&#x7528;&#x8303;&#x56F4;&#xFF1A;<strong>&#x8BCD;&#x9891;&#x7EDF;&#x8BA1;</strong>&#x3001;<strong>&#x524D;&#x7F00;&#x5339;&#x914D;</strong><br></p>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2015/04/11/trie-tree/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1812,7 +1817,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">23</span>
+              <span class="site-state-item-count">24</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
