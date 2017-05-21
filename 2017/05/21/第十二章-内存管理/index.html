@@ -1,0 +1,828 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Linux kernel," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.2" />
+
+
+
+
+
+
+<meta name="description" content="&amp;#x5185;&amp;#x5B58;&amp;#x7BA1;&amp;#x7406;1. &amp;#x5185;&amp;#x6838;&amp;#x5982;&amp;#x4F55;&amp;#x7BA1;&amp;#x7406;&amp;#x5185;&amp;#x5B58;1.1 &amp;#x9875;
+&amp;#x5185;&amp;#x6838;&amp;#x628A;&amp;#x7269;&amp;#x7406;&amp;#x9875;&amp;#x4F5C;&amp;#x4E3A;&amp;#x5185;&amp;#x5B58;&amp;#x7BA1;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第十二章 内存管理">
+<meta property="og:url" content="http://luobuda.github.io/2017/05/21/第十二章-内存管理/index.html">
+<meta property="og:site_name" content="洛卜哒的博客">
+<meta property="og:description" content="&amp;#x5185;&amp;#x5B58;&amp;#x7BA1;&amp;#x7406;1. &amp;#x5185;&amp;#x6838;&amp;#x5982;&amp;#x4F55;&amp;#x7BA1;&amp;#x7406;&amp;#x5185;&amp;#x5B58;1.1 &amp;#x9875;
+&amp;#x5185;&amp;#x6838;&amp;#x628A;&amp;#x7269;&amp;#x7406;&amp;#x9875;&amp;#x4F5C;&amp;#x4E3A;&amp;#x5185;&amp;#x5B58;&amp;#x7BA1;">
+<meta property="og:updated_time" content="2017-05-21T11:16:01.665Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="第十二章 内存管理">
+<meta name="twitter:description" content="&amp;#x5185;&amp;#x5B58;&amp;#x7BA1;&amp;#x7406;1. &amp;#x5185;&amp;#x6838;&amp;#x5982;&amp;#x4F55;&amp;#x7BA1;&amp;#x7406;&amp;#x5185;&amp;#x5B58;1.1 &amp;#x9875;
+&amp;#x5185;&amp;#x6838;&amp;#x628A;&amp;#x7269;&amp;#x7406;&amp;#x9875;&amp;#x4F5C;&amp;#x4E3A;&amp;#x5185;&amp;#x5B58;&amp;#x7BA1;">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://luobuda.github.io/2017/05/21/第十二章-内存管理/"/>
+
+
+  <title> 第十二章 内存管理 | 洛卜哒的博客 </title>
+</head>
+
+<body itemscope itemtype="//schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="//schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">洛卜哒的博客</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">戒骄戒躁，沉淀技术</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                第十二章 内存管理
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-05-21T18:16:59+08:00" content="2017-05-21">
+              2017-05-21
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2017/05/21/第十二章-内存管理/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/05/21/第十二章-内存管理/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="&#x5185;&#x5B58;&#x7BA1;&#x7406;"><a href="#&#x5185;&#x5B58;&#x7BA1;&#x7406;" class="headerlink" title="&#x5185;&#x5B58;&#x7BA1;&#x7406;"></a>&#x5185;&#x5B58;&#x7BA1;&#x7406;</h2><h3 id="1-&#x5185;&#x6838;&#x5982;&#x4F55;&#x7BA1;&#x7406;&#x5185;&#x5B58;"><a href="#1-&#x5185;&#x6838;&#x5982;&#x4F55;&#x7BA1;&#x7406;&#x5185;&#x5B58;" class="headerlink" title="1. &#x5185;&#x6838;&#x5982;&#x4F55;&#x7BA1;&#x7406;&#x5185;&#x5B58;"></a>1. &#x5185;&#x6838;&#x5982;&#x4F55;&#x7BA1;&#x7406;&#x5185;&#x5B58;</h3><h4 id="1-1-&#x9875;"><a href="#1-1-&#x9875;" class="headerlink" title="1.1 &#x9875;"></a>1.1 &#x9875;</h4><blockquote>
+<p>&#x5185;&#x6838;&#x628A;&#x7269;&#x7406;&#x9875;&#x4F5C;&#x4E3A;&#x5185;&#x5B58;&#x7BA1;&#x7406;&#x7684;&#x57FA;&#x672C;&#x5355;&#x4F4D;&#xFF0C;<a href="https://en.wikipedia.org/wiki/Memory_management_unit" target="_blank" rel="external">MMU</a>&#x901A;&#x5E38;&#x4EE5;<a href="https://en.wikipedia.org/wiki/Paging" target="_blank" rel="external">&#x9875;</a>(page)&#x4E3A;&#x5355;&#x4F4D;&#x8FDB;&#x884C;&#x5904;&#x7406;&#xFF0C;&#x9875;&#x8868;&#x9875;&#x8868;&#x5C31;&#x662F;&#x8FD9;&#x4E2A;&#x610F;&#x601D;</p>
+</blockquote>
+<p>&#x5185;&#x6838;&#x7528;struct page&#x7ED3;&#x6784;&#x4EE3;&#x8868;&#x7CFB;&#x7EDF;&#x4E2D;&#x7684;&#x6BCF;&#x4E2A;&#x7269;&#x7406;&#x9875;&#xFF1A;<a href="https://github.com/torvalds/linux/blob/master/include/linux/mm_types.h#L40" target="_blank" rel="external">linux/mm_types.h</a></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">struct</span> page {</div><div class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span>   flags;</div><div class="line">    <span class="keyword">atomic_t</span>        _count;</div><div class="line">    <span class="keyword">atomic_t</span>        mapcount;</div><div class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span>   <span class="keyword">private</span>;</div><div class="line">    <span class="keyword">struct</span> address_space *mapping;</div><div class="line">    <span class="keyword">pgoff_t</span>         index;</div><div class="line">    <span class="keyword">struct</span> list_head lru;</div><div class="line">    <span class="keyword">void</span>             *<span class="keyword">virtual</span>;</div><div class="line">};</div></pre></td></tr></table></figure>
+<ul>
+<li>flags&#x57DF;&#x7528;&#x6765;&#x5B58;&#x653E;&#x9875;&#x7684;&#x72B6;&#x6001;&#xFF0C;&#x5B9A;&#x4E49;&#x5728;<a href="https://github.com/torvalds/linux/blob/master/include/linux/page-flags.h" target="_blank" rel="external"><linux page-flags.h=""></linux></a></li>
+</ul>
+<a id="more"></a>
+<h4 id="1-2-&#x533A;"><a href="#1-2-&#x533A;" class="headerlink" title="1.2 &#x533A;"></a>1.2 <a href="https://en.wikipedia.org/wiki/Region-based_memory_management" target="_blank" rel="external">&#x533A;</a></h4><blockquote>
+<p>&#x786C;&#x4EF6;&#x6709;&#x4E00;&#x4E9B;&#x9650;&#x5236;&#xFF0C;&#x6BD4;&#x5982;&#x67D0;&#x4E9B;&#x9875;&#x4F4D;&#x4E8E;&#x5185;&#x5B58;&#x4E2D;&#x7684;&#x7279;&#x5B9A;&#x7269;&#x7406;&#x5730;&#x5740;&#x4E0A;&#xFF0C;&#x6240;&#x4EE5;&#x4E0D;&#x80FD;&#x5C06;&#x5176;&#x7528;&#x4E8E;&#x4E00;&#x4E9B;&#x7279;&#x5B9A;&#x7684;&#x4EFB;&#x52A1;&#x3002;&#x56E0;&#x6B64;&#x5185;&#x6838;&#x53C8;&#x628A;&#x9875;&#x5212;&#x5206;&#x4E3A;&#x4E0D;&#x540C;&#x7684;&#x533A;(zone)&#xFF0C;&#x5185;&#x6838;&#x4F7F;&#x7528;&#x533A;&#x5C06;&#x76F8;&#x4F3C;&#x5C5E;&#x6027;&#x7684;&#x9875;&#x8FDB;&#x7A0B;&#x5206;&#x7EC4;&#x3002;      </p>
+</blockquote>
+<p>Linux&#x5FC5;&#x987B;&#x5904;&#x7406;&#x5982;&#x4E0B;&#x4E24;&#x79CD;&#x786C;&#x4EF6;&#x5F15;&#x8D77;&#x7684;&#x5185;&#x5B58;&#x5BFB;&#x5740;&#x95EE;&#x9898;&#xFF1A;</p>
+<ul>
+<li>&#x4E00;&#x4E9B;&#x786C;&#x4EF6;&#x53EA;&#x80FD;&#x5728;&#x67D0;&#x4E9B;&#x7279;&#x5B9A;&#x5185;&#x5B58;&#x5730;&#x5740;&#x4E0A;&#x6267;&#x884C;DMA</li>
+<li>&#x4E00;&#x4E9B;&#x4F53;&#x7CFB;&#x7ED3;&#x6784;&#x7684;&#x5185;&#x5B58;&#x7684;&#x7269;&#x7406;&#x5BFB;&#x5740;&#x8303;&#x56F4;&#x6BD4;&#x865A;&#x62DF;&#x5BFB;&#x5740;&#x8303;&#x56F4;&#x5927;&#xFF0C;&#x5BFC;&#x81F4;&#x4E00;&#x4E9B;&#x5185;&#x5B58;&#x4E0D;&#x80FD;&#x6C38;&#x4E45;&#x6620;&#x5C04;&#x5230;&#x5185;&#x6838;&#x7A7A;&#x95F4;  </li>
+</ul>
+<p>Linux&#x56E0;&#x6B64;&#x5C06;&#x9875;&#x5206;&#x6210;&#x56DB;&#x79CD;&#x533A;&#xFF1A;</p>
+<ul>
+<li>ZONE_DMA &#x5305;&#x542B;&#x80FD;&#x6267;&#x884C;DMA&#x7684;&#x9875;</li>
+<li>ZONE_DMA32 &#x652F;&#x6301;32&#x4F4D;&#x8BBE;&#x5907;</li>
+<li>ZONE_NORMAL &#x6240;&#x4EE5;&#x80FD;&#x6B63;&#x5E38;&#x6620;&#x5C04;&#x7684;&#x9875;</li>
+<li>ZONE_HIGHEM &#x5305;&#x542B;&#x201D;<a href="https://en.wikipedia.org/wiki/High_memory" target="_blank" rel="external">&#x9AD8;&#x7AEF;&#x5185;&#x5B58;</a>&#x201C;,&#x5176;&#x4E2D;&#x7684;&#x9875;&#x4E0D;&#x80FD;&#x6C38;&#x4E45;&#x6620;&#x5C04;&#x5230;&#x5185;&#x6838;&#x5730;&#x5740;&#x7A7A;&#x95F4;</li>
+</ul>
+<p>&#x533A;&#x7531;&#x7ED3;&#x6784;&#x4F53;struct zone&#x8868;&#x793A;&#xFF1A;<a href="https://github.com/torvalds/linux/blob/master/include/linux/mmzone.h#L344" target="_blank" rel="external">linux/mmzone.h</a>,&#x521D;&#x59CB;&#x5316;&#x5728;:<a href="https://github.com/torvalds/linux/blob/master/mm/page_alloc.c#L220" target="_blank" rel="external"><mm page_alloc.c=""></mm></a></p>
+<h4 id="1-3-&#x83B7;&#x53D6;&#x9875;API"><a href="#1-3-&#x83B7;&#x53D6;&#x9875;API" class="headerlink" title="1.3 &#x83B7;&#x53D6;&#x9875;API"></a>1.3 &#x83B7;&#x53D6;&#x9875;API</h4><blockquote>
+<p>&#x5185;&#x6838;&#x63D0;&#x4F9B;&#x4E00;&#x79CD;&#x8BF7;&#x6C42;&#x5185;&#x5B58;&#x7684;&#x5E95;&#x5C42;&#x673A;&#x5236;&#xFF0C;&#x4EE5;&#x9875;&#x4E3A;&#x5355;&#x4F4D;&#x5206;&#x914D;&#x5185;&#x5B58;&#xFF0C;&#x76F8;&#x5173;&#x63A5;&#x53E3;&#x5B9A;&#x4E49;&#x5728;<a href="https://github.com/torvalds/linux/blob/master/include/linux/gfp.h" target="_blank" rel="external">linux/gfp.h</a></p>
+</blockquote>
+<ul>
+<li>struct page* alloc_pages(gfp_t gfp_mask, unsigned int order):&#x5206;&#x914D;(1&lt;&lt;order)&#x4E2A;&#x8FDE;&#x7EED;&#x7684;&#x7269;&#x7406;&#x9875;&#xFF0C;&#x8FD4;&#x56DE;&#x6307;&#x5411;&#x7B2C;&#x4E00;&#x9875;&#x9875;&#x7ED3;&#x6784;&#x7684;&#x6307;&#x9488;</li>
+<li>void<em> page_address(struct page </em>page):&#x8F6C;&#x6362;&#x4E3A;&#x903B;&#x8F91;&#x5730;&#x5740;</li>
+<li>__get_free_pages(gfp_mask, order):&#x5206;&#x914D;(1&lt;&lt;order)&#x9875;&#xFF0C;&#x8FD4;&#x56DE;&#x6307;&#x5411;&#x7B2C;&#x4E00;&#x9875;&#x903B;&#x8F91;&#x5730;&#x5740;&#x7684;&#x6307;&#x9488;</li>
+<li>alloc_page(gfp_mask)</li>
+<li>__get_free_page(gfp_mask)</li>
+<li>get_zeroed_page(gfp_mask)</li>
+<li>void __free_pages(struct page *page, unsigned int order)</li>
+<li>void free_pages(unsigned long addr, unsigned int order)</li>
+<li>void free_page(unsigned long addr)</li>
+</ul>
+<h3 id="2-kmalloc"><a href="#2-kmalloc" class="headerlink" title="2. kmalloc()"></a>2. kmalloc()</h3><blockquote>
+<p>&#x5185;&#x6838;&#x63D0;&#x4F9B;kmalloc()&#x51FD;&#x6570;&#x6765;&#x5206;&#x914D;&#x4EE5;&#x5B57;&#x8282;&#x4E3A;&#x5355;&#x4F4D;&#x7684;&#x5185;&#x5B58;&#xFF0C;&#x8C03;&#x7528;&#x5B83;&#x53EF;&#x4EE5;&#x83B7;&#x5F97;&#x4EE5;&#x5B57;&#x8282;&#x4E3A;&#x5355;&#x4F4D;&#x7684;&#x4E00;&#x5757;&#x5185;&#x6838;&#x5185;&#x5B58;</p>
+</blockquote>
+<p>kmalloc()&#x5728;<a href="https://github.com/torvalds/linux/blob/master/include/linux/slab.h#L478" target="_blank" rel="external">linux/slab.h</a></p>
+<ul>
+<li>void *kmalloc(size_t size, gfp_t flags)&#xFF1A;&#x5206;&#x914D;&#x5728;&#x7269;&#x7406;&#x4E0A;&#x8FDE;&#x7EED;&#x7684;&#x5927;&#x5C0F;&#x4E3A;size&#x7684;&#x5185;&#x5B58;&#x5757;</li>
+</ul>
+<h4 id="2-1-gfp-mask&#x6807;&#x5FD7;"><a href="#2-1-gfp-mask&#x6807;&#x5FD7;" class="headerlink" title="2.1 gfp_mask&#x6807;&#x5FD7;"></a>2.1 gfp_mask&#x6807;&#x5FD7;</h4><ul>
+<li>&#x884C;&#x4E3A;&#x4FEE;&#x9970;&#x7B26;&#xFF1A;&#x8868;&#x793A;&#x5185;&#x6838;&#x5E94;&#x5F53;&#x5982;&#x4F55;&#x5206;&#x914D;&#x6240;&#x9700;&#x5185;&#x5B58;</li>
+<li>&#x533A;&#x4FEE;&#x9970;&#x7B26;&#xFF1A;&#x8868;&#x793A;&#x4ECE;&#x54EA;&#x513F;&#x5206;&#x914D;&#x5185;&#x5B58;</li>
+<li>&#x7C7B;&#x578B;&#xFF1A;&#x7EC4;&#x5408;&#x884C;&#x4E3A;&#x4FEE;&#x9970;&#x7B26;&#x548C;&#x533A;&#x4FEE;&#x9970;&#x7B26;&#xFF0C;&#x5F97;&#x5230;&#x4E00;&#x4E2A;&#x7C7B;&#x578B;&#x6807;&#x5FD7;&#xFF0C;&#x65B9;&#x4FBF;&#x4F7F;&#x7528;</li>
+</ul>
+<p>&#x8FD9;&#x4E9B;&#x6807;&#x5FD7;&#x58F0;&#x660E;&#x5728;&#xFF1A;<a href="https://github.com/torvalds/linux/blob/master/include/linux/gfp.h" target="_blank" rel="external">linxu/gfp.h</a></p>
+<table>
+<thead>
+<tr>
+<th>&#x6807;&#x5FD7;</th>
+<th>&#x4FEE;&#x9970;&#x7B26;</th>
+<th>&#x63CF;&#x8FF0;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GFP_ATOMIC</td>
+<td>__GFP_HIGH</td>
+<td>&#x7528;&#x5728;&#x4E2D;&#x65AD;&#x5904;&#x7406;&#x7A0B;&#x5E8F;&#x3001;&#x4E0B;&#x534A;&#x90E8;&#x3001;&#x6301;&#x6709;&#x81EA;&#x65CB;&#x9501;&#x4EE5;&#x53CA;&#x5176;&#x4ED6;&#x4E0D;&#x80FD;&#x7761;&#x7720;&#x7684;&#x5730;&#x65B9;</td>
+</tr>
+<tr>
+<td>GFP_NOWAIT</td>
+<td>0</td>
+<td>&#x4E0E;GFP_ATOMIC&#x7C7B;&#x4F3C;&#xFF0C;&#x4F46;&#x662F;&#x8C03;&#x7528;&#x4E0D;&#x4F1A;&#x9000;&#x7ED9;&#x7D27;&#x6025;&#x5185;&#x5B58;&#x6C60;&#xFF0C;&#x589E;&#x52A0;&#x4E86;&#x5206;&#x914D;&#x5931;&#x8D25;&#x7684;&#x53EF;&#x80FD;&#x6027;</td>
+</tr>
+<tr>
+<td>GFP_NOIO</td>
+<td>__GFP_WAIT</td>
+<td>&#x8FD9;&#x79CD;&#x5206;&#x914D;&#x53EF;&#x4EE5;&#x963B;&#x585E;&#xFF0C;&#x4F46;&#x4E0D;&#x4F1A;&#x542F;&#x52A8;&#x78C1;&#x76D8;I/O&#x3002;&#x8FD9;&#x4E2A;&#x6807;&#x5FD7;&#x5728;&#x4E0D;&#x80FD;&#x5F15;&#x53D1;&#x66F4;&#x591A;&#x78C1;&#x76D8;I/O&#x65F6;&#x80FD;&#x963B;&#x585E;I/O&#x4EE3;&#x7801;&#xFF0C;&#x6709;&#x9012;&#x5F52;&#x98CE;&#x9669;</td>
+</tr>
+<tr>
+<td>GFP_NOFS</td>
+<td>__GFP_WAIT\</td>
+<td>__GFP_IO</td>
+<td>&#x8FD9;&#x79CD;&#x5206;&#x914D;&#x5728;&#x5FC5;&#x8981;&#x65F6;&#x53EF;&#x80FD;&#x963B;&#x585E;&#xFF0C;&#x4E5F;&#x53EF;&#x80FD;&#x542F;&#x52A8;&#x78C1;&#x76D8;I/O&#xFF0C;&#x4F46;&#x4E0D;&#x4F1A;&#x542F;&#x52A8;&#x6587;&#x4EF6;&#x7CFB;&#x7EDF;&#x64CD;&#x4F5C;&#x3002;&#x8FD9;&#x4E2A;&#x6807;&#x5FD7;&#x5728;&#x4E0D;&#x80FD;&#x518D;&#x542F;&#x52A8;&#x53E6;&#x4E00;&#x4E2A;&#x6587;&#x4EF6;&#x7CFB;&#x7EDF;&#x64CD;&#x4F5C;&#x65F6;&#xFF0C;&#x7528;&#x5728;&#x6587;&#x4EF6;&#x7CFB;&#x7EDF;&#x4EE3;&#x7801;&#x4E2D;</td>
+</tr>
+<tr>
+<td>GFP_KERNEL</td>
+<td>__GFP_WAIT\</td>
+<td>__GFP_IO\</td>
+<td>__GFP_FS</td>
+<td>&#x5E38;&#x7528;&#x7684;&#x65B9;&#x5F0F;&#xFF0C;&#x53EF;&#x80FD;&#x4F1A;&#x963B;&#x585E;&#x3002;&#x8FD9;&#x4E2A;&#x6807;&#x5FD7;&#x5728;&#x7761;&#x7720;&#x5B89;&#x5168;&#x65F6;&#x7528;&#x5728;&#x8FDB;&#x7A0B;&#x4E0A;&#x4E0B;&#x6587;&#x4EE3;&#x7801;&#x4E2D;</td>
+</tr>
+<tr>
+<td>GFP_USER</td>
+<td>__GFP_WAIT\</td>
+<td>__GFP_IO\</td>
+<td>__GFP_FS</td>
+<td>&#x5E38;&#x7528;&#x65B9;&#x5F0F;&#xFF0C;&#x53EF;&#x80FD;&#x4F1A;&#x963B;&#x585E;&#x3002;&#x8FD9;&#x4E2A;&#x6807;&#x5FD7;&#x7528;&#x4E8E;&#x7528;&#x6237;&#x7A7A;&#x95F4;&#x5206;&#x914D;&#x5185;&#x5B58;</td>
+</tr>
+<tr>
+<td>GFP_HIGHUSER</td>
+<td>__GFP_WAIT\</td>
+<td>__GFP_IO\</td>
+<td>__GFP_FS\</td>
+<td>__GFP_HIGHMEM</td>
+<td>&#x4ECE;ZONE_HIGHMEM&#x8FDB;&#x884C;&#x5206;&#x914D;&#xFF0C;&#x53EF;&#x80FD;&#x4F1A;&#x963B;&#x585E;&#x3002;&#x8FD9;&#x4E2A;&#x6807;&#x5FD7;&#x4E5F;&#x7528;&#x4E8E;&#x4E3A;&#x7528;&#x6237;&#x7A7A;&#x95F4;&#x8FDB;&#x7A0B;&#x5206;&#x914D;&#x5185;&#x5B58;</td>
+</tr>
+<tr>
+<td>GFP_DMA</td>
+<td>__GFP_DMA</td>
+<td>&#x4ECE;ZONE_DMA&#x8FDB;&#x884C;&#x5206;&#x914D;&#x3002;&#x9700;&#x8981;&#x83B7;&#x53D6;&#x80FD;&#x4F9B;DMA&#x4F7F;&#x7528;&#x7684;&#x5185;&#x5B58;&#x7684;&#x8BBE;&#x5907;&#x9A71;&#x52A8;&#x7A0B;&#x5E8F;&#x4F7F;&#x7528;&#x8FD9;&#x4E2A;&#x6807;&#x5FD7;&#xFF0C;&#x901A;&#x5E38;&#x4E0E;&#x4EE5;&#x4E0A;&#x7684;&#x67D0;&#x4E2A;&#x6807;&#x5FD7;&#x7EC4;&#x5408;</td>
+</tr>
+</tbody>
+</table>
+<h4 id="2-2-kfree"><a href="#2-2-kfree" class="headerlink" title="2.2 kfree()"></a>2.2 kfree()</h4><p>kfree&#x58F0;&#x660E;&#x5728;<linux slab.h="">&#x4E2D;&#xFF1A;<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">kfree</span><span class="params">(<span class="keyword">const</span> <span class="keyword">void</span> *ptr)</span></span>;</div></pre></td></tr></table></figure></linux></p>
+<p>kfree()&#x91CA;&#x653E;&#x7531;kmalloc()&#x5206;&#x914D;&#x7684;&#x5185;&#x5B58;&#x5757;&#xFF0C;&#x6CE8;&#x610F;&#x5206;&#x914D;&#x548C;&#x56DE;&#x6536;&#x8981;&#x914D;&#x5BF9;&#x4F7F;&#x7528;&#xFF0C;&#x8C03;&#x7528;kfree(NULL)&#x662F;&#x5B89;&#x5168;&#x7684;&#x3002;</p>
+<h4 id="2-3-vmalloc"><a href="#2-3-vmalloc" class="headerlink" title="2.3 vmalloc()"></a>2.3 vmalloc()</h4><p>vmalloc()&#x7C7B;&#x4F3C;&#x4E8E;kmalloc()&#xFF0C;&#x53EA;&#x662F;vmalloc()&#x5206;&#x914D;&#x7684;&#x865A;&#x62DF;&#x5730;&#x5740;&#x8FDE;&#x7EED;&#xFF0C;&#x4F46;&#x662F;&#x7269;&#x7406;&#x5730;&#x5740;&#x53EF;&#x80FD;&#x4E0D;&#x8FDE;&#x7EED;&#x3002;&#x8FD9;&#x662F;&#x7528;&#x6237;&#x7A7A;&#x95F4;&#x5206;&#x914D;&#x51FD;&#x6570;&#x7684;&#x5DE5;&#x4F5C;&#x65B9;&#x5F0F;&#xFF1A;&#x7531;malloc()&#x8FD4;&#x56DE;&#x7684;&#x9875;&#x5728;&#x8FDB;&#x7A0B;&#x7684;&#x865A;&#x62DF;&#x5730;&#x5740;&#x7A7A;&#x95F4;&#x5185;&#x8FDE;&#x7EED;&#xFF0C;&#x4F46;&#x662F;&#x4E0D;&#x80FD;&#x4FDD;&#x8BC1;&#x5176;&#x5728;&#x7269;&#x7406;&#x5185;&#x5B58;&#x4E5F;&#x8FDE;&#x7EED;&#x3002;kmalloc()&#x786E;&#x4FDD;&#x9875;&#x5728;&#x7269;&#x7406;&#x5730;&#x5740;&#x4E0A;&#x8FDE;&#x7EED;&#x3002;<br>vmallo()&#x58F0;&#x660E;&#x5728;<a href="https://github.com/torvalds/linux/blob/master/include/linux/vmalloc.h" target="_blank" rel="external">linux/vmalloc.h</a>&#xFF0C;&#x5B9A;&#x4E49;&#x5728;<a href="https://github.com/torvalds/linux/blob/master/mm/vmalloc.c" target="_blank" rel="external">mm/vmalloc.c</a>&#xFF0C;&#x51FD;&#x6570;&#x53EF;&#x80FD;&#x7761;&#x7720;:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span>* <span class="title">vmalloc</span><span class="params">(<span class="keyword">unsigned</span> <span class="keyword">long</span> size)</span></span>;</div><div class="line"><span class="function"><span class="keyword">void</span>  <span class="title">vfree</span><span class="params">(<span class="keyword">const</span> <span class="keyword">void</span> *add)</span></span>;</div></pre></td></tr></table></figure>
+<h4 id="3-slab&#x5206;&#x914D;&#x5668;"><a href="#3-slab&#x5206;&#x914D;&#x5668;" class="headerlink" title="3. slab&#x5206;&#x914D;&#x5668;"></a>3. <a href="https://en.wikipedia.org/wiki/Slab_allocation" target="_blank" rel="external">slab&#x5206;&#x914D;&#x5668;</a></h4><p>&#x5185;&#x5B58;&#x7684;&#x5206;&#x914D;&#x548C;&#x91CA;&#x653E;&#x662F;&#x975E;&#x5E38;&#x666E;&#x904D;&#x7684;&#xFF0C;&#x9891;&#x7E41;&#x7684;&#x5206;&#x914D;&#x548C;&#x91CA;&#x653E;&#x6D88;&#x8017;&#x5F88;&#x5927;&#xFF0C;Linux&#x63D0;&#x4F9B;&#x4E86;slab&#x5206;&#x914D;&#x5668;&#x7BA1;&#x7406;&#x5185;&#x5B58;&#x3002;&#x5173;&#x4E8E;slab&#x5206;&#x914D;&#x5668;&#x7684;&#x539F;&#x5219;&#xFF1A;</p>
+<ul>
+<li>&#x9891;&#x7E41;&#x4F7F;&#x7528;&#x7684;&#x6570;&#x636E;&#x7ED3;&#x6784;&#x4E5F;&#x4F1A;&#x9891;&#x7E41;&#x5206;&#x914D;&#x548C;&#x91CA;&#x653E;&#xFF0C;&#x56E0;&#x6B64;&#x5E94;&#x8BE5;&#x7F13;&#x5B58;&#x5B83;&#x4EEC;</li>
+<li>&#x9891;&#x7E41;&#x5206;&#x914D;&#x548C;&#x91CA;&#x653E;&#x4F1A;&#x5BFC;&#x81F4;<a href="https://en.wikipedia.org/wiki/Fragmentation_(computing)" target="_blank" rel="external">&#x5185;&#x5B58;&#x788E;&#x7247;</a>&#xFF0C;&#x56E0;&#x6B64;&#x7A7A;&#x95F2;&#x94FE;&#x8868;&#x7684;&#x7F13;&#x5B58;&#x5E94;&#x8BE5;&#x8FDE;&#x7EED;&#x5B58;&#x653E;&#x3002;</li>
+<li>&#x56DE;&#x6536;&#x7684;&#x5BF9;&#x8C61;&#x53EF;&#x4EE5;&#x7ACB;&#x523B;&#x6295;&#x5165;&#x4E0B;&#x4E00;&#x6B21;&#x5206;&#x914D;&#xFF0C;&#x56E0;&#x6B64;&#xFF0C;&#x63D0;&#x4F9B;&#x4E86;&#x9891;&#x7E41;&#x7684;&#x5206;&#x914D;&#x91CA;&#x653E;&#x7684;&#x6027;&#x80FD;</li>
+<li>&#x5982;&#x679C;&#x77E5;&#x9053;&#x5BF9;&#x8C61;&#x5927;&#x5C0F;&#x3001;&#x9875;&#x5927;&#x5C0F;&#x548C;&#x603B;&#x7684;&#x9AD8;&#x901F;&#x7F13;&#x5B58;&#x5927;&#x5C0F;&#xFF0C;&#x5206;&#x914D;&#x5668;&#x53EF;&#x4EE5;&#x505A;&#x51FA;&#x66F4;&#x660E;&#x667A;&#x7684;&#x51B3;&#x7B56;</li>
+<li>&#x5982;&#x679C;&#x8BA9;&#x90E8;&#x5206;&#x7F13;&#x5B58;&#x4E13;&#x5C5E;&#x4E8E;&#x5355;&#x4E2A;&#x5904;&#x7406;&#x5668;&#xFF0C;&#x90A3;&#x4E48;&#x5206;&#x914D;&#x548C;&#x91CA;&#x653E;&#x5C31;&#x53EF;&#x4EE5;&#x4E0D;&#x52A0;SMP&#x9501;</li>
+<li>&#x5982;&#x679C;&#x5206;&#x914D;&#x5668;&#x4E0E;<a href="https://en.wikipedia.org/wiki/Non-uniform_memory_access" target="_blank" rel="external">NUMA</a>&#x76F8;&#x5173;&#xFF0C;&#x5B83;&#x5C31;&#x53EF;&#x4EE5;&#x4ECE;&#x76F8;&#x540C;&#x7684;&#x5185;&#x5B58;&#x8282;&#x70B9;&#x4E3A;&#x8BF7;&#x6C42;&#x8005;&#x5206;&#x914D;</li>
+<li>&#x5BF9;&#x5B58;&#x653E;&#x7684;&#x5BF9;&#x8C61;&#x8FDB;&#x884C;&#x7740;&#x8272;&#xFF0C;&#x9632;&#x6B62;&#x591A;&#x4E2A;&#x5BF9;&#x8C61;&#x6620;&#x5C04;&#x5230;&#x76F8;&#x540C;&#x7684;&#x9AD8;&#x901F;&#x7F13;&#x5B58;&#x884C;(cache line)</li>
+</ul>
+<p>&#x5B66;&#x4E60;&#x8D44;&#x6599;&#xFF1A;</p>
+<ul>
+<li><a href="https://www.ibm.com/developerworks/cn/linux/l-linux-slab-allocator/" target="_blank" rel="external">Linux slab &#x5206;&#x914D;&#x5668;&#x5256;&#x6790;</a></li>
+<li><a href="http://www.secretmango.com/jimb/Whitepapers/slabs/slab.html" target="_blank" rel="external">Overview of Linux Memory Management Concepts: Slabs</a></li>
+<li><a href="https://en.wikibooks.org/wiki/The_Linux_Kernel/Memory" target="_blank" rel="external">The Linux Kernel-Memory</a></li>
+<li><a href="http://elinux.org/Kernel_dynamic_memory_analysis" target="_blank" rel="external">Kernel dynamic memory analysis</a></li>
+<li><a href="http://weng-blog.com/2016/08/linux-mm/" target="_blank" rel="external">Linux Memory Management</a></li>
+<li><a href="http://phrack.org/issues/66/15.html#article" target="_blank" rel="external">http://phrack.org/issues/66/15.html#article</a></li>
+<li><a href="http://phrack.org/issues/66/8.html#article" target="_blank" rel="external">http://phrack.org/issues/66/8.html#article</a></li>
+</ul>
+<p>&#x6BCF;&#x4E2A;&#x9AD8;&#x901F;&#x7F13;&#x5B58;&#x4F7F;&#x7528;kmem_cache&#x7ED3;&#x6784;&#x8868;&#x793A;&#xFF0C;&#x5305;&#x542B;&#x4E09;&#x4E2A;&#x94FE;&#x8868;&#xFF1A;slabs_full&#x3001;slabs_partial&#x3001;slabs_empty&#xFF0C;slab&#x5B9E;&#x73B0;&#x7684;&#x6587;&#x4EF6;&#xFF1A;<a href="https://github.com/torvalds/linux/blob/master/include/linux/slab.h" target="_blank" rel="external">linux/slab.h</a>&#x3001;<a href="https://github.com/torvalds/linux/blob/master/mm/slab.c" target="_blank" rel="external">mm<br>/slab.c</a></p>
+<p>slab&#x7533;&#x8BF7;&#x7684;&#x5185;&#x5B58;&#x91CA;&#x653E;&#xFF1A;</p>
+<ul>
+<li>&#x5F53;&#x53EF;&#x7528;&#x5185;&#x5B58;&#x53D8;&#x5F97;&#x7D27;&#x7F3A;&#x65F6;&#xFF0C;&#x7CFB;&#x7EDF;&#x8BD5;&#x56FE;&#x91CA;&#x653E;&#x51FA;&#x66F4;&#x591A;&#x5185;&#x5B58;&#x4EE5;&#x4F9B;&#x4F7F;&#x7528;</li>
+<li>&#x5F53;&#x9AD8;&#x901F;&#x7F13;&#x5B58;&#x663E;&#x5F0F;&#x88AB;&#x64A4;&#x9500;&#x65F6;</li>
+</ul>
+<h4 id="4-&#x5728;&#x6808;&#x4E0A;&#x9759;&#x6001;&#x5206;&#x914D;"><a href="#4-&#x5728;&#x6808;&#x4E0A;&#x9759;&#x6001;&#x5206;&#x914D;" class="headerlink" title="4. &#x5728;&#x6808;&#x4E0A;&#x9759;&#x6001;&#x5206;&#x914D;"></a>4. &#x5728;&#x6808;&#x4E0A;&#x9759;&#x6001;&#x5206;&#x914D;</h4><blockquote>
+<p>&#x5185;&#x6838;&#x5BF9;&#x8FDB;&#x7A0B;&#x7684;&#x6808;&#x6709;&#x9650;&#x5236;&#xFF1A;&#x5185;&#x6838;&#x6808;&#x5C0F;&#x800C;&#x4E14;&#x56FA;&#x5B9A;&#x3002;</p>
+</blockquote>
+<p>&#x8FDB;&#x7A0B;&#x7684;&#x5185;&#x6838;&#x6808;&#x901A;&#x5E38;&#x662F;&#x4E24;&#x9875;&#x7684;&#x5927;&#x5C0F;&#xFF0C;32&#x4F4D;&#x548C;64&#x4F4D;&#x4F53;&#x7CFB;&#x7ED3;&#x6784;&#x7684;&#x9875;&#x4E3A;4Kb&#x548C;8kb&#xFF0C;&#x6240;&#x4EE5;&#x5B83;&#x4EEC;&#x7684;&#x5185;&#x6838;&#x6808;&#x5927;&#x5C0F;&#x5206;&#x522B;&#x4E3A;8kb&#x548C;16kb&#x3002;</p>
+<p>&#x53EF;&#x80FD;&#x8BBE;&#x7F6E;&#x5355;&#x9875;&#x7684;&#x5185;&#x6838;&#x6808;&#xFF0C;&#x6B64;&#x65F6;&#x4E2D;&#x65AD;&#x5904;&#x7406;&#x7A0B;&#x5E8F;&#x4E0D;&#x548C;&#x5185;&#x6838;&#x8FDB;&#x7A0B;&#x5171;&#x4EAB;&#x540C;&#x4E00;&#x4E2A;&#x6808;&#x4E86;&#xFF0C;&#x5185;&#x6838;&#x4E3A;&#x5B83;&#x63D0;&#x4F9B;&#x81EA;&#x5DF1;&#x7684;&#x4E2D;&#x65AD;&#x6808;&#x3002;</p>
+<ul>
+<li><a href="https://lwn.net/Articles/692208/" target="_blank" rel="external">Virtually mapped kernel stacks-1</a></li>
+<li><a href="https://lwn.net/Articles/692600/" target="_blank" rel="external">Virtually mapped kernel stacks-2</a></li>
+<li><a href="http://www.lenky.info/archives/2012/01/931" target="_blank" rel="external">Linux Kernel Stack Overflow/Linux &#x5185;&#x6838;&#x6808;&#x6EA2;&#x51FA;</a></li>
+<li><a href="https://blog.0x80.org/kernel-stack-overflows-basics/" target="_blank" rel="external">Kernel stack overflows (basics)</a></li>
+</ul>
+<h4 id="5-&#x9AD8;&#x7AEF;&#x5185;&#x5B58;&#x6620;&#x5C04;"><a href="#5-&#x9AD8;&#x7AEF;&#x5185;&#x5B58;&#x6620;&#x5C04;" class="headerlink" title="5. &#x9AD8;&#x7AEF;&#x5185;&#x5B58;&#x6620;&#x5C04;"></a>5. &#x9AD8;&#x7AEF;&#x5185;&#x5B58;&#x6620;&#x5C04;</h4><blockquote>
+<p>&#x9AD8;&#x7AEF;&#x5185;&#x5B58;&#x4E2D;&#x7684;&#x9875;&#x4E0D;&#x80FD;&#x6C38;&#x4E45;&#x6620;&#x5C04;&#x5230;&#x5185;&#x6838;&#x5730;&#x5740;&#x7A7A;&#x95F4;&#xFF0C;&#x56E0;&#x6B64;&#x901A;&#x8FC7;alloc_pages()&#x4EE5;__GFP_HIGHMEM&#x6807;&#x5FD7;&#x83B7;&#x5F97;&#x7684;&#x9875;&#x4E0D;&#x53EF;&#x80FD;&#x6709;&#x903B;&#x8F91;&#x5730;&#x5740;&#x3002;</p>
+</blockquote>
+<p><strong>&#x6C38;&#x4E45;&#x6620;&#x5C04;</strong><br>&#x8981;&#x6620;&#x5C04;&#x4E00;&#x4E2A;&#x7ED9;&#x5B9A;&#x7684;page&#x7ED3;&#x6784;&#x5230;&#x5185;&#x6838;&#x5730;&#x5740;&#x7A7A;&#x95F4;&#xFF0C;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;kmap()&#x51FD;&#x6570;&#xFF0C;&#x5B9A;&#x4E49;&#x5728;<a href="https://github.com/torvalds/linux/blob/master/include/linux/highmem.h#L56" target="_blank" rel="external">linux/highmem.h</a></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span>* <span class="title">kmap</span><span class="params">(<span class="keyword">struct</span> page *page)</span></span>;</div><div class="line"><span class="function"><span class="keyword">void</span>  <span class="title">kunmap</span><span class="params">(<span class="keyword">struct</span> page *page)</span></span>;</div></pre></td></tr></table></figure>
+<p><strong>&#x4E34;&#x65F6;&#x6620;&#x5C04;</strong><br>&#x5F53;&#x5FC5;&#x987B;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x6620;&#x5C04;&#x800C;&#x5F53;&#x524D;&#x4E0A;&#x4E0B;&#x6587;&#x4E0D;&#x80FD;&#x7761;&#x7720;&#x65F6;&#xFF0C;&#x5185;&#x6838;&#x63D0;&#x4F9B;&#x4E86;&#x4E34;&#x65F6;&#x6620;&#x5C04;(&#x539F;&#x5B50;&#x6620;&#x5C04;),&#x901A;&#x8FC7;&#x4E00;&#x7EC4;&#x4FDD;&#x7559;&#x7684;&#x6620;&#x5C04;&#x5B8C;&#x6210;&#x3002;</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span>* <span class="title">kmap_atomic</span><span class="params">(<span class="keyword">struct</span> page *page, <span class="keyword">enum</span> km_type type)</span></span>;</div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">kunmap_atomic</span><span class="params">(<span class="keyword">void</span> *kvaddr, <span class="keyword">enum</span> Km_type type)</span></span>;</div></pre></td></tr></table></figure>
+<p>km_type&#x63CF;&#x8FF0;&#x4E86;&#x4E34;&#x65F6;&#x6620;&#x5C04;&#x7684;&#x76EE;&#x7684;<asm kmap_types.h="">&#xFF08;v3.5&#x4E4B;&#x524D;&#xFF09;</asm></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Linux-kernel/" rel="tag">#Linux kernel</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/20/第十一章-定时器和时间管理/" rel="next" title="第十一章 定时器和时间管理">
+                <i class="fa fa-chevron-left"></i> 第十一章 定时器和时间管理
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/05/21/第十二章-内存管理/"
+           data-title="第十二章 内存管理" data-url="http://luobuda.github.io/2017/05/21/第十二章-内存管理/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="//schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="https://projecteuler.net/profile/luobuda.png"
+               alt="洛卜哒" />
+          <p class="site-author-name" itemprop="name">洛卜哒</p>
+          <p class="site-description motion-element" itemprop="description">大约，孔乙己的确死了！</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">23</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/luobuda" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://github.com/luobuda" title="Github" target="_blank">Github</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://projecteuler.net/" title="Project Euler" target="_blank">Project Euler</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#内存管理"><span class="nav-number">1.</span> <span class="nav-text">内存管理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-内核如何管理内存"><span class="nav-number">1.1.</span> <span class="nav-text">1. 内核如何管理内存</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-页"><span class="nav-number">1.1.1.</span> <span class="nav-text">1.1 页</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-区"><span class="nav-number">1.1.2.</span> <span class="nav-text">1.2 区</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-获取页API"><span class="nav-number">1.1.3.</span> <span class="nav-text">1.3 获取页API</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-kmalloc"><span class="nav-number">1.2.</span> <span class="nav-text">2. kmalloc()</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-gfp-mask标志"><span class="nav-number">1.2.1.</span> <span class="nav-text">2.1 gfp_mask标志</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-kfree"><span class="nav-number">1.2.2.</span> <span class="nav-text">2.2 kfree()</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-vmalloc"><span class="nav-number">1.2.3.</span> <span class="nav-text">2.3 vmalloc()</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-slab分配器"><span class="nav-number">1.2.4.</span> <span class="nav-text">3. slab分配器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-在栈上静态分配"><span class="nav-number">1.2.5.</span> <span class="nav-text">4. 在栈上静态分配</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-高端内存映射"><span class="nav-number">1.2.6.</span> <span class="nav-text">5. 高端内存映射</span></a></li></ol></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">洛卜哒</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.2"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"luobuda"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>
