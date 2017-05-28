@@ -259,6 +259,168 @@
             
               
                 
+                <a class="post-title-link" href="/2017/04/29/第四章-进程调度/" itemprop="url">
+                  第四章 进程调度
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-04-29T15:00:45+08:00" content="2017-04-29">
+              2017-04-29
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="1-&#x8FDB;&#x7A0B;&#x8C03;&#x5EA6;"><a href="#1-&#x8FDB;&#x7A0B;&#x8C03;&#x5EA6;" class="headerlink" title="1. &#x8FDB;&#x7A0B;&#x8C03;&#x5EA6;"></a>1. <a href="https://en.wikipedia.org/wiki/Scheduling_(computing)" target="_blank" rel="external">&#x8FDB;&#x7A0B;&#x8C03;&#x5EA6;</a></h3><p>Linux&#x4F5C;&#x4E3A;&#x591A;&#x4EFB;&#x52A1;&#x5904;&#x7406;&#x7CFB;&#x7EDF;&#xFF0C;&#x540C;&#x4E00;&#x65F6;&#x523B;&#x80AF;&#x5B9A;&#x4F1A;&#x6709;&#x591A;&#x4E2A;&#x4EFB;&#x52A1;&#x8FDB;&#x7A0B;&#x5B58;&#x5728;&#x4E8E;&#x5185;&#x5B58;&#xFF0C;&#x56E0;&#x6B64;&#x5185;&#x6838;&#x7684;&#x8C03;&#x5EA6;&#x7A0B;&#x5E8F;&#x9700;&#x8981;&#x51B3;&#x5B9A;&#x4E3A;&#x54EA;&#x4E9B;&#x8FDB;&#x7A0B;&#x8FD0;&#x884C;&#xFF0C;&#x54EA;&#x4E9B;&#x8FDB;&#x7A0B;&#x7B49;&#x5F85;&#xFF0C;&#x4EE5;&#x53CA;&#x51B3;&#x5B9A;&#x8FDB;&#x7A0B;&#x8FD0;&#x884C;&#x7684;&#x65F6;&#x95F4;(&#x65F6;&#x95F4;&#x7247;)&#x3002;&#x8C03;&#x5EA6;&#x662F;&#x4E00;&#x4E2A;&#x5E73;&#x8861;&#x7684;&#x8FC7;&#x7A0B;&#x3002;&#x4E00;&#x65B9;&#x9762;&#xFF0C;&#x5B83;&#x8981;&#x4FDD;&#x8BC1;&#x5404;&#x4E2A;&#x8FD0;&#x884C;&#x7684;&#x8FDB;&#x7A0B;&#x80FD;&#x591F;&#x6700;&#x5927;&#x9650;&#x5EA6;&#x7684;&#x4F7F;&#x7528;CPU(&#x5373;&#x5C3D;&#x91CF;&#x5C11;&#x7684;&#x5207;&#x6362;&#x8FDB;&#x7A0B;&#xFF0C;&#x8FDB;&#x7A0B;&#x5207;&#x6362;&#x8FC7;&#x591A;&#xFF0C;CPU&#x7684;&#x65F6;&#x95F4;&#x4F1A;&#x6D6A;&#x8D39;&#x5728;&#x5207;&#x6362;&#x4E0A;)&#xFF1B;&#x53E6;&#x4E00;&#x65B9;&#x9762;&#xFF0C;&#x4FDD;&#x8BC1;&#x5404;&#x4E2A;&#x8FDB;&#x7A0B;&#x80FD;&#x516C;&#x5E73;&#x7684;&#x4F7F;&#x7528;CPU(&#x5373;&#x9632;&#x6B62;&#x4E00;&#x4E2A;&#x8FDB;&#x7A0B;&#x957F;&#x65F6;&#x95F4;&#x72EC;&#x5360;CPU&#x7684;&#x60C5;&#x51B5;)&#x3002;</p>
+<p>Linux&#x662F;&#x62A2;&#x5360;&#x5F0F;&#x7684;&#x5185;&#x6838;&#x8C03;&#x5EA6;&#xFF0C;&#x8FDB;&#x7A0B;&#x6709;&#x4F18;&#x5148;&#x7EA7;&#x7684;&#xFF0C;Linux&#x6700;&#x51FA;&#x540D;&#x7684;&#x8C03;&#x5EA6;&#x7A0B;&#x5E8F;&#x88AB;&#x79F0;&#x4E3A;&#x5B8C;&#x5168;&#x516C;&#x5E73;&#x8C03;&#x5EA6;&#x7B97;&#x6CD5;&#x2014;&#x2014;<a href="https://en.wikipedia.org/wiki/Completely_Fair_Scheduler" target="_blank" rel="external">CFS</a></p>
+<h3 id="2-&#x7B56;&#x7565;"><a href="#2-&#x7B56;&#x7565;" class="headerlink" title="2. &#x7B56;&#x7565;"></a>2. &#x7B56;&#x7565;</h3><ul>
+<li>&#x8FDB;&#x7A0B;&#x5206;&#x4E3A;I/O bond&#x548C;<a href="https://en.wikipedia.org/wiki/CPU-bound" target="_blank" rel="external">CPU bond</a></li>
+<li>&#x8C03;&#x5EA6;&#x7B56;&#x7565;&#x901A;&#x5E38;&#x5728;&#x8FDB;&#x7A0B;&#x54CD;&#x5E94;&#x901F;&#x5EA6;&#x548C;&#x7CFB;&#x7EDF;&#x541E;&#x5410;&#x91CF;&#x4E4B;&#x95F4;&#x5E73;&#x8861;</li>
+<li>&#x4F18;&#x5148;&#x7EA7;&#xFF1A;&#x6839;&#x636E;&#x8FDB;&#x7A0B;&#x7684;&#x4EF7;&#x503C;&#x548C;&#x5BF9;CPU&#x65F6;&#x95F4;&#x7684;&#x9700;&#x6C42;&#x8D4B;&#x4E88;&#x8FDB;&#x7A0B;&#x4F18;&#x5148;&#x7EA7;&#x6982;&#x5FF5;&#xFF0C;&#x5728;Linux&#x4E0B;&#xFF0C;&#x4F18;&#x5148;&#x7EA7;&#x4E00;&#x79CD;&#x79F0;&#x4E3A;nice&#x503C;&#xFF0C;&#x8303;&#x56F4;[-20,19]&#xFF0C;&#x9ED8;&#x8BA4;&#x4E3A;0&#xFF0C;nice&#x8D8A;&#x5927;&#x4F18;&#x5148;&#x7EA7;&#x8D8A;&#x4F4E;&#xFF0C;nice&#x4EE3;&#x8868;&#x65F6;&#x95F4;&#x7247;&#x7684;&#x6BD4;&#x4F8B;&#xFF1B;&#x7B2C;&#x4E8C;&#x79CD;&#x662F;&#x5B9E;&#x65F6;&#x4F18;&#x5148;&#x7EA7;&#xFF0C;&#x5176;&#x503C;&#x53EF;&#x4EE5;&#x914D;&#x7F6E;&#xFF0C;&#x9ED8;&#x8BA4;&#x8303;&#x56F4;[0,99]&#xFF0C;&#x503C;&#x8D8A;&#x9AD8;&#x4F18;&#x5148;&#x7EA7;&#x8D8A;&#x9AD8;&#xFF0C;&#x5B9E;&#x65F6;&#x8FDB;&#x7A0B;&#x4F18;&#x5148;&#x7EA7;&#x9AD8;&#x4E8E;&#x666E;&#x901A;&#x8FDB;&#x7A0B;&#x3002;&#x5B9E;&#x65F6;&#x4F18;&#x5148;&#x7EA7;&#x6BD4;nice&#x9AD8;&#xFF0C;&#x4E00;&#x4E2A;&#x8FDB;&#x7A0B;&#x7684;&#x4F18;&#x5148;&#x7EA7;&#x52A8;&#x6001;&#x5730;&#x6539;&#x53D8;&#xFF1A;&#x8BBE;&#x60F3;&#x4E00;&#x4E2A;&#x4F4E;&#x4F18;&#x5148;&#x7EA7;&#x7684;&#x8FDB;&#x7A0B;&#xFF0C;&#x5982;&#x679C;&#x4E00;&#x76F4;&#x6709;&#x9AD8;&#x4F18;&#x5148;&#x7EA7;&#x7684;&#x8FDB;&#x7A0B;&#x5728;&#xFF0C;&#x5B83;&#x53EF;&#x80FD;&#x997F;&#x6B7B;&#xFF0C;&#x56E0;&#x6B64;&#x6709;&#x4E00;&#x79CD;&#x6539;&#x8FDB;&#x65B9;&#x5F0F;&#x5C31;&#x662F;&#x8FD9;&#x4E2A;&#x52A8;&#x6001;&#x589E;&#x52A0;&#x8FDB;&#x7A0B;&#x7684;&#x4F18;&#x5148;&#x7EA7;</li>
+<li><a href="https://en.wikipedia.org/wiki/Preemption_(computing)#Time_slice" target="_blank" rel="external">&#x65F6;&#x95F4;&#x7247;</a>&#xFF1A;&#x8FDB;&#x7A0B;&#x88AB;&#x62A2;&#x5360;&#x524D;&#x6240;&#x80FD;&#x6301;&#x7EED;&#x8FD0;&#x884C;&#x7684;&#x65F6;&#x95F4;&#xFF0C;&#x56DE;&#x60F3;I/O bond&#x578B;&#x548C;CPU bond&#x578B;&#xFF0C;&#x524D;&#x8005;&#x4E0D;&#x9700;&#x8981;&#x957F;&#x7684;&#x65F6;&#x95F4;&#x7247;&#xFF0C;&#x540E;&#x8005;&#x5219;&#x5E0C;&#x671B;&#x65F6;&#x95F4;&#x7247;&#x8D8A;&#x957F;&#x8D8A;&#x597D;&#x3002;Linux&#x7684;CFS&#x8C03;&#x5EA6;&#x5668;&#x5C06;&#x5904;&#x7406;&#x5668;&#x7684;&#x4F7F;&#x7528;&#x6BD4;&#x5212;&#x5206;&#x7ED9;&#x8FDB;&#x7A0B;&#xFF0C;&#x8FD9;&#x6837;&#x4E00;&#x6765;&#x8FDB;&#x7A0B;&#x83B7;&#x5F97;&#x7684;&#x5904;&#x7406;&#x5668;&#x65F6;&#x95F4;&#x548C;&#x7CFB;&#x7EDF;&#x8D1F;&#x8F7D;&#x5BC6;&#x5207;&#x76F8;&#x5173;&#xFF0C;&#x8FD9;&#x4E2A;&#x6BD4;&#x4F8B;&#x53D7;nice&#x503C;&#x5F71;&#x54CD;</li>
+</ul>
+<h4 id="3-Linux&#x8C03;&#x5EA6;&#x7B97;&#x6CD5;"><a href="#3-Linux&#x8C03;&#x5EA6;&#x7B97;&#x6CD5;" class="headerlink" title="3. Linux&#x8C03;&#x5EA6;&#x7B97;&#x6CD5;"></a>3. Linux&#x8C03;&#x5EA6;&#x7B97;&#x6CD5;</h4><blockquote>
+<p>Linux&#x8C03;&#x5EA6;&#x5668;&#x4EE5;&#x6A21;&#x5757;&#x65B9;&#x5F0F;&#x63D0;&#x4F9B;&#xFF0C;&#x8FD9;&#x6837;&#x53EF;&#x4EE5;&#x9488;&#x5BF9;&#x4E0D;&#x540C;&#x8FDB;&#x7A0B;&#x7C7B;&#x578B;&#x9009;&#x62E9;&#x5408;&#x9002;&#x7684;&#x8C03;&#x5EA6;&#x7B97;&#x6CD5;&#xFF0C;&#x8FD9;&#x79CD;&#x6A21;&#x5757;&#x5316;&#x7ED3;&#x6784;&#x88AB;&#x79F0;&#x4E3A;[scheduler classes]&#x3002;</p>
+</blockquote>
+<p>&#x6BCF;&#x4E2A;&#x8C03;&#x5EA6;&#x5668;&#x90FD;&#x6709;&#x4E00;&#x4E2A;&#x4F18;&#x5148;&#x7EA7;&#xFF0C;&#x8C03;&#x5EA6;&#x5668;&#x4EE3;&#x7801;&#x5728;<a href="https://github.com/torvalds/linux/tree/master/kernel/sched" target="_blank" rel="external">kernel/sched</a>&#xFF0C;&#x8C03;&#x5EA6;&#x5668;&#x7B56;&#x7565;<a href="https://github.com/torvalds/linux/blob/master/include/uapi/linux/sched.h#L35" target="_blank" rel="external">uapi/linux/sched.h</a></p>
+<ul>
+<li>&#x516C;&#x5E73;&#x8C03;&#x5EA6;<ul>
+<li><a href="http://www.cnblogs.com/tianguiyu/articles/6091378.html" target="_blank" rel="external">http://www.cnblogs.com/tianguiyu/articles/6091378.html</a></li>
+<li><a href="https://www.ibm.com/developerworks/cn/linux/l-completely-fair-scheduler/index.html" target="_blank" rel="external">https://www.ibm.com/developerworks/cn/linux/l-completely-fair-scheduler/index.html</a></li>
+</ul>
+</li>
+</ul>
+<h4 id="4-&#x62A2;&#x5360;&#x548C;&#x4E0A;&#x4E0B;&#x6587;&#x5207;&#x6362;"><a href="#4-&#x62A2;&#x5360;&#x548C;&#x4E0A;&#x4E0B;&#x6587;&#x5207;&#x6362;" class="headerlink" title="4. &#x62A2;&#x5360;&#x548C;&#x4E0A;&#x4E0B;&#x6587;&#x5207;&#x6362;"></a>4. &#x62A2;&#x5360;&#x548C;&#x4E0A;&#x4E0B;&#x6587;&#x5207;&#x6362;</h4><ul>
+<li><a href="https://en.wikipedia.org/wiki/Preemption_(computing)" target="_blank" rel="external">&#x62A2;&#x5360;</a>  <ul>
+<li>&#x7528;&#x6237;&#x62A2;&#x5360;<ul>
+<li>&#x4ECE;&#x7CFB;&#x7EDF;&#x8C03;&#x7528;&#x8FD4;&#x56DE;&#x7528;&#x6237;&#x7A7A;&#x95F4;&#x65F6;</li>
+<li>&#x4ECE;&#x4E2D;&#x65AD;&#x5904;&#x7406;&#x7A0B;&#x5E8F;&#x8FD4;&#x56DE;&#x7528;&#x6237;&#x7A7A;&#x95F4;&#x65F6;</li>
+</ul>
+</li>
+<li>&#x5185;&#x6838;&#x62A2;&#x5360;<ul>
+<li>&#x4E2D;&#x65AD;&#x5904;&#x7406;&#x7A0B;&#x5E8F;&#x6B63;&#x5728;&#x6267;&#x884C;&#xFF0C;&#x4E14;&#x8FD4;&#x56DE;&#x5185;&#x6838;&#x7A7A;&#x95F4;&#x4E4B;&#x524D;</li>
+<li>&#x5185;&#x6838;&#x4EE3;&#x7801;&#x518D;&#x4E00;&#x6B21;&#x5177;&#x6709;&#x53EF;&#x62A2;&#x5360;&#x6027;&#x7684;&#x65F6;&#x5019;</li>
+<li>&#x5982;&#x679C;&#x5185;&#x6838;&#x4E2D;&#x7684;&#x4EFB;&#x52A1;&#x663E;&#x793A;&#x8C03;&#x7528;schedule()</li>
+<li>&#x5982;&#x679C;&#x5185;&#x6838;&#x4E2D;&#x7684;&#x4EFB;&#x52A1;&#x963B;&#x585E;(&#x8FD9;&#x4F1A;&#x5BFC;&#x81F4;&#x8C03;&#x7528;schedule())</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="https://en.wikipedia.org/wiki/Context_switch" target="_blank" rel="external">&#x4E0A;&#x4E0B;&#x6587;&#x5207;&#x6362;</a></li>
+</ul>
+<h4 id="5-&#x5B9E;&#x65F6;&#x8C03;&#x5EA6;&#x7B56;&#x7565;"><a href="#5-&#x5B9E;&#x65F6;&#x8C03;&#x5EA6;&#x7B56;&#x7565;" class="headerlink" title="5. &#x5B9E;&#x65F6;&#x8C03;&#x5EA6;&#x7B56;&#x7565;"></a>5. &#x5B9E;&#x65F6;&#x8C03;&#x5EA6;&#x7B56;&#x7565;</h4><p>Linux&#x63D0;&#x4F9B;&#x7684;&#x5B9E;&#x65F6;&#x8C03;&#x5EA6;&#x7B56;&#x7565;&#xFF1A;</p>
+<ul>
+<li>SCHED_FIFO</li>
+<li>SCHED_RR</li>
+</ul>
+<p>&#x53C2;&#x8003;&#x8D44;&#x6599;&#xFF1A;</p>
+<ul>
+<li><a href="http://stackoverflow.com/questions/9392415/linux-sched-other-sched-fifo-and-sched-rr-differences" target="_blank" rel="external">http://stackoverflow.com/questions/9392415/linux-sched-other-sched-fifo-and-sched-rr-differences</a></li>
+<li><a href="https://lwn.net/Articles/296419/" target="_blank" rel="external">https://lwn.net/Articles/296419/</a></li>
+<li><a href="https://en.wikipedia.org/wiki/SCHED_DEADLINE" target="_blank" rel="external">SCHED_DEADLINE</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Processor_affinity" target="_blank" rel="external">&#x5904;&#x7406;&#x5668;&#x7ED1;&#x5B9A;</a></li>
+<li><a href="http://www.cs.montana.edu/~chandrima.sarkar/AdvancedOS/CSCI560_Proj_main/" target="_blank" rel="external">http://www.cs.montana.edu/~chandrima.sarkar/AdvancedOS/CSCI560_Proj_main/</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2017/04/25/第三章-进程管理/" itemprop="url">
                   第三章 进程管理
                 </a>
@@ -1584,124 +1746,6 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2015/04/14/chained-assignment/" itemprop="url">
-                  python的chained assignment
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2015-04-14T22:41:10+08:00" content="2015-04-14">
-              2015-04-14
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h2 id="python&#x5C0F;&#x77E5;&#x8BC6;&#x5173;&#x4E8E;a-b-True&#x662F;&#x600E;&#x6837;&#x5DE5;&#x4F5C;&#x7684;"><a href="#python&#x5C0F;&#x77E5;&#x8BC6;&#x5173;&#x4E8E;a-b-True&#x662F;&#x600E;&#x6837;&#x5DE5;&#x4F5C;&#x7684;" class="headerlink" title="python&#x5C0F;&#x77E5;&#x8BC6;&#x5173;&#x4E8E;a=b=True&#x662F;&#x600E;&#x6837;&#x5DE5;&#x4F5C;&#x7684;"></a>python&#x5C0F;&#x77E5;&#x8BC6;&#x5173;&#x4E8E;a=b=True&#x662F;&#x600E;&#x6837;&#x5DE5;&#x4F5C;&#x7684;</h2><p>&#x94FE;&#x5F0F;&#x8D4B;&#x503C;&#x5173;&#x4E8E;python&#x6709;&#x4E00;&#x4E2A;&#x6709;&#x8DA3;&#x7684;&#x5730;&#x65B9;&#xFF0C;&#x4ECE;&#x4E0A;&#x9762;&#x8FD9;&#x6BB5;&#x8BDD;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x4E86;&#x89E3;&#x5230;&#xFF1A;</p>
-<p>1&#x3001;&#x5728;C&#x8BED;&#x8A00;&#x4E2D;&#xFF0C;a=b=True&#x7B49;&#x4EF7;&#x4E8E;<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">b = True</div><div class="line">a = b</div></pre></td></tr></table></figure></p>
-<p>2&#x3001;&#x800C;&#x5728;python&#x4E2D;&#xFF0C;a = b = True&#x7B49;&#x4EF7;&#x4E8E;</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">temporary_expr_result = <span class="keyword">True</span></div><div class="line"></div><div class="line">a = temporary_expr_result</div><div class="line">b = temporary_expr_result</div></pre></td></tr></table></figure>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2015/04/14/chained-assignment/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1747,7 +1791,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">24</span>
+              <span class="site-state-item-count">25</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

@@ -1,0 +1,713 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Linux kernel," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.2" />
+
+
+
+
+
+
+<meta name="description" content="&amp;#x5757;I/O&amp;#x5C42;
+&amp;#x7CFB;&amp;#x7EDF;&amp;#x4E2D;&amp;#x80FD;&amp;#x591F;&amp;#x968F;&amp;#x673A;(&amp;#x4E0D;&amp;#x9700;&amp;#x8981;&amp;#x6309;&amp;#x987A;&amp;#x5E8F;)&amp;#x8BBF;&amp;#x95EE;&amp;#x56FA;&amp;#x5B9A;&amp;#x5927;&amp;#x5C0F;&amp;#x6570;&amp;#x636E;&amp;#x7247;(c">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第十四章 块I/O层">
+<meta property="og:url" content="http://luobuda.github.io/2017/05/28/第十四章-块I-O层/index.html">
+<meta property="og:site_name" content="洛卜哒的博客">
+<meta property="og:description" content="&amp;#x5757;I/O&amp;#x5C42;
+&amp;#x7CFB;&amp;#x7EDF;&amp;#x4E2D;&amp;#x80FD;&amp;#x591F;&amp;#x968F;&amp;#x673A;(&amp;#x4E0D;&amp;#x9700;&amp;#x8981;&amp;#x6309;&amp;#x987A;&amp;#x5E8F;)&amp;#x8BBF;&amp;#x95EE;&amp;#x56FA;&amp;#x5B9A;&amp;#x5927;&amp;#x5C0F;&amp;#x6570;&amp;#x636E;&amp;#x7247;(c">
+<meta property="og:updated_time" content="2017-05-28T05:41:56.215Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="第十四章 块I/O层">
+<meta name="twitter:description" content="&amp;#x5757;I/O&amp;#x5C42;
+&amp;#x7CFB;&amp;#x7EDF;&amp;#x4E2D;&amp;#x80FD;&amp;#x591F;&amp;#x968F;&amp;#x673A;(&amp;#x4E0D;&amp;#x9700;&amp;#x8981;&amp;#x6309;&amp;#x987A;&amp;#x5E8F;)&amp;#x8BBF;&amp;#x95EE;&amp;#x56FA;&amp;#x5B9A;&amp;#x5927;&amp;#x5C0F;&amp;#x6570;&amp;#x636E;&amp;#x7247;(c">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://luobuda.github.io/2017/05/28/第十四章-块I-O层/"/>
+
+
+  <title> 第十四章 块I/O层 | 洛卜哒的博客 </title>
+</head>
+
+<body itemscope itemtype="//schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="//schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">洛卜哒的博客</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Hope I can study from bits to qubits.</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                第十四章 块I/O层
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-05-28T13:38:21+08:00" content="2017-05-28">
+              2017-05-28
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="&#x5757;I-O&#x5C42;"><a href="#&#x5757;I-O&#x5C42;" class="headerlink" title="&#x5757;I/O&#x5C42;"></a>&#x5757;I/O&#x5C42;</h3><blockquote>
+<p>&#x7CFB;&#x7EDF;&#x4E2D;&#x80FD;&#x591F;&#x968F;&#x673A;(&#x4E0D;&#x9700;&#x8981;&#x6309;&#x987A;&#x5E8F;)&#x8BBF;&#x95EE;&#x56FA;&#x5B9A;&#x5927;&#x5C0F;&#x6570;&#x636E;&#x7247;(chunks)&#x7684;&#x786C;&#x4EF6;&#x8BBE;&#x5907;&#x79F0;&#x4E3A;&#x5757;&#x8BBE;&#x5907;&#xFF0C;&#x8FD9;&#x4E9B;&#x56FA;&#x5B9A;&#x5927;&#x5C0F;&#x7684;&#x6570;&#x636E;&#x7247;&#x5C31;&#x79F0;&#x4F5C;&#x5757;&#xFF0C;&#x786C;&#x76D8;&#x662F;&#x6700;&#x5E38;&#x89C1;&#x7684;&#x5757;&#x8BBE;&#x5907;&#x3002;</p>
+</blockquote>
+<p>&#x5982;&#x679C;&#x4E00;&#x4E2A;&#x786C;&#x4EF6;&#x8BBE;&#x5907;&#x662F;&#x4EE5;&#x5B57;&#x7B26;&#x6D41;(&#x987A;&#x5E8F;&#x8BBF;&#x95EE;)&#x7684;&#x65B9;&#x5F0F;&#x88AB;&#x8BBF;&#x95EE;&#xFF0C;&#x5C31;&#x5F52;&#x4E8E;&#x5B57;&#x7B26;&#x8BBE;&#x5907;&#xFF1B;&#x5982;&#x679C;&#x4E00;&#x4E2A;&#x8BBE;&#x5907;&#x662F;&#x968F;&#x673A;&#x8BBF;&#x95EE;&#x7684;&#xFF0C;&#x5B83;&#x5C31;&#x5C5E;&#x4E8E;&#x5757;&#x8BBE;&#x5907;&#x3002;</p>
+<h4 id="1-&#x5757;&#x8BBE;&#x5907;"><a href="#1-&#x5757;&#x8BBE;&#x5907;" class="headerlink" title="1.&#x5757;&#x8BBE;&#x5907;"></a>1.&#x5757;&#x8BBE;&#x5907;</h4><blockquote>
+<p>&#x5757;&#x8BBE;&#x5907;&#x4E2D;&#x6700;&#x5C0F;&#x53EF;&#x5BFB;&#x5740;&#x5355;&#x5143;&#x662F;&#x6247;&#x533A;&#xFF0C;&#x6247;&#x533A;&#x7684;&#x5927;&#x5C0F;&#x662F;&#x8BBE;&#x5907;&#x7684;&#x7269;&#x7406;&#x5C5E;&#x6027;&#x3002;</p>
+</blockquote>
+<p>&#x5757;&#x662F;&#x6587;&#x4EF6;&#x7CFB;&#x7EDF;&#x7684;&#x4E00;&#x79CD;&#x62BD;&#x8C61;&#xFF0C;&#x7269;&#x7406;&#x78C1;&#x76D8;&#x5BFB;&#x5740;&#x6309;&#x7167;&#x6247;&#x533A;&#x8FDB;&#x884C;&#xFF0C;&#x4F46;&#x5185;&#x6838;&#x6267;&#x884C;&#x7684;&#x6240;&#x6709;&#x78C1;&#x76D8;&#x64CD;&#x4F5C;&#x662F;&#x6309;&#x7167;&#x5757;&#x8FDB;&#x884C;&#x3002;&#x56E0;&#x4E3A;&#x6247;&#x533A;&#x662F;&#x8BBE;&#x5907;&#x7684;&#x6700;&#x5C0F;&#x53EF;&#x5BFB;&#x5740;&#x5355;&#x5143;&#xFF0C;&#x6240;&#x4EE5;&#x5757;&#x4E0D;&#x80FD;&#x6BD4;&#x6247;&#x533A;&#x8FD8;&#x5C0F;&#xFF0C;&#x53EA;&#x80FD;&#x6570;&#x500D;&#x4E8E;&#x6247;&#x533A;&#x3002;&#x5185;&#x6838;&#x8981;&#x6C42;&#x5757;&#x7684;&#x5927;&#x5C0F;&#x662F;2&#x7684;&#x5E42;&#xFF0C;&#x4E0D;&#x80FD;&#x8D85;&#x8FC7;&#x4E00;&#x4E2A;&#x9875;&#x7684;&#x5927;&#x5C0F;&#x3002;&#x6240;&#x4EE5;&#x901A;&#x5E38;&#x5757;&#x5927;&#x5C0F;&#x4E3A;512&#x5B57;&#x8282;&#x3001;1KB&#x3001;4KB&#xFF0C;&#x5373;&#x6247;&#x533A;:&#x5757;=1&#xFF1A;N&#x3002;</p>
+<p>&#x6247;&#x533A;&#x79F0;&#x786C;&#x6247;&#x533A;&#x6216;&#x8BBE;&#x5907;&#x5757;&#xFF1B;&#x5757;&#x6709;&#x65F6;&#x79F0;&#x6587;&#x4EF6;&#x5757;&#x6216;I/O&#x5757;&#x3002;</p>
+<p>&#x6269;&#x5C55;&#x9605;&#x8BFB;:<a href="https://en.wikipedia.org/wiki/Device_file" target="_blank" rel="external">Device file</a></p>
+<a id="more"></a>
+<hr>
+<h4 id="2-&#x7F13;&#x51B2;&#x533A;&#x548C;&#x7F13;&#x51B2;&#x533A;&#x5934;"><a href="#2-&#x7F13;&#x51B2;&#x533A;&#x548C;&#x7F13;&#x51B2;&#x533A;&#x5934;" class="headerlink" title="2.&#x7F13;&#x51B2;&#x533A;&#x548C;&#x7F13;&#x51B2;&#x533A;&#x5934;"></a>2.&#x7F13;&#x51B2;&#x533A;&#x548C;&#x7F13;&#x51B2;&#x533A;&#x5934;</h4><blockquote>
+<p>&#x6BCF;&#x4E2A;&#x7F13;&#x51B2;&#x533A;&#x5BF9;&#x5E94;&#x4E00;&#x4E2A;&#x5757;&#xFF0C;&#x5B83;&#x76F8;&#x5F53;&#x4E8E;&#x78C1;&#x76D8;&#x5757;&#x5728;&#x5185;&#x5B58;&#x4E2D;&#x7684;&#x8868;&#x793A;&#x3002;</p>
+</blockquote>
+<p>&#x5185;&#x6838;&#x5B9A;&#x4E49;&#x4E00;&#x4E2A;buffer_head&#x7ED3;&#x6784;&#x4F53;&#x6765;&#x8868;&#x793A;&#x4E00;&#x4E2A;&#x7F13;&#x51B2;&#x533A;&#xFF0C;&#x6BCF;&#x4E2A;&#x7F13;&#x51B2;&#x533A;&#x90FD;&#x6709;&#x8FD9;&#x6837;&#x4E00;&#x4E2A;&#x63CF;&#x8FF0;&#x7B26;&#xFF0C;&#x5B83;&#x5305;&#x542B;&#x5185;&#x6838;&#x64CD;&#x4F5C;&#x7F13;&#x51B2;&#x533A;&#x7684;&#x5168;&#x90E8;&#x4FE1;&#x606F;&#x3002;</p>
+<p>buffer_head:<a href="https://github.com/torvalds/linux/blob/master/include/linux/buffer_head.h#L62" target="_blank" rel="external">linux/buffer_head.h</a></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">struct</span> buffer_head {</div><div class="line">	<span class="keyword">unsigned</span> <span class="keyword">long</span> b_state;		<span class="comment">/* &#x7F13;&#x51B2;&#x533A;&#x72B6;&#x6001;&#x6807;&#x5FD7; buffer state bitmap (see above) */</span></div><div class="line">	<span class="keyword">struct</span> buffer_head *b_this_page;<span class="comment">/* &#x9875;&#x9762;&#x4E2D;&#x7684;&#x7F13;&#x51B2;&#x533A; circular list of page&apos;s buffers */</span></div><div class="line">	<span class="keyword">struct</span> page *b_page;		<span class="comment">/* &#x5B58;&#x50A8;&#x8BE5;&#x7F13;&#x51B2;&#x533A;&#x7684;&#x9875;&#x9762; the page this bh is mapped to */</span></div><div class="line"></div><div class="line">	<span class="keyword">sector_t</span> b_blocknr;		<span class="comment">/* &#x8D77;&#x59CB;&#x5757;&#x53F7; start block number */</span></div><div class="line">	<span class="keyword">size_t</span> b_size;			<span class="comment">/* size of mapping */</span></div><div class="line">	<span class="keyword">char</span> *b_data;			<span class="comment">/* pointer to data within the page */</span></div><div class="line"></div><div class="line">	<span class="keyword">struct</span> block_device *b_bdev; <span class="comment">/* &#x76F8;&#x5173;&#x8054;&#x7684;&#x5757;&#x8BBE;&#x5907; */</span></div><div class="line">	<span class="keyword">bh_end_io_t</span> *b_end_io;		<span class="comment">/* I/O&#x5B8C;&#x6210;&#x65B9;&#x6CD5; I/O completion */</span></div><div class="line"> 	<span class="keyword">void</span> *b_private;		<span class="comment">/* reserved for b_end_io */</span></div><div class="line">	<span class="keyword">struct</span> list_head b_assoc_buffers; <span class="comment">/* &#x6620;&#x5C04;&#x94FE;&#x8868; associated with another mapping */</span></div><div class="line">	<span class="keyword">struct</span> address_space *b_assoc_map;	<span class="comment">/* &#x76F8;&#x5173;&#x7684;&#x5730;&#x5740;&#x7A7A;&#x95F4; mapping this buffer is</span></div><div class="line">						   associated with */</div><div class="line">	<span class="keyword">atomic_t</span> b_count;		<span class="comment">/* &#x5F15;&#x7528;&#x8BA1;&#x6570; users using this buffer_head */</span></div><div class="line">};</div></pre></td></tr></table></figure>
+<p>b_state&#x57DF;&#x8868;&#x793A;&#x7F13;&#x51B2;&#x533A;&#x7684;&#x72B6;&#x6001;&#xFF0C;&#x76F8;&#x5173;&#x7684;&#x6807;&#x5FD7;&#x4F4D;&#x5B9A;&#x4E49;&#x5728;<a href="https://github.com/torvalds/linux/blob/master/include/linux/buffer_head.h#L19" target="_blank" rel="external">bh_state_bits</a>&#x679A;&#x4E3E;&#x4E2D;&#x3002;</p>
+<hr>
+<h4 id="3-bio&#x7ED3;&#x6784;&#x4F53;"><a href="#3-bio&#x7ED3;&#x6784;&#x4F53;" class="headerlink" title="3. bio&#x7ED3;&#x6784;&#x4F53;"></a>3. bio&#x7ED3;&#x6784;&#x4F53;</h4><blockquote>
+<p>bio&#x7ED3;&#x6784;&#x4F53;&#x8868;&#x793A;&#x5185;&#x6838;&#x64CD;&#x4F5C;&#x5757;I/O&#x7684;&#x57FA;&#x672C;&#x5BB9;&#x5668;&#xFF0C;&#x4EE3;&#x8868;&#x4E86;&#x6B63;&#x5728;&#x6D3B;&#x52A8;&#x7684;&#x4EE5;segment&#x94FE;&#x8868;&#x5F62;&#x5F0F;&#x7EC4;&#x7EC7;&#x7684;&#x5757;I/O&#x64CD;&#x4F5C;&#x3002;&#x4E00;&#x4E2A;segment&#x662F;&#x4E00;&#x5C0F;&#x5757;&#x8FDE;&#x7EED;&#x7684;&#x5185;&#x5B58;&#xFF0C;&#x8FD9;&#x6837;&#x4E0D;&#x9700;&#x8981;&#x4FDD;&#x8BC1;&#x5355;&#x4E2A;&#x7F13;&#x51B2;&#x533A;&#x4E00;&#x5B9A;&#x8981;&#x8FDE;&#x7EED;&#xFF0C;&#x5373;&#x4F7F;&#x4E00;&#x4E2A;&#x7F13;&#x51B2;&#x533A;&#x5206;&#x6563;&#x5728;&#x5185;&#x5B58;&#x7684;&#x591A;&#x4E2A;&#x4F4D;&#x7F6E;&#xFF0C;bio&#x7ED3;&#x6784;&#x4F53;&#x4E5F;&#x80FD;&#x5BF9;&#x5185;&#x6838;&#x4FDD;&#x8BC1;I/O&#x64CD;&#x4F5C;&#x7684;&#x6267;&#x884C;&#x3002;&#x8FD9;&#x6837;&#x7684;<a href="https://en.wikipedia.org/wiki/Vectored_I/O" target="_blank" rel="external">&#x5411;&#x91CF;I/O</a>&#x5C31;&#x662F;&#x6240;&#x8C13;&#x7684;&#x805A;&#x6563;I/O&#x3002;</p>
+</blockquote>
+<p>bio&#x7ED3;&#x6784;&#x4F53;&#x5B9A;&#x4E49;&#x5728;&#xFF1A;<a href="https://github.com/torvalds/linux/blob/master/include/linux/blk_types.h#L24" target="_blank" rel="external">linux/blk_types.h</a></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">struct</span> bio {</div><div class="line">	<span class="keyword">struct</span> bio		*bi_next;	<span class="comment">/* request queue link */</span></div><div class="line">	<span class="keyword">struct</span> block_device	*bi_bdev; <span class="comment">/* &#x76F8;&#x5173;&#x5757;&#x8BBE;&#x5907; */</span></div><div class="line">	<span class="keyword">int</span>			bi_error;</div><div class="line">	<span class="keyword">unsigned</span> <span class="keyword">int</span>		bi_opf;		<span class="comment">/* bottom bits req flags,</span></div><div class="line">						 * top bits REQ_OP. Use</div><div class="line">						 * accessors.</div><div class="line">						 */</div><div class="line">	<span class="keyword">unsigned</span> <span class="keyword">short</span>		bi_flags;	<span class="comment">/* status, command, etc */</span></div><div class="line">	<span class="keyword">unsigned</span> <span class="keyword">short</span>		bi_ioprio;</div><div class="line"></div><div class="line">	<span class="keyword">struct</span> bvec_iter	bi_iter;</div><div class="line"></div><div class="line">	<span class="comment">/* Number of segments in this BIO after</span></div><div class="line">	 * physical address coalescing is performed.</div><div class="line">	 */</div><div class="line">	<span class="keyword">unsigned</span> <span class="keyword">int</span>		bi_phys_segments; <span class="comment">/* &#x7ED3;&#x5408;&#x540E;&#x7684;segment&#x6570;&#x76EE; */</span></div><div class="line"></div><div class="line">	<span class="comment">/*</span></div><div class="line">	 * To keep track of the max segment size, we account for the</div><div class="line">	 * sizes of the first and last mergeable segments in this bio.</div><div class="line">	 */</div><div class="line">	<span class="keyword">unsigned</span> <span class="keyword">int</span>		bi_seg_front_size; <span class="comment">/* &#x7B2C;&#x4E00;&#x4E2A;&#x53EF;&#x5408;&#x5E76;&#x7684;&#x6BB5;&#x5927;&#x5C0F; */</span></div><div class="line">	<span class="keyword">unsigned</span> <span class="keyword">int</span>		bi_seg_back_size;  <span class="comment">/* &#x6700;&#x540E;&#x4E00;&#x4E2A;&#x53EF;&#x5408;&#x5E76;&#x7684;&#x6BB5;&#x5927;&#x5C0F; */</span></div><div class="line"></div><div class="line">	<span class="keyword">atomic_t</span>		__bi_remaining;</div><div class="line"></div><div class="line">	<span class="keyword">bio_end_io_t</span>		*bi_end_io;  <span class="comment">/* I/O&#x5B8C;&#x6210;&#x65B9;&#x6CD5; */</span></div><div class="line"></div><div class="line">	<span class="keyword">void</span>			*bi_private;  <span class="comment">/* &#x62E5;&#x6709;&#x8005;&#x7684;&#x79C1;&#x6709;&#x65B9;&#x6CD5; */</span></div><div class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> CONFIG_BLK_CGROUP</span></div><div class="line">	<span class="comment">/*</span></div><div class="line">	 * Optional ioc and css associated with this bio.  Put on bio</div><div class="line">	 * release.  Read comment on top of bio_associate_current().</div><div class="line">	 */</div><div class="line">	<span class="keyword">struct</span> io_context	*bi_ioc;</div><div class="line">	<span class="keyword">struct</span> cgroup_subsys_state *bi_css;</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div><div class="line">	<span class="keyword">union</span> {</div><div class="line"><span class="meta">#<span class="meta-keyword">if</span> defined(CONFIG_BLK_DEV_INTEGRITY)</span></div><div class="line">		<span class="keyword">struct</span> bio_integrity_payload *bi_integrity; <span class="comment">/* data integrity */</span></div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div><div class="line">	};</div><div class="line"></div><div class="line">	<span class="keyword">unsigned</span> <span class="keyword">short</span>		bi_vcnt;	<span class="comment">/* bio_vecs&#x504F;&#x79FB;&#x7684;&#x4E2A;&#x6570; how many bio_vec&apos;s */</span></div><div class="line"></div><div class="line">	<span class="comment">/*</span></div><div class="line">	 * Everything starting with bi_max_vecs will be preserved by bio_reset()</div><div class="line">	 */</div><div class="line"></div><div class="line">	<span class="keyword">unsigned</span> <span class="keyword">short</span>		bi_max_vecs;	<span class="comment">/* bio_vecs&#x6570;&#x76EE;&#x4E0A;&#x9650; max bvl_vecs we can hold */</span></div><div class="line"></div><div class="line">	<span class="keyword">atomic_t</span>		__bi_cnt;	<span class="comment">/* &#x4F7F;&#x7528;&#x8BA1;&#x6570; pin count */</span></div><div class="line"></div><div class="line">	<span class="keyword">struct</span> bio_vec		*bi_io_vec;	<span class="comment">/* bio_vecs&#x94FE;&#x8868; the actual vec list */</span></div><div class="line"></div><div class="line">	<span class="keyword">struct</span> bio_set		*bi_pool;</div><div class="line"></div><div class="line">	<span class="comment">/*</span></div><div class="line">	 * We can inline a number of vecs at the end of the bio, to avoid</div><div class="line">	 * double allocations for a small number of bio_vecs. This member</div><div class="line">	 * MUST obviously be kept at the very end of the bio.</div><div class="line">	 */</div><div class="line">	<span class="keyword">struct</span> bio_vec		bi_inline_vecs[<span class="number">0</span>]; <span class="comment">/* &#x5185;&#x5D4C;bio&#x5411;&#x91CF; */</span></div><div class="line">};</div></pre></td></tr></table></figure>
+<h5 id="3-1-I-O&#x5411;&#x91CF;"><a href="#3-1-I-O&#x5411;&#x91CF;" class="headerlink" title="3.1 I/O&#x5411;&#x91CF;"></a>3.1 I/O&#x5411;&#x91CF;</h5><p>bi_io_vec&#x57DF;&#x6307;&#x5411;&#x4E00;&#x4E2A;bio_vec&#x7ED3;&#x6784;&#x4F53;&#x6570;&#x7EC4;&#xFF0C;&#x8BE5;&#x7ED3;&#x6784;&#x4F53;&#x94FE;&#x8868;&#x5305;&#x542B;&#x4E86;&#x4E00;&#x4E2A;&#x7279;&#x5B9A;&#x7684;I/O&#x64CD;&#x4F5C;&#x6240;&#x9700;&#x8981;&#x7528;&#x5230;&#x7684;&#x6240;&#x6709;&#x7247;&#x6BB5;&#x3002;&#x6BCF;&#x4E2A;bio_vec&#x7ED3;&#x6784;&#x662F;&#x5F62;&#x5F0F;&#x4E3A;<page, offset,="" len="">&#x7684;&#x5411;&#x91CF;&#xFF0C;&#x5B83;&#x63CF;&#x8FF0;&#x4E86;&#x4E00;&#x4E2A;&#x7279;&#x5B9A;&#x7684;&#x7247;&#x6BB5;&#xFF1A;&lt;&#x7247;&#x6BB5;&#x7684;&#x7269;&#x7406;&#x9875;, &#x5757;&#x5728;&#x7269;&#x7406;&#x9875;&#x4E2D;&#x7684;&#x504F;&#x79FB;&#x4F4D;&#x7F6E;, &#x4ECE;&#x7ED9;&#x5B9A;&#x504F;&#x79FB;&#x91CF;&#x5F00;&#x59CB;&#x7684;&#x5757;&#x957F;&#x5EA6;&gt;&#x3002;</page,></p>
+<p>bio_io_vec&#x7ED3;&#x6784;&#x4F53;&#x6570;&#x7EC4;&#x6574;&#x4E2A;&#x4E00;&#x8D77;&#x8868;&#x793A;&#x4E86;&#x4E00;&#x4E2A;&#x5B8C;&#x6574;&#x7684;&#x7F13;&#x51B2;&#x533A;&#x3002;bio_vec&#x7ED3;&#x6784;&#x5B9A;&#x4E49;&#x5728;:<a href="https://github.com/torvalds/linux/blob/master/include/linux/bvec.h#L29" target="_blank" rel="external">linux/bvec.h</a></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">struct</span> bio_vec {</div><div class="line">	<span class="keyword">struct</span> page	*bv_page; <span class="comment">/* &#x6307;&#x5411;&#x8FD9;&#x4E2A;segment&#x6240;&#x9A7B;&#x7559;&#x7684;&#x7269;&#x7406;&#x9875; */</span></div><div class="line">	<span class="keyword">unsigned</span> <span class="keyword">int</span>	bv_len; <span class="comment">/* &#x4EE5;&#x5B57;&#x8282;&#x4E3A;&#x5355;&#x4F4D;&#x7684;&#x5927;&#x5C0F;*/</span></div><div class="line">	<span class="keyword">unsigned</span> <span class="keyword">int</span>	bv_offset; <span class="comment">/* &#x504F;&#x79FB;&#x91CF; */</span></div><div class="line">};</div></pre></td></tr></table></figure>
+<p>bio&#x7ED3;&#x6784;&#x4F53;&#x4EE3;&#x8868;I/O&#x64CD;&#x4F5C;&#xFF0C;&#x53EF;&#x4EE5;&#x5305;&#x542B;&#x5185;&#x5B58;&#x4E2D;&#x7684;&#x4E00;&#x4E2A;&#x6216;&#x591A;&#x4E2A;&#x9875;&#xFF1B;buffer_head&#x7ED3;&#x6784;&#x4F53;&#x4EE3;&#x8868;&#x4E00;&#x4E2A;&#x7F13;&#x51B2;&#x533A;&#xFF0C;&#x63CF;&#x8FF0;&#x7684;&#x662F;&#x78C1;&#x76D8;&#x4E0A;&#x7684;&#x4E00;&#x4E2A;&#x5757;&#x3002;&#x5229;&#x7528;bio&#x4EE3;&#x66FF;buffer_head&#x597D;&#x5904;&#x6709;&#xFF1A;</p>
+<ul>
+<li>&#x4E0D;&#x9700;&#x8981;&#x8FDE;&#x7EED;&#x5B58;&#x50A8;&#x533A;&#xFF0C;&#x4E5F;&#x4E0D;&#x9700;&#x8981;&#x5206;&#x5272;I/O&#x64CD;&#x4F5C;</li>
+<li>bio&#x5F88;&#x5BB9;&#x6613;&#x5904;&#x7406;&#x9AD8;&#x7AEF;&#x5185;&#x5B58;&#xFF0C;&#x56E0;&#x4E3A;&#x5B83;&#x5904;&#x7406;&#x7684;&#x662F;&#x7269;&#x7406;&#x9875;&#x800C;&#x4E0D;&#x662F;&#x76F4;&#x63A5;&#x6307;&#x9488;</li>
+<li>bio&#x65E2;&#x53EF;&#x4EE5;&#x4EE3;&#x8868;&#x666E;&#x901A;&#x9875;&#xFF0C;&#x4E5F;&#x53EF;&#x4EE5;&#x4EE3;&#x8868;&#x76F4;&#x63A5;I/O</li>
+<li>bio&#x4FBF;&#x4E8E;&#x6267;&#x884C;&#x5206;&#x6563;&#x2014;&#x2014;&#x96C6;&#x4E2D;(&#x77E2;&#x91CF;&#x5316;)&#x5757;I/O&#x64CD;&#x4F5C;&#xFF0C;&#x64CD;&#x4F5C;&#x4E2D;&#x7684;&#x6570;&#x636E;&#x53EF;&#x4EE5;&#x6765;&#x81EA;&#x591A;&#x4E2A;&#x7269;&#x7406;&#x9875;</li>
+<li>bio&#x76F8;&#x6BD4;&#x7F13;&#x51B2;&#x533A;&#x5934;&#x5C5E;&#x4E8E;&#x8F7B;&#x91CF;&#x7EA7;&#x7ED3;&#x6784;&#x4F53;</li>
+</ul>
+<h4 id="4-&#x8BF7;&#x6C42;&#x961F;&#x5217;"><a href="#4-&#x8BF7;&#x6C42;&#x961F;&#x5217;" class="headerlink" title="4.&#x8BF7;&#x6C42;&#x961F;&#x5217;"></a>4.&#x8BF7;&#x6C42;&#x961F;&#x5217;</h4><blockquote>
+<p>&#x5757;&#x8BBE;&#x5907;&#x5C06;&#x4ED6;&#x4EEC;&#x6302;&#x8D77;&#x7684;&#x5757;I/O&#x8BF7;&#x6C42;&#x4FDD;&#x5B58;&#x5728;&#x8BF7;&#x6C42;&#x961F;&#x5217;&#x4E2D;&#xFF0C;&#x7531;request_queue&#x7ED3;&#x6784;&#x4F53;&#x8868;&#x793A;&#xFF0C;&#x8BF7;&#x6C42;&#x961F;&#x5217;&#x53EA;&#x8981;&#x4E0D;&#x4E3A;&#x7A7A;&#xFF0C;&#x961F;&#x5217;&#x5BF9;&#x5E94;&#x7684;&#x5757;&#x8BBE;&#x5907;&#x9A71;&#x52A8;&#x7A0B;&#x5E8F;&#x5C31;&#x4F1A;&#x4ECE;&#x961F;&#x5217;&#x5934;&#x83B7;&#x53D6;&#x8BF7;&#x6C42;&#xFF0C;&#x7136;&#x540E;&#x5C06;&#x5176;&#x9001;&#x5165;&#x5BF9;&#x5E94;&#x7684;&#x5757;&#x8BBE;&#x5907;&#x4E0A;&#x53BB;&#x3002;</p>
+</blockquote>
+<p>&#x8BF7;&#x6C42;&#x961F;&#x5217;request_queue&#x5B9A;&#x4E49;&#x5728;:<a href="https://github.com/torvalds/linux/blob/master/include/linux/blkdev.h#L381" target="_blank" rel="external">linux/blkdev.h</a>,&#x5305;&#x542B;&#x4E00;&#x4E2A;&#x53CC;&#x5411;&#x8BF7;&#x6C42;&#x94FE;&#x8868;&#x4EE5;&#x53CA;&#x76F8;&#x5173;&#x63A7;&#x5236;&#x4FE1;&#x606F;&#xFF0C;&#x8BF7;&#x6C42;&#x961F;&#x5217;&#x7684;&#x6BCF;&#x4E00;&#x9879;&#x662F;&#x4E00;&#x4E2A;request&#x7ED3;&#x6784;&#x4F53;&#x3002;&#x4E00;&#x4E2A;&#x8BF7;&#x6C42;&#x53EF;&#x80FD;&#x64CD;&#x4F5C;&#x591A;&#x4E2A;&#x8FDE;&#x7EED;&#x7684;&#x78C1;&#x76D8;&#x5757;&#xFF0C;&#x6240;&#x4EE5;&#x6BCF;&#x4E2A;&#x8BF7;&#x6C42;&#x53EF;&#x4EE5;&#x7531;&#x591A;&#x4E2A;bio&#x7ED3;&#x6784;&#x4F53;&#x6784;&#x6210;&#x3002;request&#x7ED3;&#x6784;&#x4F53;&#x540C;&#x6837;&#x5B9A;&#x4E49;&#x5728;&#xFF1A;<a href="https://github.com/torvalds/linux/blob/master/include/linux/blkdev.h#L129" target="_blank" rel="external">linux/blkdev.h</a></p>
+<hr>
+<h4 id="5-I-O&#x8C03;&#x5EA6;&#x7A0B;&#x5E8F;"><a href="#5-I-O&#x8C03;&#x5EA6;&#x7A0B;&#x5E8F;" class="headerlink" title="5. I/O&#x8C03;&#x5EA6;&#x7A0B;&#x5E8F;"></a>5. I/O&#x8C03;&#x5EA6;&#x7A0B;&#x5E8F;</h4><blockquote>
+<p>&#x76F4;&#x63A5;&#x7B80;&#x5355;&#x5730;&#x5C06;&#x8BF7;&#x6C42;&#x4F9D;&#x6B21;&#x76F4;&#x63A5;&#x53D1;&#x9001;&#x7ED9;&#x5757;&#x8BBE;&#x5907;&#x6027;&#x80FD;&#x662F;&#x4E0D;&#x597D;&#x7684;&#xFF0C;&#x78C1;&#x76D8;&#x5BFB;&#x5740;&#x662F;&#x6574;&#x4E2A;&#x8BA1;&#x7B97;&#x673A;&#x4E2D;&#x6700;&#x6162;&#x7684;&#x64CD;&#x4F5C;&#x4E4B;&#x4E00;&#xFF0C;&#x4E3A;&#x4E86;&#x4F18;&#x5316;&#x5BFB;&#x5740;&#x64CD;&#x4F5C;&#xFF0C;&#x5185;&#x6838;&#x65E2;&#x4E0D;&#x4F1A;&#x7B80;&#x5355;&#x5730;&#x6309;&#x8BF7;&#x6C42;&#x6B21;&#x5E8F;&#xFF0C;&#x4E5F;&#x4E0D;&#x4F1A;&#x7ACB;&#x5373;&#x5C06;&#x5176;&#x63D0;&#x4EA4;&#x7ED9;&#x78C1;&#x76D8;&#xFF0C;&#x5728;&#x63D0;&#x4EA4;&#x524D;&#x4ED6;&#x4F1A;&#x5408;&#x5E76;&#x548C;&#x6392;&#x5E8F;&#x7684;&#x9884;&#x64CD;&#x4F5C;&#xFF0C;&#x4ECE;&#x800C;&#x5927;&#x5927;&#x63D0;&#x9AD8;&#x6027;&#x80FD;&#xFF0C;&#x5185;&#x6838;&#x8D1F;&#x8D23;&#x63D0;&#x4EA4;I/O&#x8BF7;&#x6C42;&#x7684;&#x5B50;&#x7CFB;&#x7EDF;&#x79F0;&#x4E3A;<a href="https://en.wikipedia.org/wiki/I/O_scheduling" target="_blank" rel="external">I/O&#x8C03;&#x5EA6;&#x7A0B;&#x5E8F;</a>&#x3002;</p>
+</blockquote>
+<p>I/O&#x8C03;&#x5EA6;&#x7A0B;&#x5E8F;&#x901A;&#x8FC7;&#x4E24;&#x79CD;&#x65B9;&#x6CD5;&#x51CF;&#x5C11;&#x78C1;&#x76D8;&#x5BFB;&#x5740;&#x65F6;&#x95F4;&#xFF1A;&#x5408;&#x5E76;&#x548C;&#x6392;&#x5E8F;&#x3002;</p>
+<ul>
+<li>&#x5408;&#x5E76;&#xFF1A;&#x5C06;&#x591A;&#x4E2A;&#x8BF7;&#x6C42;&#x7ED3;&#x5408;&#x6210;&#x4E00;&#x4E2A;&#x65B0;&#x8BF7;&#x6C42;&#x3002;&#x5C06;&#x591A;&#x6B21;&#x8BF7;&#x6C42;&#x7684;&#x5F00;&#x9500;&#x538B;&#x7F29;&#x6210;&#x4E00;&#x6B21;&#xFF0C;&#x5408;&#x5E76;&#x540E;&#x53EA;&#x9700;&#x8981;&#x4F20;&#x9012;&#x4E00;&#x6761;&#x5BFB;&#x5740;&#x6307;&#x4EE4;&#x7ED9;&#x78C1;&#x76D8;&#x3002;</li>
+<li><p>&#x6392;&#x5E8F;&#xFF1A;I/O&#x8C03;&#x5EA6;&#x7B97;&#x6CD5;<a href="http://www.cnblogs.com/sopc-mc/archive/2011/10/09/2204858.html" target="_blank" rel="external">&#x3010;&#x6574;&#x7406;&#x3011;Linux I/O&#x8C03;&#x5EA6;</a></p>
+<p><strong>1. Linus&#x7535;&#x68AF;</strong><br>&#x5F53;&#x4E00;&#x4E2A;&#x8BF7;&#x6C42;&#x52A0;&#x5165;&#x5230;&#x961F;&#x5217;&#x4E2D;&#x65F6;&#xFF0C;&#x4F1A;&#x4F9D;&#x6B21;&#x6267;&#x884C;&#xFF1A;</p>
+</li>
+<li>&#x5982;&#x679C;&#x961F;&#x5217;&#x4E2D;&#x5DF2;&#x5B58;&#x5728;&#x4E00;&#x4E2A;&#x961F;&#x76F8;&#x90BB;&#x78C1;&#x76D8;&#x6247;&#x533A;&#x64CD;&#x4F5C;&#x7684;&#x8BF7;&#x6C42;&#xFF0C;&#x90A3;&#x4E48;&#x65B0;&#x8BF7;&#x6C42;&#x5C06;&#x548C;&#x8FD9;&#x4E2A;&#x5DF2;&#x7ECF;&#x5B58;&#x5728;&#x7684;&#x8BF7;&#x6C42;&#x5408;&#x5E76;&#x6210;&#x4E00;&#x4E2A;&#x8BF7;&#x6C42;&#xFF0C;&#x5305;&#x62EC;&#xFF1A;&#x5411;&#x524D;&#x5408;&#x5E76;&#x548C;&#x5411;&#x540E;&#x5408;&#x5E76;</li>
+<li>&#x5982;&#x679C;&#x961F;&#x5217;&#x4E2D;&#x5B58;&#x5728;&#x4E00;&#x4E2A;&#x9A7B;&#x7559;&#x65F6;&#x95F4;&#x8FC7;&#x957F;&#x7684;&#x8BF7;&#x6C42;&#xFF0C;&#x90A3;&#x4E48;&#x65B0;&#x8BF7;&#x6C42;&#x5C06;&#x88AB;&#x63D2;&#x5165;&#x5230;&#x961F;&#x5217;&#x5C3E;&#x90E8;&#xFF0C;&#x4EE5;&#x9632;&#x8BF7;&#x6C42;&#x9965;&#x997F;</li>
+<li>&#x5982;&#x679C;&#x961F;&#x5217;&#x4E2D;&#x4EE5;&#x6247;&#x533A;&#x65B9;&#x5411;&#x4E3A;&#x5E8F;&#x5B58;&#x5728;&#x5408;&#x9002;&#x7684;&#x63D2;&#x5165;&#x4F4D;&#x7F6E;&#xFF0C;&#x90A3;&#x4E48;&#x65B0;&#x8BF7;&#x6C42;&#x5C06;&#x88AB;&#x63D2;&#x5165;&#x5230;&#x8BE5;&#x4F4D;&#x7F6E;&#xFF0C;&#x4FDD;&#x8BC1;&#x961F;&#x5217;&#x4E2D;&#x8BF7;&#x6C42;&#x662F;&#x4EE5;&#x88AB;&#x8BBF;&#x95EE;&#x78C1;&#x76D8;&#x7269;&#x7406;&#x4F4D;&#x7F6E;&#x4E3A;&#x5E8F;&#x8FDB;&#x884C;&#x6392;&#x5217;</li>
+<li>&#x5982;&#x679C;&#x961F;&#x5217;&#x4E2D;&#x4E0D;&#x5B58;&#x5728;&#x5408;&#x9002;&#x7684;&#x8BF7;&#x6C42;&#x63D2;&#x5165;&#x4F4D;&#x7F6E;&#xFF0C;&#x5C06;&#x8BF7;&#x6C42;&#x63D2;&#x5165;&#x961F;&#x5217;&#x5C3E;&#x90E8;</li>
+<li></li>
+</ul>
+<ol>
+<li><a href="https://en.wikipedia.org/wiki/Deadline_scheduler" target="_blank" rel="external">The Deadline I/O Scheduler </a><br>&#x4E3A;&#x4E86;&#x89E3;&#x51B3;Linus&#x7535;&#x68AF;&#x7684;&#x9965;&#x997F;&#x95EE;&#x9898;&#xFF0C;writes-starving-reads&#x95EE;&#x9898;<br><a href="https://www.kernel.org/doc/Documentation/block/deadline-iosched.txt" target="_blank" rel="external">&#x6587;&#x6863;</a><br><a href="https://github.com/torvalds/linux/blob/master/block/deadline-iosched.c" target="_blank" rel="external">block/deadline-iosched.c</a></li>
+</ol>
+<p>&#x914D;&#x7F6E;I/O&#x8C03;&#x5EA6;<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">$ echo &apos;deadline&apos; &gt; /sys/block/sda/queue/scheduler</div><div class="line">$ cat               /sys/block/sda/queue/scheduler</div><div class="line">noop anticipatory [deadline] cfq</div><div class="line"></div><div class="line">title Red Hat Enterprise Linux Server (2.6.9-67.EL)</div><div class="line">root (hd0,0)</div><div class="line">kernel /vmlinuz-2.6.9-67.EL ro root=/dev/vg0/lv0 elevator=deadline</div><div class="line">initrd /initrd-2.6.9-67.EL.img</div></pre></td></tr></table></figure></p>
+<ol>
+<li><a href="https://en.wikipedia.org/wiki/Anticipatory_scheduling" target="_blank" rel="external">The Anticipatory I/O Scheduler  </a>  </li>
+</ol>
+<p><a href="https://lwn.net/Articles/21274/" target="_blank" rel="external">https://lwn.net/Articles/21274/</a>  </p>
+<ol>
+<li><a href="https://en.wikipedia.org/wiki/CFQ" target="_blank" rel="external">The Complete Fair Queuing I/O Scheduler</a><br>&#x6CE8;&#x610F;&#x4E0E;<a href="https://en.wikipedia.org/wiki/Completely_Fair_Scheduler" target="_blank" rel="external">CFS</a>&#x7684;&#x533A;&#x522B;&#x4E0E;&#x8054;&#x7CFB;&#xFF0C;CFQ&#x6BCF;&#x4E2A;&#x63D0;&#x4EA4;I/O&#x7684;&#x8FDB;&#x7A0B;&#x90FD;&#x6709;&#x81EA;&#x5DF1;&#x7684;&#x961F;&#x5217;&#x3002;<br><a href="https://github.com/torvalds/linux/blob/master/block/cfq-iosched.c" target="_blank" rel="external">block/cfq-iosched.c</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Noop_scheduler" target="_blank" rel="external">The Noop I/O Scheduler </a><br>&#x4E13;&#x4E3A;&#x968F;&#x673A;&#x8BBF;&#x95EE;&#x8BBE;&#x5907;&#x8BBE;&#x8BA1;&#x3002;<br><a href="https://github.com/torvalds/linux/blob/master/block/noop-iosched.c" target="_blank" rel="external">block/noop-iosched.c</a></li>
+<li><a href="">The Kyber I/O scheduler</a><br><a href="https://github.com/torvalds/linux/blob/master/block/kyber-iosched.c" target="_blank" rel="external">block/kyber-iosched.c</a>    </li>
+<li><a href="http://algo.ing.unimo.it/people/paolo/disk_sched/" target="_blank" rel="external">Budget Fair Queueing (BFQ) scheduler</a></li>
+</ol>
+<h4 id="6-&#x5C0F;&#x7ED3;"><a href="#6-&#x5C0F;&#x7ED3;" class="headerlink" title="6. &#x5C0F;&#x7ED3;"></a>6. &#x5C0F;&#x7ED3;</h4><ul>
+<li>bio&#xFF1A;&#x8868;&#x793A;&#x6D3B;&#x52A8;&#x7684;I/O&#x64CD;&#x4F5C;</li>
+<li>buffer_head&#xFF1A;&#x8868;&#x793A;&#x5757;&#x5230;&#x9875;&#x7684;&#x6620;&#x5C04;</li>
+<li>request&#xFF1A;&#x8868;&#x793A;&#x5177;&#x4F53;I/O&#x8BF7;&#x6C42;</li>
+<li>I/O&#x8C03;&#x5EA6;&#x7A0B;&#x5E8F;</li>
+</ul>
+<p>&#x76F8;&#x5173;&#x8D44;&#x6599;<br><a href="http://algo.ing.unimo.it/people/paolo/disk_sched/" target="_blank" rel="external">Budget Fair Queueing (BFQ) Storage-I/O Scheduler</a><br><a href="https://www.thomas-krenn.com/de/wiki/Linux_I/O_Scheduler" target="_blank" rel="external">Linux I/O Scheduler</a><br><a href="http://blog.csdn.net/vanbreaker/article/details/8278358" target="_blank" rel="external">http://blog.csdn.net/vanbreaker/article/details/8278358</a><br><a href="https://lwn.net/Articles/601799/" target="_blank" rel="external">https://lwn.net/Articles/601799/</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Linux-kernel/" rel="tag">#Linux kernel</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/21/第十三章-虚拟文件系统/" rel="next" title="第十三章 虚拟文件系统">
+                <i class="fa fa-chevron-left"></i> 第十三章 虚拟文件系统
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="//schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="https://projecteuler.net/profile/luobuda.png"
+               alt="洛卜哒" />
+          <p class="site-author-name" itemprop="name">洛卜哒</p>
+          <p class="site-description motion-element" itemprop="description">大约，孔乙己的确死了！</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">25</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/luobuda" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://github.com/luobuda" title="Github" target="_blank">Github</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://projecteuler.net/" title="Project Euler" target="_blank">Project Euler</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#块I-O层"><span class="nav-number">1.</span> <span class="nav-text">块I/O层</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-块设备"><span class="nav-number">1.1.</span> <span class="nav-text">1.块设备</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-缓冲区和缓冲区头"><span class="nav-number">1.2.</span> <span class="nav-text">2.缓冲区和缓冲区头</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-bio结构体"><span class="nav-number">1.3.</span> <span class="nav-text">3. bio结构体</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#3-1-I-O向量"><span class="nav-number">1.3.1.</span> <span class="nav-text">3.1 I/O向量</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-请求队列"><span class="nav-number">1.4.</span> <span class="nav-text">4.请求队列</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-I-O调度程序"><span class="nav-number">1.5.</span> <span class="nav-text">5. I/O调度程序</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-小结"><span class="nav-number">1.6.</span> <span class="nav-text">6. 小结</span></a></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">洛卜哒</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.2"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>
