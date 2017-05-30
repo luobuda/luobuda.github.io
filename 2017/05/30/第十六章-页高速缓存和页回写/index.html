@@ -1,0 +1,681 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Linux kernel," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.2" />
+
+
+
+
+
+
+<meta name="description" content="&amp;#x9875;&amp;#x9AD8;&amp;#x901F;&amp;#x7F13;&amp;#x5B58;&amp;#x548C;&amp;#x9875;&amp;#x56DE;&amp;#x5199;&amp;#x9875;&amp;#x9AD8;&amp;#x901F;&amp;#x7F13;&amp;#x5B58;&amp;#x4E3A;&amp;#x4E86;&amp;#x51CF;&amp;#x5C11;&amp;#x5BF9;&amp;#x78C1;&amp;#x76D8;&amp;#x7684;I/O&amp;#x64CD;&amp;#x4F5C;&amp;#xFF">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第十六章 页高速缓存和页回写">
+<meta property="og:url" content="http://luobuda.github.io/2017/05/30/第十六章-页高速缓存和页回写/index.html">
+<meta property="og:site_name" content="洛卜哒的博客">
+<meta property="og:description" content="&amp;#x9875;&amp;#x9AD8;&amp;#x901F;&amp;#x7F13;&amp;#x5B58;&amp;#x548C;&amp;#x9875;&amp;#x56DE;&amp;#x5199;&amp;#x9875;&amp;#x9AD8;&amp;#x901F;&amp;#x7F13;&amp;#x5B58;&amp;#x4E3A;&amp;#x4E86;&amp;#x51CF;&amp;#x5C11;&amp;#x5BF9;&amp;#x78C1;&amp;#x76D8;&amp;#x7684;I/O&amp;#x64CD;&amp;#x4F5C;&amp;#xFF">
+<meta property="og:updated_time" content="2017-05-30T07:30:11.831Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="第十六章 页高速缓存和页回写">
+<meta name="twitter:description" content="&amp;#x9875;&amp;#x9AD8;&amp;#x901F;&amp;#x7F13;&amp;#x5B58;&amp;#x548C;&amp;#x9875;&amp;#x56DE;&amp;#x5199;&amp;#x9875;&amp;#x9AD8;&amp;#x901F;&amp;#x7F13;&amp;#x5B58;&amp;#x4E3A;&amp;#x4E86;&amp;#x51CF;&amp;#x5C11;&amp;#x5BF9;&amp;#x78C1;&amp;#x76D8;&amp;#x7684;I/O&amp;#x64CD;&amp;#x4F5C;&amp;#xFF">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://luobuda.github.io/2017/05/30/第十六章-页高速缓存和页回写/"/>
+
+
+  <title> 第十六章 页高速缓存和页回写 | 洛卜哒的博客 </title>
+</head>
+
+<body itemscope itemtype="//schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="//schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">洛卜哒的博客</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Hope I can study from bits to qubits.</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                第十六章 页高速缓存和页回写
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-05-30T15:25:12+08:00" content="2017-05-30">
+              2017-05-30
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="&#x9875;&#x9AD8;&#x901F;&#x7F13;&#x5B58;&#x548C;&#x9875;&#x56DE;&#x5199;"><a href="#&#x9875;&#x9AD8;&#x901F;&#x7F13;&#x5B58;&#x548C;&#x9875;&#x56DE;&#x5199;" class="headerlink" title="&#x9875;&#x9AD8;&#x901F;&#x7F13;&#x5B58;&#x548C;&#x9875;&#x56DE;&#x5199;"></a>&#x9875;&#x9AD8;&#x901F;&#x7F13;&#x5B58;&#x548C;&#x9875;&#x56DE;&#x5199;</h3><p><a href="https://en.wikipedia.org/wiki/Page_cache" target="_blank" rel="external">&#x9875;&#x9AD8;&#x901F;&#x7F13;&#x5B58;</a>&#x4E3A;&#x4E86;&#x51CF;&#x5C11;&#x5BF9;&#x78C1;&#x76D8;&#x7684;I/O&#x64CD;&#x4F5C;&#xFF0C;&#x5C06;&#x78C1;&#x76D8;&#x6570;&#x636E;&#x7F13;&#x5B58;&#x5728;&#x7269;&#x7406;&#x5185;&#x5B58;&#x4E2D;&#xFF0C;&#x63D0;&#x9AD8;&#x8BBF;&#x95EE;&#x901F;&#x5EA6;&#x3002;</p>
+<ul>
+<li>&#x8BBF;&#x95EE;&#x5185;&#x5B58;&#x7684;&#x901F;&#x5EA6;&#x6BD4;&#x8BBF;&#x95EE;&#x786C;&#x76D8;&#x901F;&#x5EA6;&#x5FEB;&#x51E0;&#x4E2A;&#x6570;&#x91CF;&#x7EA7;</li>
+<li><a href="https://en.wikipedia.org/wiki/Locality_of_reference" target="_blank" rel="external">&#x5C40;&#x90E8;&#x6027;&#x539F;&#x7406;</a></li>
+</ul>
+<h4 id="1-&#x7F13;&#x5B58;&#x65B9;&#x6CD5;"><a href="#1-&#x7F13;&#x5B58;&#x65B9;&#x6CD5;" class="headerlink" title="1. &#x7F13;&#x5B58;&#x65B9;&#x6CD5;"></a>1. &#x7F13;&#x5B58;&#x65B9;&#x6CD5;</h4><blockquote>
+<p>&#x9875;&#x9AD8;&#x901F;&#x7F13;&#x5B58;&#x7531;&#x5185;&#x5B58;&#x4E2D;&#x7684;&#x7269;&#x7406;&#x9875;&#x9762;&#x7EC4;&#x6210;&#xFF0C;&#x5BF9;&#x5E94;&#x78C1;&#x76D8;&#x4E0A;&#x7684;&#x7269;&#x7406;&#x5757;&#x3002;</p>
+</blockquote>
+<p><a href="https://en.wikipedia.org/wiki/Cache_(computing)#WRITEPOLICIES" target="_blank" rel="external">&#x5199;&#x7F13;&#x5B58;&#x7B56;&#x7565;</a>&#xFF1A;</p>
+<ul>
+<li><strong><a href="https://en.wikipedia.org/wiki/File:Write-through_with_no-write-allocation.svg" target="_blank" rel="external">Write-through</a></strong>: write is done synchronously both to the cache and to the backing store.</li>
+<li><strong><a href="https://en.wikipedia.org/wiki/File:Write-back_with_write-allocation.svg" target="_blank" rel="external">Write-back</a></strong> (also called write-behind): initially, writing is done only to the cache. The write to the backing store is postponed until the cache blocks containing the data are about to be modified/replaced by new content.</li>
+</ul>
+<p><a href="https://en.wikipedia.org/wiki/Cache_replacement_policies" target="_blank" rel="external">&#x7F13;&#x5B58;&#x56DE;&#x6536;&#x7B56;&#x7565;</a></p>
+<ul>
+<li><a href="http://www.mathcs.emory.edu/~cheung/Courses/355/Syllabus/9-virtual-mem/LRU-replace.html" target="_blank" rel="external">Least Recently Used</a></li>
+<li>The Two-List Strategy(LRU/K)</li>
+</ul>
+<p><a href="https://en.wikipedia.org/wiki/Page_replacement_algorithm" target="_blank" rel="external">Page replacement algorithm</a></p>
+<a id="more"></a>
+<h4 id="2-Linux&#x9875;&#x9AD8;&#x901F;&#x7F13;&#x5B58;"><a href="#2-Linux&#x9875;&#x9AD8;&#x901F;&#x7F13;&#x5B58;" class="headerlink" title="2. Linux&#x9875;&#x9AD8;&#x901F;&#x7F13;&#x5B58;"></a>2. Linux&#x9875;&#x9AD8;&#x901F;&#x7F13;&#x5B58;</h4><p>Linux&#x9875;&#x9AD8;&#x901F;&#x7F13;&#x5B58;&#x7684;&#x76EE;&#x6807;&#x662F;&#x7F13;&#x5B58;&#x4EFB;&#x4F55;&#x57FA;&#x4E8E;&#x9875;&#x7684;&#x5BF9;&#x8C61;&#xFF0C;&#x5305;&#x542B;&#x5404;&#x79CD;&#x7C7B;&#x578B;&#x7684;&#x6587;&#x4EF6;&#x548C;&#x5404;&#x79CD;&#x7C7B;&#x578B;&#x7684;&#x5185;&#x5B58;&#x6620;&#x5C04;&#x3002;&#x4E3A;&#x4E86;&#x666E;&#x904D;&#x6027;&#xFF0C;Linux&#x4F7F;&#x7528;&#x4E00;&#x4E2A;&#x65B0;&#x5BF9;&#x8C61;&#x7BA1;&#x7406;&#x7F13;&#x5B58;&#x9879;&#x548C;&#x9875;I/O&#x64CD;&#x4F5C;&#x2014;&#x2014;address_space&#x7ED3;&#x6784;&#x4F53;&#x3002;</p>
+<ul>
+<li>address_space&#x7ED3;&#x6784;&#x4F53;<br>address_space&#x5B9A;&#x4E49;&#x5728;<a href="https://github.com/torvalds/linux/blob/master/include/linux/fs.h#L377" target="_blank" rel="external">linux/fs.h</a>&#x4E2D;&#xFF0C;&#x5BF9;&#x4E8E;&#x4E00;&#x4E2A;&#x6587;&#x4EF6;&#xFF0C;&#x5B83;&#x53EF;&#x4EE5;&#x5BF9;&#x5E94;&#x591A;&#x4E2A;vm_area_struct&#xFF0C;&#x4F46;&#x53EA;&#x6709;&#x4E00;&#x4E2A;address_space&#x3002;</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">struct</span> address_space {</div><div class="line">	<span class="keyword">struct</span> inode		*host;		<span class="comment">/* owner: inode, block_device */</span></div><div class="line">	<span class="keyword">struct</span> radix_tree_root	page_tree;	<span class="comment">/* radix tree of all pages */</span></div><div class="line">	<span class="keyword">spinlock_t</span>		tree_lock;	<span class="comment">/* and lock protecting it */</span></div><div class="line">	<span class="keyword">atomic_t</span>		i_mmap_writable;<span class="comment">/* count VM_SHARED mappings */</span></div><div class="line">	<span class="keyword">struct</span> rb_root		i_mmap;		<span class="comment">/* tree of private and shared mappings */</span></div><div class="line">	<span class="keyword">struct</span> rw_semaphore	i_mmap_rwsem;	<span class="comment">/* protect tree, count, list */</span></div><div class="line">	<span class="comment">/* Protected by tree_lock together with the radix tree */</span></div><div class="line">	<span class="keyword">unsigned</span> <span class="keyword">long</span>		nrpages;	<span class="comment">/* number of total pages */</span></div><div class="line">	<span class="comment">/* number of shadow or DAX exceptional entries */</span></div><div class="line">	<span class="keyword">unsigned</span> <span class="keyword">long</span>		nrexceptional;</div><div class="line">	<span class="keyword">pgoff_t</span>			writeback_index;<span class="comment">/* writeback starts here */</span></div><div class="line">	<span class="keyword">const</span> <span class="keyword">struct</span> address_space_operations *a_ops;	<span class="comment">/* methods */</span></div><div class="line">	<span class="keyword">unsigned</span> <span class="keyword">long</span>		flags;		<span class="comment">/* error bits */</span></div><div class="line">	<span class="keyword">spinlock_t</span>		private_lock;	<span class="comment">/* for use by the address_space */</span></div><div class="line">	<span class="keyword">gfp_t</span>			gfp_mask;	<span class="comment">/* implicit gfp mask for allocations */</span></div><div class="line">	<span class="keyword">struct</span> list_head	private_list;	<span class="comment">/* ditto */</span></div><div class="line">	<span class="keyword">void</span>			*private_data;	<span class="comment">/* ditto */</span></div><div class="line">} __attribute__((aligned(<span class="keyword">sizeof</span>(<span class="keyword">long</span>))));</div><div class="line">	<span class="comment">/*</span></div><div class="line">	 * On most architectures that alignment is already the case; but</div><div class="line">	 * must be enforced here for CRIS, to let the least significant bit</div><div class="line">	 * of struct page&apos;s &quot;mapping&quot; pointer be used for PAGE_MAPPING_ANON.</div><div class="line">	 */</div></pre></td></tr></table></figure>
+<ul>
+<li>address_space&#x64CD;&#x4F5C;<br>&#x4E0E;vfs&#x5BF9;&#x8C61;&#x7C7B;&#x4F3C;&#xFF0C;a_ops&#x57DF;&#x6307;&#x5411;&#x4E86;address_space&#x76F8;&#x5173;&#x7684;&#x64CD;&#x4F5C;&#x51FD;&#x6570;&#xFF0C;&#x7531;&#x7ED3;&#x6784;&#x4F53;address_space_operations&#x8868;&#x793A;&#x3002;</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">struct</span> address_space_operations {</div><div class="line">	<span class="keyword">int</span> (*writepage)(<span class="keyword">struct</span> page *page, <span class="keyword">struct</span> writeback_control *wbc);</div><div class="line">	<span class="keyword">int</span> (*readpage)(<span class="keyword">struct</span> file *, <span class="keyword">struct</span> page *);</div><div class="line"></div><div class="line">	<span class="comment">/* Write back some dirty pages from this mapping. */</span></div><div class="line">	<span class="keyword">int</span> (*writepages)(<span class="keyword">struct</span> address_space *, <span class="keyword">struct</span> writeback_control *);</div><div class="line"></div><div class="line">	<span class="comment">/* Set a page dirty.  Return true if this dirtied it */</span></div><div class="line">	<span class="keyword">int</span> (*set_page_dirty)(<span class="keyword">struct</span> page *page);</div><div class="line"></div><div class="line">	<span class="keyword">int</span> (*readpages)(<span class="keyword">struct</span> file *filp, <span class="keyword">struct</span> address_space *mapping,</div><div class="line">			<span class="keyword">struct</span> list_head *pages, <span class="keyword">unsigned</span> nr_pages);</div><div class="line"></div><div class="line">	<span class="keyword">int</span> (*write_begin)(<span class="keyword">struct</span> file *, <span class="keyword">struct</span> address_space *mapping,</div><div class="line">				<span class="keyword">loff_t</span> pos, <span class="keyword">unsigned</span> len, <span class="keyword">unsigned</span> flags,</div><div class="line">				<span class="keyword">struct</span> page **pagep, <span class="keyword">void</span> **fsdata);</div><div class="line">	<span class="keyword">int</span> (*write_end)(<span class="keyword">struct</span> file *, <span class="keyword">struct</span> address_space *mapping,</div><div class="line">				<span class="keyword">loff_t</span> pos, <span class="keyword">unsigned</span> len, <span class="keyword">unsigned</span> copied,</div><div class="line">				<span class="keyword">struct</span> page *page, <span class="keyword">void</span> *fsdata);</div><div class="line"></div><div class="line">	<span class="comment">/* Unfortunately this kludge is needed for FIBMAP. Don&apos;t use it */</span></div><div class="line">	<span class="keyword">sector_t</span> (*bmap)(<span class="keyword">struct</span> address_space *, <span class="keyword">sector_t</span>);</div><div class="line">	<span class="keyword">void</span> (*invalidatepage) (<span class="keyword">struct</span> page *, <span class="keyword">unsigned</span> <span class="keyword">int</span>, <span class="keyword">unsigned</span> <span class="keyword">int</span>);</div><div class="line">	<span class="keyword">int</span> (*releasepage) (<span class="keyword">struct</span> page *, <span class="keyword">gfp_t</span>);</div><div class="line">	<span class="keyword">void</span> (*freepage)(<span class="keyword">struct</span> page *);</div><div class="line">	<span class="keyword">ssize_t</span> (*direct_IO)(<span class="keyword">struct</span> kiocb *, <span class="keyword">struct</span> iov_iter *iter);</div><div class="line">	<span class="comment">/*</span></div><div class="line">	 * migrate the contents of a page to the specified target. If</div><div class="line">	 * migrate_mode is MIGRATE_ASYNC, it must not block.</div><div class="line">	 */</div><div class="line">	<span class="keyword">int</span> (*migratepage) (<span class="keyword">struct</span> address_space *,</div><div class="line">			<span class="keyword">struct</span> page *, <span class="keyword">struct</span> page *, <span class="keyword">enum</span> migrate_mode);</div><div class="line">	<span class="keyword">bool</span> (*isolate_page)(<span class="keyword">struct</span> page *, <span class="keyword">isolate_mode_t</span>);</div><div class="line">	<span class="keyword">void</span> (*putback_page)(<span class="keyword">struct</span> page *);</div><div class="line">	<span class="keyword">int</span> (*launder_page) (<span class="keyword">struct</span> page *);</div><div class="line">	<span class="keyword">int</span> (*is_partially_uptodate) (<span class="keyword">struct</span> page *, <span class="keyword">unsigned</span> <span class="keyword">long</span>,</div><div class="line">					<span class="keyword">unsigned</span> <span class="keyword">long</span>);</div><div class="line">	<span class="keyword">void</span> (*is_dirty_writeback) (<span class="keyword">struct</span> page *, <span class="keyword">bool</span> *, <span class="keyword">bool</span> *);</div><div class="line">	<span class="keyword">int</span> (*error_remove_page)(<span class="keyword">struct</span> address_space *, <span class="keyword">struct</span> page *);</div><div class="line"></div><div class="line">	<span class="comment">/* swapfile support */</span></div><div class="line">	<span class="keyword">int</span> (*swap_activate)(<span class="keyword">struct</span> swap_info_struct *sis, <span class="keyword">struct</span> file *file,</div><div class="line">				<span class="keyword">sector_t</span> *span);</div><div class="line">	<span class="keyword">void</span> (*swap_deactivate)(<span class="keyword">struct</span> file *file);</div><div class="line">};</div></pre></td></tr></table></figure>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Radix_tree" target="_blank" rel="external">&#x57FA;&#x6811;</a><br>&#x57FA;&#x6811;&#x53EF;&#x4EE5;&#x9AD8;&#x6548;&#x5730;&#x68C0;&#x7D22;&#x9875;&#x7F13;&#x5B58;&#xFF0C;&#x76F8;&#x5173;&#x4EE3;&#x7801;&#x5728;<a href="https://github.com/torvalds/linux/blob/master/lib/radix-tree.c" target="_blank" rel="external">lib/radix-tree.c</a>&#xFF0C;&#x4F7F;&#x7528;&#x65F6;&#x5305;&#x542B;&#x5934;&#x6587;&#x4EF6;<a href="https://github.com/torvalds/linux/blob/master/include/linux/radix-tree.h" target="_blank" rel="external">linux/radix-tree.h</a></li>
+</ul>
+<h4 id="3-flush&#x7EBF;&#x7A0B;"><a href="#3-flush&#x7EBF;&#x7A0B;" class="headerlink" title="3. flush&#x7EBF;&#x7A0B;"></a>3. flush&#x7EBF;&#x7A0B;</h4><p>&#x7531;&#x4E8E;&#x9875;&#x9AD8;&#x901F;&#x7F13;&#x5B58;&#x7684;&#x5B58;&#x5728;&#xFF0C;&#x5199;&#x64CD;&#x4F5C;&#x4F1A;&#x88AB;&#x5EF6;&#x8FDF;&#xFF0C;&#x5185;&#x5B58;&#x4E2D;&#x7684;&#x810F;&#x6570;&#x636E;&#x4F1A;&#x5728;&#x7279;&#x5B9A;&#x60C5;&#x51B5;&#x4E0B;&#x5199;&#x56DE;&#x78C1;&#x76D8;&#xFF1A;</p>
+<ul>
+<li>&#x5F53;&#x7A7A;&#x95F2;&#x5185;&#x5B58;&#x4F4E;&#x4E8E;&#x4E00;&#x4E2A;&#x7279;&#x5B9A;&#x9608;&#x503C;&#xFF0C;&#x5185;&#x6838;&#x5FC5;&#x987B;&#x5C06;&#x810F;&#x9875;&#x5199;&#x56DE;&#x78C1;&#x76D8;&#x91CA;&#x653E;&#x5185;&#x5B58;</li>
+<li>&#x5F53;&#x810F;&#x9875;&#x5728;&#x5185;&#x5B58;&#x4E2D;&#x9A7B;&#x7559;&#x65F6;&#x95F4;&#x8D85;&#x8FC7;&#x4E00;&#x4E2A;&#x7279;&#x5B9A;&#x7684;&#x9608;&#x503C;&#xFF0C;&#x5185;&#x6838;&#x5FC5;&#x987B;&#x5C06;&#x8D85;&#x65F6;&#x810F;&#x9875;&#x5199;&#x56DE;&#x78C1;&#x76D8;</li>
+<li>&#x7528;&#x6237;&#x8C03;&#x7528;sync()&#x548C;fsync()&#xFF0C;&#x5185;&#x6838;&#x4F1A;&#x6309;&#x8981;&#x6C42;&#x6267;&#x884C;&#x56DE;&#x5199;&#x64CD;&#x4F5C;</li>
+</ul>
+<p>&#x8FD9;&#x4E9B;&#x5DE5;&#x4F5C;&#x7531;&#x5185;&#x6838;&#x7684;flusher&#x7EBF;&#x7A0B;&#x6267;&#x884C;&#x3002;&#x5B9E;&#x73B0;&#x4EE3;&#x7801;&#x5728;<a href="https://github.com/torvalds/linux/blob/master/mm/page-writeback.c" target="_blank" rel="external">mm/page_writeback.c</a>&#x548C;<a href="https://github.com/torvalds/linux/blob/master/mm/backing-dev.c" target="_blank" rel="external">mm/backing-dev.c</a>&#xFF0C;&#x56DE;&#x5199;&#x673A;&#x5236;&#x5B9E;&#x73B0;&#x5728;<a href="https://github.com/torvalds/linux/blob/master/fs/fs-writeback.c" target="_blank" rel="external">fs/fs-writeback.c</a></p>
+<p>&#x66F4;&#x591A;&#x9605;&#x8BFB;&#xFF1A;</p>
+<ul>
+<li><a href="https://www.ibm.com/developerworks/cn/linux/l-cache/" target="_blank" rel="external">Linux &#x5185;&#x6838;&#x7684;&#x6587;&#x4EF6; Cache &#x7BA1;&#x7406;&#x673A;&#x5236;&#x4ECB;&#x7ECD;</a></li>
+<li><a href="https://github.com/tobert/pcstat" target="_blank" rel="external">pcstat - get page cache statistics for files</a></li>
+<li><a href="https://www.thomas-krenn.com/en/wiki/Linux_Page_Cache_Basics" target="_blank" rel="external">Linux Page Cache Basics</a></li>
+<li><a href="http://www.brendangregg.com/blog/2014-12-31/linux-page-cache-hit-ratio.html" target="_blank" rel="external">Linux Page Cache Hit Ratio</a></li>
+<li><a href="https://lwn.net/Articles/712467/" target="_blank" rel="external">The future of the page cache</a></li>
+<li><a href="http://benjr.tw/20361" target="_blank" rel="external">Cache &#x7684; write back &#x548C; write through</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Linux-kernel/" rel="tag">#Linux kernel</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/28/第十五章-进程地址空间/" rel="next" title="第十五章 进程地址空间">
+                <i class="fa fa-chevron-left"></i> 第十五章 进程地址空间
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="//schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="https://projecteuler.net/profile/luobuda.png"
+               alt="洛卜哒" />
+          <p class="site-author-name" itemprop="name">洛卜哒</p>
+          <p class="site-description motion-element" itemprop="description">大约，孔乙己的确死了！</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">27</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/luobuda" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://github.com/luobuda" title="Github" target="_blank">Github</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://projecteuler.net/" title="Project Euler" target="_blank">Project Euler</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#页高速缓存和页回写"><span class="nav-number">1.</span> <span class="nav-text">页高速缓存和页回写</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-缓存方法"><span class="nav-number">1.1.</span> <span class="nav-text">1. 缓存方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-Linux页高速缓存"><span class="nav-number">1.2.</span> <span class="nav-text">2. Linux页高速缓存</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-flush线程"><span class="nav-number">1.3.</span> <span class="nav-text">3. flush线程</span></a></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">洛卜哒</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.2"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>

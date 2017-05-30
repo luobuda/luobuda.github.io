@@ -259,6 +259,139 @@
             
               
                 
+                <a class="post-title-link" href="/2017/05/30/第十六章-页高速缓存和页回写/" itemprop="url">
+                  第十六章 页高速缓存和页回写
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-05-30T15:25:12+08:00" content="2017-05-30">
+              2017-05-30
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h3 id="&#x9875;&#x9AD8;&#x901F;&#x7F13;&#x5B58;&#x548C;&#x9875;&#x56DE;&#x5199;"><a href="#&#x9875;&#x9AD8;&#x901F;&#x7F13;&#x5B58;&#x548C;&#x9875;&#x56DE;&#x5199;" class="headerlink" title="&#x9875;&#x9AD8;&#x901F;&#x7F13;&#x5B58;&#x548C;&#x9875;&#x56DE;&#x5199;"></a>&#x9875;&#x9AD8;&#x901F;&#x7F13;&#x5B58;&#x548C;&#x9875;&#x56DE;&#x5199;</h3><p><a href="https://en.wikipedia.org/wiki/Page_cache">&#x9875;&#x9AD8;&#x901F;&#x7F13;&#x5B58;</a>&#x4E3A;&#x4E86;&#x51CF;&#x5C11;&#x5BF9;&#x78C1;&#x76D8;&#x7684;I/O&#x64CD;&#x4F5C;&#xFF0C;&#x5C06;&#x78C1;&#x76D8;&#x6570;&#x636E;&#x7F13;&#x5B58;&#x5728;&#x7269;&#x7406;&#x5185;&#x5B58;&#x4E2D;&#xFF0C;&#x63D0;&#x9AD8;&#x8BBF;&#x95EE;&#x901F;&#x5EA6;&#x3002;</p>
+<ul>
+<li>&#x8BBF;&#x95EE;&#x5185;&#x5B58;&#x7684;&#x901F;&#x5EA6;&#x6BD4;&#x8BBF;&#x95EE;&#x786C;&#x76D8;&#x901F;&#x5EA6;&#x5FEB;&#x51E0;&#x4E2A;&#x6570;&#x91CF;&#x7EA7;</li>
+<li><a href="https://en.wikipedia.org/wiki/Locality_of_reference">&#x5C40;&#x90E8;&#x6027;&#x539F;&#x7406;</a></li>
+</ul>
+<h4 id="1-&#x7F13;&#x5B58;&#x65B9;&#x6CD5;"><a href="#1-&#x7F13;&#x5B58;&#x65B9;&#x6CD5;" class="headerlink" title="1. &#x7F13;&#x5B58;&#x65B9;&#x6CD5;"></a>1. &#x7F13;&#x5B58;&#x65B9;&#x6CD5;</h4><blockquote>
+<p>&#x9875;&#x9AD8;&#x901F;&#x7F13;&#x5B58;&#x7531;&#x5185;&#x5B58;&#x4E2D;&#x7684;&#x7269;&#x7406;&#x9875;&#x9762;&#x7EC4;&#x6210;&#xFF0C;&#x5BF9;&#x5E94;&#x78C1;&#x76D8;&#x4E0A;&#x7684;&#x7269;&#x7406;&#x5757;&#x3002;</p>
+</blockquote>
+<p><a href="https://en.wikipedia.org/wiki/Cache_(computing)#WRITEPOLICIES">&#x5199;&#x7F13;&#x5B58;&#x7B56;&#x7565;</a>&#xFF1A;</p>
+<ul>
+<li><strong><a href="https://en.wikipedia.org/wiki/File:Write-through_with_no-write-allocation.svg">Write-through</a></strong>: write is done synchronously both to the cache and to the backing store.</li>
+<li><strong><a href="https://en.wikipedia.org/wiki/File:Write-back_with_write-allocation.svg">Write-back</a></strong> (also called write-behind): initially, writing is done only to the cache. The write to the backing store is postponed until the cache blocks containing the data are about to be modified/replaced by new content.</li>
+</ul>
+<p><a href="https://en.wikipedia.org/wiki/Cache_replacement_policies">&#x7F13;&#x5B58;&#x56DE;&#x6536;&#x7B56;&#x7565;</a></p>
+<ul>
+<li><a href="http://www.mathcs.emory.edu/~cheung/Courses/355/Syllabus/9-virtual-mem/LRU-replace.html">Least Recently Used</a></li>
+<li>The Two-List Strategy(LRU/K)</li>
+</ul>
+<p><a href="https://en.wikipedia.org/wiki/Page_replacement_algorithm">Page replacement algorithm</a></p>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2017/05/30/第十六章-页高速缓存和页回写/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2017/05/28/第十五章-进程地址空间/" itemprop="url">
                   第十五章 进程地址空间
                 </a>
@@ -1332,128 +1465,6 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/04/30/第六章-内核数据结构/" itemprop="url">
-                  第六章 内核数据结构
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2017-04-30T17:07:22+08:00" content="2017-04-30">
-              2017-04-30
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index">
-                    <span itemprop="name">Linux</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h3 id="&#x5185;&#x6838;&#x6570;&#x636E;&#x7ED3;&#x6784;"><a href="#&#x5185;&#x6838;&#x6570;&#x636E;&#x7ED3;&#x6784;" class="headerlink" title="&#x5185;&#x6838;&#x6570;&#x636E;&#x7ED3;&#x6784;"></a>&#x5185;&#x6838;&#x6570;&#x636E;&#x7ED3;&#x6784;</h3><blockquote>
-<p>&#x5185;&#x6838;&#x4E2D;&#x5B9E;&#x73B0;&#x4E86;&#x5F88;&#x591A;&#x901A;&#x7528;&#x6570;&#x636E;&#x7ED3;&#x6784;&#xFF0C;&#x5305;&#x62EC;Linked list&#x3001;Queue&#x3001;Map&#x3001;Binary tree&#x7B49;</p>
-</blockquote>
-<h4 id="1-&#x94FE;&#x8868;"><a href="#1-&#x94FE;&#x8868;" class="headerlink" title="1. &#x94FE;&#x8868;"></a>1. &#x94FE;&#x8868;</h4><p>Linux&#x5185;&#x6838;&#x4E2D;&#x94FE;&#x8868;&#x968F;&#x5904;&#x53EF;&#x89C1;&#xFF0C;&#x5B83;&#x5C06;&#x94FE;&#x8868;&#x8282;&#x70B9;&#x585E;&#x5165;&#x6570;&#x636E;&#x7ED3;&#x6784;&#x4E2D;&#x3002;</p>
-<p>&#x94FE;&#x8868;&#x5728;<a href="https://github.com/torvalds/linux/blob/master/include/linux/types.h#L184">linux/types.h</a>&#x4E2D;&#x58F0;&#x660E;&#xFF0C;&#x53EA;&#x6709;&#x4E24;&#x4E2A;&#x6307;&#x9488;next&#x3001;prev&#xFF0C;&#x662F;&#x5F88;&#x7B80;&#x5355;&#x7684;&#x53CC;&#x5411;&#x94FE;&#x8868;&#xFF0C;<a href="https://github.com/torvalds/linux/blob/master/include/linux/list.h">linux/list.h</a>&#x4E2D;&#x5B9E;&#x73B0;&#x4E86;&#x5F88;&#x591A;&#x94FE;&#x8868;&#x64CD;&#x4F5C;&#x7684;&#x5B8F;&#x3002;<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">struct</span> list_head {</div><div class="line">	<span class="keyword">struct</span> list_head *next, *prev;</div><div class="line">};</div></pre></td></tr></table></figure></p>
-<p>&#x5728;&#x4F7F;&#x7528;&#x7684;&#x65F6;&#x5019;&#x53EA;&#x9700;&#x8981;&#x5728;&#x81EA;&#x5DF1;&#x7684;&#x7ED3;&#x6784;&#x4E2D;&#x52A0;&#x4E0A;struct list_head list,&#x5982;<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">struct</span> person</div><div class="line">{</div><div class="line">    <span class="keyword">int</span> age;</div><div class="line">    <span class="keyword">char</span>* name;</div><div class="line">    <span class="keyword">struct</span> list_head <span class="built_in">list</span>;</div><div class="line">};</div></pre></td></tr></table></figure></p>
-<p>&#x5185;&#x6838;&#x5E38;&#x7528;&#x7684;&#x4E00;&#x4E2A;&#x5B8F;&#xFF0C;&#x83B7;&#x5F97;&#x5305;&#x542B;member&#x7684;&#x7ED3;&#x6784;&#x4F53;&#x7684;&#x6307;&#x9488;&#xFF1A;<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">define</span> container_of(ptr, type, member) ({			\</span></div><div class="line">	const typeof( ((type *)0)-&gt;member ) *__mptr = (ptr);	\</div><div class="line">	(type *)( (char *)__mptr - offsetof(type,member) );})</div></pre></td></tr></table></figure></p>
-<p>&#x5229;&#x7528;&#x8FD9;&#x4E2A;&#x5B8F;&#xFF0C;&#x53EF;&#x4EE5;&#x65B9;&#x4FBF;&#x5730;&#x5F97;&#x5230;&#x5305;&#x542B;&#x94FE;&#x8868;&#x7684;&#x7ED3;&#x6784;&#x4F53;&#xFF1A;<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * list_entry - get the struct for this entry</div><div class="line"> * @ptr:	the &amp;struct list_head pointer.</div><div class="line"> * @type:	the type of the struct this is embedded in.</div><div class="line"> * @member:	the name of the list_struct within the struct.</div><div class="line"> */</div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> list_entry(ptr, type, member) \</span></div><div class="line">	container_of(ptr, type, member)</div></pre></td></tr></table></figure></p>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2017/04/30/第六章-内核数据结构/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1499,7 +1510,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">26</span>
+              <span class="site-state-item-count">27</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
