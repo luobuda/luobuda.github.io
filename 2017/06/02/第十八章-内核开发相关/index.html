@@ -84,19 +84,19 @@
 
 
 
-<meta name="description" content="System.map&amp;#x6587;&amp;#x4EF6;&amp;#x548C;/proc/kallsymsSystem.map
-&amp;#x8BE5;&amp;#x6587;&amp;#x4EF6;&amp;#x662F;&amp;#x662F;&amp;#x4E00;&amp;#x4EFD;&amp;#x5185;&amp;#x6838;&amp;#x7B26;&amp;#x53F7;&amp;#x8868;kernel symbol table&amp;#xFF0C;&amp;#x5305;&amp;#x542B;&amp;#">
+<meta name="description" content="&amp;#x8C03;&amp;#x8BD5;
+&amp;#x8C03;&amp;#x8BD5;&amp;#x662F;&amp;#x7F16;&amp;#x7A0B;&amp;#x7684;&amp;#x5FC5;&amp;#x5907;&amp;#x6280;&amp;#x80FD;&amp;#xFF0C;&amp;#x5DE5;&amp;#x4F5C;&amp;#x4E24;&amp;#x4E2A;&amp;#x6708;&amp;#x6765;&amp;#x4E3B;&amp;#x8981;&amp;#x5C31;&amp;#x662F;&amp;#x5B66;&amp;#x4E60">
 <meta property="og:type" content="article">
-<meta property="og:title" content="System.map和kallsyms文件">
-<meta property="og:url" content="http://luobuda.github.io/2017/04/23/System-map和kallsyms文件/index.html">
+<meta property="og:title" content="第十八章+内核开发相关">
+<meta property="og:url" content="http://luobuda.github.io/2017/06/02/第十八章-内核开发相关/index.html">
 <meta property="og:site_name" content="洛卜哒的博客">
-<meta property="og:description" content="System.map&amp;#x6587;&amp;#x4EF6;&amp;#x548C;/proc/kallsymsSystem.map
-&amp;#x8BE5;&amp;#x6587;&amp;#x4EF6;&amp;#x662F;&amp;#x662F;&amp;#x4E00;&amp;#x4EFD;&amp;#x5185;&amp;#x6838;&amp;#x7B26;&amp;#x53F7;&amp;#x8868;kernel symbol table&amp;#xFF0C;&amp;#x5305;&amp;#x542B;&amp;#">
-<meta property="og:updated_time" content="2017-04-23T08:28:54.234Z">
+<meta property="og:description" content="&amp;#x8C03;&amp;#x8BD5;
+&amp;#x8C03;&amp;#x8BD5;&amp;#x662F;&amp;#x7F16;&amp;#x7A0B;&amp;#x7684;&amp;#x5FC5;&amp;#x5907;&amp;#x6280;&amp;#x80FD;&amp;#xFF0C;&amp;#x5DE5;&amp;#x4F5C;&amp;#x4E24;&amp;#x4E2A;&amp;#x6708;&amp;#x6765;&amp;#x4E3B;&amp;#x8981;&amp;#x5C31;&amp;#x662F;&amp;#x5B66;&amp;#x4E60">
+<meta property="og:updated_time" content="2017-06-02T15:37:40.496Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="System.map和kallsyms文件">
-<meta name="twitter:description" content="System.map&amp;#x6587;&amp;#x4EF6;&amp;#x548C;/proc/kallsymsSystem.map
-&amp;#x8BE5;&amp;#x6587;&amp;#x4EF6;&amp;#x662F;&amp;#x662F;&amp;#x4E00;&amp;#x4EFD;&amp;#x5185;&amp;#x6838;&amp;#x7B26;&amp;#x53F7;&amp;#x8868;kernel symbol table&amp;#xFF0C;&amp;#x5305;&amp;#x542B;&amp;#">
+<meta name="twitter:title" content="第十八章+内核开发相关">
+<meta name="twitter:description" content="&amp;#x8C03;&amp;#x8BD5;
+&amp;#x8C03;&amp;#x8BD5;&amp;#x662F;&amp;#x7F16;&amp;#x7A0B;&amp;#x7684;&amp;#x5FC5;&amp;#x5907;&amp;#x6280;&amp;#x80FD;&amp;#xFF0C;&amp;#x5DE5;&amp;#x4F5C;&amp;#x4E24;&amp;#x4E2A;&amp;#x6708;&amp;#x6765;&amp;#x4E3B;&amp;#x8981;&amp;#x5C31;&amp;#x662F;&amp;#x5B66;&amp;#x4E60">
 
 
 
@@ -117,10 +117,10 @@
 
 
 
-  <link rel="canonical" href="http://luobuda.github.io/2017/04/23/System-map和kallsyms文件/"/>
+  <link rel="canonical" href="http://luobuda.github.io/2017/06/02/第十八章-内核开发相关/"/>
 
 
-  <title> System.map和kallsyms文件 | 洛卜哒的博客 </title>
+  <title> 第十八章+内核开发相关 | 洛卜哒的博客 </title>
 </head>
 
 <body itemscope itemtype="//schema.org/WebPage" lang="zh-Hans">
@@ -260,7 +260,7 @@
             
             
               
-                System.map和kallsyms文件
+                第十八章+内核开发相关
               
             
           </h1>
@@ -272,8 +272,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2017-04-23T16:06:40+08:00" content="2017-04-23">
-              2017-04-23
+            <time itemprop="dateCreated" datetime="2017-06-02T23:35:31+08:00" content="2017-06-02">
+              2017-06-02
             </time>
           </span>
 
@@ -319,107 +319,35 @@
       
 
       
-        <h3 id="System-map&#x6587;&#x4EF6;&#x548C;-proc-kallsyms"><a href="#System-map&#x6587;&#x4EF6;&#x548C;-proc-kallsyms" class="headerlink" title="System.map&#x6587;&#x4EF6;&#x548C;/proc/kallsyms"></a>System.map&#x6587;&#x4EF6;&#x548C;/proc/kallsyms</h3><h4 id="System-map"><a href="#System-map" class="headerlink" title="System.map"></a>System.map</h4><blockquote>
-<p>&#x8BE5;&#x6587;&#x4EF6;&#x662F;&#x662F;&#x4E00;&#x4EFD;&#x5185;&#x6838;&#x7B26;&#x53F7;&#x8868;kernel symbol table&#xFF0C;&#x5305;&#x542B;&#x4E86;&#x5185;&#x6838;&#x4E2D;&#x7684;&#x53D8;&#x91CF;&#x540D;&#x548C;&#x51FD;&#x6570;&#x540D;&#x5730;&#x5740;&#xFF0C;&#x5728;&#x6BCF;&#x6B21;&#x7F16;&#x8BD1;&#x5185;&#x6838;&#x65F6;&#xFF0C;&#x81EA;&#x52A8;&#x751F;&#x6210;&#x3002;<br>&#x76F8;&#x5173;&#x8D44;&#x6599;&#xFF1A;<br><a href="https://en.wikipedia.org/wiki/GNU_Binutils" target="_blank" rel="external">GNU Binutils wiki</a><br><a href="https://www.gnu.org/software/binutils/" target="_blank" rel="external">GNU Binutils</a><br><a href="http://dirac.org/linux/system.map/" target="_blank" rel="external">What Are Symbols?</a></p>
+        <h3 id="&#x8C03;&#x8BD5;"><a href="#&#x8C03;&#x8BD5;" class="headerlink" title="&#x8C03;&#x8BD5;"></a><a href="Debugging">&#x8C03;&#x8BD5;</a></h3><blockquote>
+<p>&#x8C03;&#x8BD5;&#x662F;&#x7F16;&#x7A0B;&#x7684;&#x5FC5;&#x5907;&#x6280;&#x80FD;&#xFF0C;&#x5DE5;&#x4F5C;&#x4E24;&#x4E2A;&#x6708;&#x6765;&#x4E3B;&#x8981;&#x5C31;&#x662F;&#x5B66;&#x4E60;&#x5982;&#x4F55;&#x8C03;&#x8BD5;&#x5185;&#x6838;&#xFF0C;&#x5B9A;&#x4F4D;bug&#x3002;</p>
 </blockquote>
-<p>System.map&#x6587;&#x4EF6;&#x683C;&#x5F0F;&#xFF1A;&#x5730;&#x5740; &#x7C7B;&#x578B; &#x7B26;&#x53F7;  </p>
-<p>&#x7C7B;&#x578B;&#x662F;&#x5C0F;&#x5199;&#x8868;&#x793A;local symbol&#xFF0C;&#x5927;&#x5199;&#x8868;&#x793A;global(external)<br>&#x91CD;&#x70B9;&#x4E86;&#x89E3;&#x51E0;&#x4E2A;&#x7C7B;&#x578B;&#xFF1A;<br>T   The symbol is in the text(code) section<br>D   The symbol is in the initialized data   section<br>R   The sysbol is in a read only data section<br>t   static<br>d   static<br>R   const<br>r   static const  </p>
-<p>&#x4F7F;&#x7528;nm&#x547D;&#x4EE4;&#x53EF;&#x4EE5;&#x67E5;&#x770B;&#x66F4;&#x591A;&#x4FE1;&#x606F;&#xFF1A;<br>nm - list symbols from object files    </p>
-<table>
-<thead>
-<tr>
-<th>&#x7C7B;&#x578B;</th>
-<th>&#x8BF4;&#x660E;</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>A</td>
-<td>The symbol&#x2019;s value is absolute, and will not be changed by further linking</td>
-</tr>
-<tr>
-<td>B b</td>
-<td>The symbol is in the uninitialized data section(known as BS</td>
-</tr>
-<tr>
-<td>C</td>
-<td>The symbol is common. Common symbols are uninitialized data. When linking, multiple common symbols may appear with the same name. If the symbol is defined anywhere, the common symbols are treated as undefined references.</td>
-</tr>
-<tr>
-<td>D d</td>
-<td>The symbol is in the initialized data section.</td>
-</tr>
-<tr>
-<td>G g</td>
-<td>The symbol is in an initialized data section for small objects. Some object file formats permit more efficient access to small data objects, such as a global int variable as opposed to a large global array.</td>
-</tr>
-<tr>
-<td>i</td>
-<td>For PE format files this indicates that the symbol is in a section specific to the implementation of DLLs. For ELF format files this indicates that the symbol is an indirect function. This is a GNU extension to the standard set of ELF symbol types. It indicates a symbol which if referenced by a relocation does not evaluate to its address, but instead must be invoked at runtime. The runtime execution will then return the value to be used in the relocation.</td>
-</tr>
-<tr>
-<td>N</td>
-<td>The symbol is a debugging symbol.</td>
-</tr>
-<tr>
-<td>p</td>
-<td>The symbols is in a stack unwind section.</td>
-</tr>
-<tr>
-<td>R r</td>
-<td>The symbol is in a read only data section.</td>
-</tr>
-<tr>
-<td>S s</td>
-<td>The symbol is in an uninitialized data section for small objects.</td>
-</tr>
-<tr>
-<td>T t</td>
-<td>The symbol is in the text (code) section.</td>
-</tr>
-<tr>
-<td>U</td>
-<td>The symbol is undefined.</td>
-</tr>
-<tr>
-<td>u</td>
-<td>The symbol is a unique global symbol. This is a GNU extension to the standard set of ELF symbol bindings. For such a symbol the dynamic linker will make sure that in the entire process there is just one symbol with this name and type in use.</td>
-</tr>
-<tr>
-<td>V v</td>
-<td>The symbol is a weak object. When a weak defined symbol is linked with a normal defined symbol, the normal defined symbol is used with no error. When a weak undefined symbol is linked and the symbol is not defined, the value of the weak symbol becomes zero with no error. On some systems, uppercase indicates that a default value has been specified.</td>
-</tr>
-<tr>
-<td>W w</td>
-<td>The symbol is a weak symbol that has not been specifically tagged as a weak object symbol. When a weak defined symbol is linked with a normal defined symbol, the normal defined symbol is used with no error. When a weak undefined symbol is linked and the symbol is not defined, the value of the symbol is determined in a system-specific manner without error. On some systems, uppercase indicates that a default value has been specified.</td>
-</tr>
-<tr>
-<td>-</td>
-<td>The symbol is a stabs symbol in an a.out object file. In this case, the next values printed are the stabs other field, the stabs desc field, and the stab type. Stabs symbols are used to hold debugging information.</td>
-</tr>
-<tr>
-<td>?</td>
-<td>The symbol type is unknown, or object file format specific.</td>
-</tr>
-</tbody>
-</table>
-<a id="more"></a>
-<h4 id="proc-kallsysms"><a href="#proc-kallsysms" class="headerlink" title="/proc/kallsysms"></a>/proc/kallsysms</h4><blockquote>
-<p>/proc/kallsysms have symbols of dynamically loaded modules as well static code and system.map is symbol tables of only static code. kallsyms&#x5305;&#x542B;&#x4E86;<code>kernel image</code>&#x548C;&#x52A8;&#x6001;&#x52A0;&#x8F7D;&#x6A21;&#x5757;&#x7684;&#x7B26;&#x53F7;&#x8868;&#xFF0C;&#x51FD;&#x6570;&#x5982;&#x679C;&#x88AB;&#x7F16;&#x8BD1;&#x5668;&#x5185;&#x8054;&#xFF08;inline&#xFF09;&#x6216;&#x4F18;&#x5316;&#x6389;&#xFF0C;&#x5219;&#x5B83;&#x5728;/proc/kallsyms&#x6709;&#x53EF;&#x80FD;&#x627E;&#x4E0D;&#x5230;&#x3002;</p>
-</blockquote>
-<p>&#x6B63;&#x5728;&#x8FD0;&#x884C;&#x7684;&#x5185;&#x6838;&#x53EF;&#x80FD;&#x548C;System.map&#x4E0D;&#x5339;&#x914D;&#xFF0C;&#x51FA;&#x73B0;<code>System.map does not match actual kernel</code>&#xFF0C;&#x6240;&#x4EE5;/proc/kallsyms&#x624D;&#x662F;&#x53C2;&#x8003;&#x7684;&#x4E3B;&#x8981;&#x6765;&#x6E90;&#xFF0C;&#x6211;&#x4EEC;&#x5E94;&#x8BE5;&#x901A;&#x8FC7;/proc/kallsyms&#x83B7;&#x5F97;&#x7B26;&#x53F7;&#x7684;&#x5730;&#x5740;&#x3002;</p>
-<p>/proc/kallsyms&#x7684;&#x5F62;&#x6210;&#x8FC7;&#x7A0B;&#x4E3A;&#xFF1A;</p>
-<ul>
-<li><a href="https://github.com/torvalds/linux/blob/master/scripts/kallsyms.c" target="_blank" rel="external">/scripts/kallsyms.c</a> &#x751F;&#x6210;System.map</li>
-<li><a href="https://github.com/torvalds/linux/blob/master/kernel/kallsyms.c" target="_blank" rel="external">/kernel/kallsyms.c</a> &#x751F;&#x6210;/proc/kallsyms</li>
-<li><p><a href="https://github.com/torvalds/linux/blob/master/scripts/kallsyms.c" target="_blank" rel="external">/scripts/kallsyms.c</a> &#x89E3;&#x6790;vmlinux(.tmp_vmlinux)&#x751F;&#x6210;kallsyms.S(.tmp_kallsyms.S)&#xFF0C;&#x7136;&#x540E;&#x5185;&#x6838;&#x7F16;&#x8BD1;&#x8FC7;&#x7A0B;&#x4E2D;&#x5C06;kallsyms.S(&#x5185;&#x6838;&#x7B26;&#x53F7;&#x8868;)&#x7F16;&#x5165;&#x5185;&#x6838;&#x955C;&#x50CF;uImage</p>
-</li>
-<li><p>&#x5185;&#x6838;&#x542F;&#x52A8;&#x540E;./kernel/kallsyms.c&#x89E3;&#x6790;uImage&#x5F62;&#x6210;/proc/kallsyms</p>
-</li>
-<li><p>/proc/kallsyms&#x5305;&#x542B;&#x4E86;&#x5185;&#x6838;&#x4E2D;&#x7684;&#x51FD;&#x6570;&#x7B26;&#x53F7;(&#x5305;&#x62EC;&#x6CA1;&#x6709;EXPORT_SYMBOL)&#x3001;&#x5168;&#x5C40;&#x53D8;&#x91CF;(&#x7528;EXPORT_SYMBOL&#x5BFC;&#x51FA;&#x7684;&#x5168;&#x5C40;&#x53D8;&#x91CF;)</p>
-</li>
+<h4 id="1-&#x5185;&#x6838;&#x8C03;&#x8BD5;"><a href="#1-&#x5185;&#x6838;&#x8C03;&#x8BD5;" class="headerlink" title="1. &#x5185;&#x6838;&#x8C03;&#x8BD5;"></a>1. &#x5185;&#x6838;&#x8C03;&#x8BD5;</h4><ul>
+<li><a href="http://lse.sourceforge.net/kdump/" target="_blank" rel="external">Kdump</a>&#xFF1A;&#x57FA;&#x4E8E; kexec &#x7684;&#x5185;&#x5B58;&#x8F6C;&#x50A8;&#x5DE5;&#x5177;,<a href="https://en.wikipedia.org/wiki/Core_dump" target="_blank" rel="external">Core dump</a>&#x4E0D;&#x7BA1;&#x662F;&#x7528;&#x6237;&#x7A0B;&#x5E8F;&#x8FD8;&#x662F;&#x5185;&#x6838;&#x90FD;&#x4F1A;&#x4EA7;&#x751F;&#x3002;</li>
+<li><a href="http://people.redhat.com/anderson/" target="_blank" rel="external">crash&#x5DE5;&#x5177;</a>&#xFF1A;&#x5185;&#x5B58;&#x8F6C;&#x50A8;&#x5206;&#x6790;&#x5DE5;&#x5177;<br>crash&#x548C;gdb&#x7ED3;&#x5408;&#xFF0C;&#x53EF;&#x4EE5;&#x65B9;&#x4FBF;&#x5730;&#x8FDB;&#x884C;&#x8C03;&#x8BD5;&#xFF0C;&#x7279;&#x522B;&#x662F;&#x5728;&#x5F00;&#x53D1;&#x548C;&#x8C03;&#x8BD5;&#x81EA;&#x5DF1;&#x7684;&#x5185;&#x6838;&#x6A21;&#x5757;&#x65F6;&#xFF0C;&#x53EF;&#x4EE5;&#x7F16;&#x5199;gdb&#x811A;&#x672C;&#x7B80;&#x5316;&#x5F88;&#x591A;&#x64CD;&#x4F5C;&#x3002;</li>
 </ul>
-<h4 id="&#x53C2;&#x8003;&#x8D44;&#x6599;"><a href="#&#x53C2;&#x8003;&#x8D44;&#x6599;" class="headerlink" title="&#x53C2;&#x8003;&#x8D44;&#x6599;"></a>&#x53C2;&#x8003;&#x8D44;&#x6599;</h4><p><a href="http://blog.csdn.net/darling757267/article/details/9405113" target="_blank" rel="external">/proc/kallsys</a><br><a href="http://blog.chinaunix.net/uid-27717694-id-3985448.html" target="_blank" rel="external"> linux&#x5185;&#x6838;kallsyms&#x673A;&#x5236;&#x5206;&#x6790;</a><br><a href="https://lwn.net/Articles/420403/" target="_blank" rel="external">kptr_restrict for hiding kernel pointers</a><br><a href="https://www.kernel.org/doc/Documentation/sysctl/kernel.txt" target="_blank" rel="external">documentation for the sysctl files</a><br><a href="http://www.cnblogs.com/richardustc/archive/2013/04/25/3043674.html" target="_blank" rel="external">&#x83B7;&#x53D6;Linux&#x5185;&#x6838;&#x672A;&#x5BFC;&#x51FA;&#x7B26;&#x53F7;&#x7684;&#x51E0;&#x79CD;&#x65B9;&#x5F0F;</a><br><a href="http://stackoverflow.com/questions/32965535/kernel-symbol-marked-with-t-in-proc-kallsyms-is-not-exported" target="_blank" rel="external">kernel symbol marked with &#x201C;T&#x201D; in /proc/kallsyms is not exported</a></p>
+<p>&#x5185;&#x6838;&#x8C03;&#x8BD5;&#x7684;&#x4E00;&#x79CD;&#x65B9;&#x5F0F;&#x662F;&#x5229;&#x7528;printk()&#x51FD;&#x6570;&#x6253;&#x5370;&#x4FE1;&#x606F;&#x6765;&#x8C03;&#x8BD5;&#xFF0C;&#x8BE5;&#x51FD;&#x6570;&#x63D0;&#x4F9B;&#x4E86;&#x4E0D;&#x540C;&#x7684;&#x65E5;&#x5FD7;&#x7EA7;&#x522B;&#xFF0C;&#x5B9A;&#x4E49;&#x5728;<a href="https://github.com/torvalds/linux/blob/master/include/linux/kern_levels.h" target="_blank" rel="external">linux/kern_levels.h</a></p>
+<p>linux&#x63D0;&#x4F9B;<a href="https://en.wikipedia.org/wiki/Syslog" target="_blank" rel="external">syslog</a>&#x65B9;&#x4FBF;&#x7528;&#x6237;&#x7A7A;&#x95F4;&#x67E5;&#x770B;&#x65E5;&#x5FD7;&#x4FE1;&#x606F;&#xFF0C;&#x901A;&#x8FC7;klogd&#x548C;syslogd&#x5B88;&#x62A4;&#x8FDB;&#x7A0B;&#x5DE5;&#x4F5C;&#xFF0C;&#x76F8;&#x5173;&#x6587;&#x4EF6;&#xFF1A;/proc/kmsg&#x3001;/var/log/messages&#xFF0C;&#x901A;&#x8FC7;/etc/syslog.conf&#x53EF;&#x4EE5;&#x6307;&#x5B9A;&#x65E5;&#x5FD7;&#x8F93;&#x51FA;&#x6587;&#x4EF6;&#xFF0C;&#x901A;&#x8FC7;dmesg&#x547D;&#x4EE4;&#x53EF;&#x4EE5;&#x67E5;&#x770B;&#x76F8;&#x5173;&#x65E5;&#x5FD7;&#x3002;</p>
+<p>&#x6587;&#x4EF6;/proc/kallsyms&#x5B58;&#x653E;&#x4E86;&#x5185;&#x6838;&#x955C;&#x50CF;&#x4E2D;&#x7B26;&#x53F7;&#x4E0E;&#x5BF9;&#x5E94;&#x5730;&#x5740;&#x7684;&#x6620;&#x5C04;&#x5173;&#x7CFB;&#xFF0C;&#x548C;System.map&#x7C7B;&#x4F3C;&#xFF0C;&#x4F46;&#x662F;/proc/kallsyms&#x662F;&#x5F53;&#x524D;&#x6B63;&#x5728;&#x8FD0;&#x884C;&#x7684;&#x5185;&#x6838;&#x7684;&#x7B26;&#x53F7;&#xFF0C;&#x8FD8;&#x5305;&#x542B;&#x52A8;&#x6001;&#x52A0;&#x8F7D;&#x7684;&#x6A21;&#x5757;&#x7684;&#x7B26;&#x53F7;&#xFF0C;&#x4F46;&#x662F;&#x8981;&#x6CE8;&#x610F;&#x7F16;&#x8BD1;&#x65F6;&#x5F00;&#x542F;CONFIG_KALLSYMS&#x3001;CONFIG_KALLSYMS_ALL&#x9009;&#x9879;&#x3002;</p>
+<p>&#x62D3;&#x5C55;&#x9605;&#x8BFB;&#xFF1A;</p>
+<ul>
+<li><a href="https://www.ibm.com/developerworks/cn/linux/l-cn-kdump1/index.html" target="_blank" rel="external">&#x6DF1;&#x5165;&#x63A2;&#x7D22; Kdump&#x7CFB;&#x5217;</a></li>
+<li><a href="https://www.ibm.com/developerworks/cn/linux/l-cn-dumpanalyse/" target="_blank" rel="external">&#x4F7F;&#x7528; Crash &#x5DE5;&#x5177;&#x5206;&#x6790; Linux dump &#x6587;&#x4EF6;</a></li>
+</ul>
+<h4 id="2-&#x53EF;&#x79FB;&#x690D;&#x6027;"><a href="#2-&#x53EF;&#x79FB;&#x690D;&#x6027;" class="headerlink" title="2. &#x53EF;&#x79FB;&#x690D;&#x6027;"></a>2. &#x53EF;&#x79FB;&#x690D;&#x6027;</h4><blockquote>
+<p>Linux&#x662F;&#x4E00;&#x4E2A;<a href="https://en.wikipedia.org/wiki/Software_portability" target="_blank" rel="external">&#x53EF;&#x79FB;&#x690D;&#x6027;</a>&#x975E;&#x5E38;&#x597D;&#x7684;&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;&#x3002;</p>
+</blockquote>
+<p>Linux&#x652F;&#x6301;&#x5F88;&#x591A;&#x4F53;&#x7CFB;&#x7ED3;&#x6784;:<a href="https://en.wikipedia.org/wiki/List_of_Linux-supported_computer_architectures" target="_blank" rel="external">List of Linux-supported computer architectures</a></p>
+<ul>
+<li>&#x5B57;&#x957F;&#x548C;&#x6570;&#x636E;&#x7C7B;&#x578B;</li>
+<li><a href="https://en.wikipedia.org/wiki/Data_structure_alignment" target="_blank" rel="external">&#x6570;&#x636E;&#x5BF9;&#x9F50;</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Endianness" target="_blank" rel="external">&#x5B57;&#x8282;&#x987A;&#x5E8F;</a><ul>
+<li><a href="http://www.ruanyifeng.com/blog/2016/11/byte-order.html" target="_blank" rel="external">&#x7406;&#x89E3;&#x5B57;&#x8282;&#x5E8F;</a></li>
+<li><a href="http://blog.csdn.net/lianhunqianr1/article/details/39271331" target="_blank" rel="external">&#x6DF1;&#x5165;&#x7406;&#x89E3;&#x5B57;&#x8282;&#xFF0C;&#x5B57;&#x8282;&#x5E8F;&#x4E0E;&#x5B57;&#x8282;&#x5BF9;&#x9F50;</a></li>
+</ul>
+</li>
+<li><a href="https://en.wikipedia.org/wiki/Patch_(Unix)" target="_blank" rel="external">&#x5185;&#x6838;patch</a></li>
+</ul>
 
       
     </div>
@@ -451,17 +379,13 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/03/12/get-shell-script-name/" rel="next" title="获取当前shell执行脚本的名字的几种方法">
-                <i class="fa fa-chevron-left"></i> 获取当前shell执行脚本的名字的几种方法
+              <a href="/2017/05/30/第十七章-设备与模块/" rel="next" title="第十七章 设备与模块">
+                <i class="fa fa-chevron-left"></i> 第十七章 设备与模块
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/04/23/第一章-Linux内核简介/" rel="prev" title="第一章 Linux内核简介">
-                第一章 Linux内核简介 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -604,7 +528,7 @@
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#System-map文件和-proc-kallsyms"><span class="nav-number">1.</span> <span class="nav-text">System.map文件和/proc/kallsyms</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#System-map"><span class="nav-number">1.1.</span> <span class="nav-text">System.map</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#proc-kallsysms"><span class="nav-number">1.2.</span> <span class="nav-text">/proc/kallsysms</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#参考资料"><span class="nav-number">1.3.</span> <span class="nav-text">参考资料</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#调试"><span class="nav-number">1.</span> <span class="nav-text">调试</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-内核调试"><span class="nav-number">1.1.</span> <span class="nav-text">1. 内核调试</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-可移植性"><span class="nav-number">1.2.</span> <span class="nav-text">2. 可移植性</span></a></li></ol></li></ol></div>
             
           </div>
         </section>
