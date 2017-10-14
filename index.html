@@ -259,6 +259,129 @@
             
               
                 
+                <a class="post-title-link" href="/2017/10/14/inode-s-i-writecount/" itemprop="url">
+                  inode's i_writecount
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-10-14T17:02:02+08:00" content="2017-10-14">
+              2017-10-14
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="inode&#x2019;s-i-writecount"><a href="#inode&#x2019;s-i-writecount" class="headerlink" title="inode&#x2019;s i_writecount"></a>inode&#x2019;s i_writecount</h2><p>linux&#x7684;inode&#x7ED3;&#x6784;&#x7684;&#x5C5E;&#x6027;i_writecount, &#x7528;&#x4E8E;&#x8BE5;&#x6587;&#x4EF6;&#x7684;&#x5199;&#x64CD;&#x4F5C;&#x8FDB;&#x884C;&#x7EDF;&#x8BA1;&#xFF0C;&#x5185;&#x6838;&#x51FD;&#x6570;{get,deny}_write_access()&#x7528;&#x4E8E;&#x64CD;&#x4F5C;&#x8BE5;&#x8BA1;&#x6570;&#xFF0C;&#x76F8;&#x5173;&#x6CE8;&#x91CA;&#xFF1A;</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/*</span></div><div class="line"> * get_write_access() gets write permission for a file.</div><div class="line"> * put_write_access() releases this write permission.</div><div class="line"> * This is used for regular files.</div><div class="line"> * We cannot support write (and maybe mmap read-write shared) accesses and</div><div class="line"> * MAP_DENYWRITE mmappings simultaneously. The i_writecount field of an inode</div><div class="line"> * can have the following values:</div><div class="line"> * 0: no writers, no VM_DENYWRITE mappings</div><div class="line"> * &lt; 0: (-i_writecount) vm_area_structs with VM_DENYWRITE set exist</div><div class="line"> * &gt; 0: (i_writecount) users are writing to the file.</div><div class="line"> *</div><div class="line"> * Normally we operate on that counter with atomic_{inc,dec} and it&apos;s safe</div><div class="line"> * except for the cases where we don&apos;t hold i_writecount yet. Then we need to</div><div class="line"> * use {get,deny}_write_access() - these functions check the sign and refuse</div><div class="line"> * to do the change if sign is wrong.</div><div class="line"> */</div></pre></td></tr></table></figure>
+<p>&#x8BE5;&#x8BA1;&#x6570;&#x5668;&#x53EF;&#x7528;&#x4E8E;&#x5BF9;&#x901A;&#x8FC7;&#x6B63;&#x5E38;&#x7684;&#x6587;&#x4EF6;&#x64CD;&#x4F5C;&#x548C;&#x901A;&#x8FC7;&#x5185;&#x5B58;&#x6620;&#x5C04;&#xFF08;mmap()&#x7CFB;&#x7EDF;&#x8C03;&#x7528;&#xFF09;&#x8FD9;&#x4E24;&#x79CD;&#x5199;&#x8BBF;&#x95EE;&#x4E4B;&#x95F4;&#x7684;&#x4E92;&#x65A5;</p>
+<ul>
+<li>&#x4E3A;&#x8D1F;&#x503C;&#x8868;&#x793A;&#x53EF;&#x4EE5;&#x901A;&#x8FC7;&#x865A;&#x5B58;&#x7BA1;&#x7406;&#x5BF9;&#x6587;&#x4EF6;&#x8FDB;&#x884C;&#x64CD;&#x4F5C;</li>
+<li>&#x4E3A;&#x6B63;&#x503C;&#x8868;&#x793A;&#x67D0;&#x4E2A;&#x6216;&#x67D0;&#x4E9B;&#x8FDB;&#x7A0B;&#x6B63;&#x5728;&#x5BF9;&#x6587;&#x4EF6;&#x8FDB;&#x884C;&#x5199;&#x64CD;&#x4F5C;</li>
+</ul>
+<p>&#x5F53;&#x4E00;&#x4E2A;&#x53EF;&#x6267;&#x884C;&#x6587;&#x4EF6;&#x5DF2;&#x7ECF;&#x4E3A;write&#x800C;open&#x65F6;&#xFF0C;&#x6B64;&#x65F6;&#x7684;&#x53EF;&#x6267;&#x884C;&#x6587;&#x4EF6;&#x662F;&#x4E0D;&#x5141;&#x8BB8;&#x88AB;&#x6267;&#x884C;&#x7684;&#x3002;&#x53CD;&#x8FC7;&#x6765;&#xFF0C;&#x4E00;&#x4E2A;&#x6587;&#x4EF6;&#x6B63;&#x5728;&#x6267;&#x884C;&#x65F6;&#xFF0C;&#x5B83;&#x4E5F;&#x662F;&#x4E0D;&#x5141;&#x8BB8;&#x540C;&#x65F6;&#x88AB;write&#x6A21;&#x5F0F;&#x800C;open&#x7684;&#x3002;&#x8FD9;&#x4E2A;&#x7EA6;&#x675F;&#x5F88;&#x597D;&#x7406;&#x89E3;&#xFF0C;&#x56E0;&#x4E3A;&#x6587;&#x4EF6;&#x6267;&#x884C;&#x548C;&#x6587;&#x4EF6;&#x88AB;&#x5199;&#x5E94;&#x8BE5;&#x9700;&#x8981;&#x540C;&#x6B65;&#x4FDD;&#x62A4;&#xFF0C;&#x56E0;&#x6B64;&#x5185;&#x6838;&#x4F1A;&#x4FDD;&#x8BC1;&#x8FD9;&#x79CD;&#x540C;&#x6B65;&#x3002;</p>
+<h3 id="&#x66F4;&#x591A;&#x8D44;&#x6599;"><a href="#&#x66F4;&#x591A;&#x8D44;&#x6599;" class="headerlink" title="&#x66F4;&#x591A;&#x8D44;&#x6599;"></a>&#x66F4;&#x591A;&#x8D44;&#x6599;</h3><ul>
+<li><a href="http://www.cnblogs.com/liushaodong/p/3381310.html" target="_blank" rel="external">linux &#x53EF;&#x6267;&#x884C;&#x6587;&#x4EF6;&#x4E0E;&#x5199;&#x64CD;&#x4F5C;&#x7684;&#x540C;&#x6B65;&#x95EE;&#x9898;</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2017/06/02/第十八章-内核开发相关/" itemprop="url">
                   第十八章+内核开发相关
                 </a>
@@ -1359,126 +1482,6 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/05/07/第九章-内核同步介绍/" itemprop="url">
-                  第九章 内核同步介绍
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2017-05-07T22:45:21+08:00" content="2017-05-07">
-              2017-05-07
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index">
-                    <span itemprop="name">Linux</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h3 id="&#x540C;&#x6B65;&#x673A;&#x5236;"><a href="#&#x540C;&#x6B65;&#x673A;&#x5236;" class="headerlink" title="&#x540C;&#x6B65;&#x673A;&#x5236;"></a>&#x540C;&#x6B65;&#x673A;&#x5236;</h3><blockquote>
-<p>&#x5728;&#x4F7F;&#x7528;&#x5171;&#x4EAB;&#x5185;&#x5B58;&#x65F6;&#xFF0C;&#x5FC5;&#x987B;&#x6CE8;&#x610F;&#x4FDD;&#x62A4;&#x5171;&#x4EAB;&#x8D44;&#x6E90;&#xFF0C;&#x591A;&#x7EBF;&#x7A0B;&#x5E76;&#x53D1;&#x8BBF;&#x95EE;&#x5171;&#x4EAB;&#x8D44;&#x6E90;&#xFF0C;&#x5728;&#x5185;&#x6838;&#x4E2D;&#x4E5F;&#x8981;&#x7279;&#x522B;&#x7559;&#x610F;&#x3002;</p>
-</blockquote>
-<h4 id="1-&#x4E34;&#x754C;&#x533A;&#x548C;&#x7ADE;&#x4E89;&#x6761;&#x4EF6;"><a href="#1-&#x4E34;&#x754C;&#x533A;&#x548C;&#x7ADE;&#x4E89;&#x6761;&#x4EF6;" class="headerlink" title="1. &#x4E34;&#x754C;&#x533A;&#x548C;&#x7ADE;&#x4E89;&#x6761;&#x4EF6;"></a>1. &#x4E34;&#x754C;&#x533A;&#x548C;&#x7ADE;&#x4E89;&#x6761;&#x4EF6;</h4><blockquote>
-<p>&#x4E34;&#x754C;&#x533A;(<a href="https://en.wikipedia.org/wiki/Critical_section">Critical section</a>)&#x5C31;&#x662F;&#x8BBF;&#x95EE;&#x548C;&#x64CD;&#x4F5C;&#x5171;&#x4EAB;&#x6570;&#x636E;&#x7684;&#x4EE3;&#x7801;&#x6BB5;&#x3002;&#x7ADE;&#x4E89;&#x6761;&#x4EF6;(<a href="https://en.wikipedia.org/wiki/Race_condition">race conditions</a>)&#x6307;&#x591A;&#x4E2A;&#x6267;&#x884C;&#x7EBF;&#x7A0B;&#x53EF;&#x80FD;&#x540C;&#x65F6;&#x6267;&#x884C;&#x540C;&#x4E00;&#x4E2A;&#x4E34;&#x754C;&#x533A;&#xFF0C;&#x51FA;&#x73B0;&#x7ADE;&#x4E89;&#x60C5;&#x51B5;&#x3002;&#x907F;&#x514D;&#x5E76;&#x53D1;&#x548C;&#x9632;&#x6B62;&#x7ADE;&#x4E89;&#x6761;&#x4EF6;&#x79F0;&#x4E3A;&#x540C;&#x6B65;(<a href="https://en.wikipedia.org/wiki/Synchronization_(computer_science)">Synchronization</a>)&#x3002;</p>
-</blockquote>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2017/05/07/第九章-内核同步介绍/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1524,7 +1527,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">29</span>
+              <span class="site-state-item-count">30</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
