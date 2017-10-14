@@ -259,6 +259,126 @@
             
               
                 
+                <a class="post-title-link" href="/2017/10/14/Difference-between-EACCES-and-EPERM/" itemprop="url">
+                  Difference between EACCES and EPERM
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-10-14T18:26:22+08:00" content="2017-10-14">
+              2017-10-14
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="EACCES-vs-EPERM"><a href="#EACCES-vs-EPERM" class="headerlink" title="EACCES vs. EPERM"></a>EACCES vs. EPERM</h3><p>Posix says:</p>
+<p>[EACCES]<br>    Permission denied. An attempt was made to access a file in a way forbidden by its file access permissions.<br>[EPERM]<br>    Operation not permitted. An attempt was made to perform an operation limited to processes with appropriate privileges or to the owner of a file or other resource.</p>
+<p>That&#x2019;s posix, not just linux.</p>
+<p>To clear this up: &#x201C;Permission denied&#x201D; means just that &#x2013; the process has insufficient privileges to perform the requested operation. Simply put, this means that &#x201C;trying the same thing as root will work&#x201D;.</p>
+<h4 id="&#x62D3;&#x5C55;&#x9605;&#x8BFB;"><a href="#&#x62D3;&#x5C55;&#x9605;&#x8BFB;" class="headerlink" title="&#x62D3;&#x5C55;&#x9605;&#x8BFB;"></a>&#x62D3;&#x5C55;&#x9605;&#x8BFB;</h4><ul>
+<li><a href="https://www.spinics.net/lists/linux-fsdevel/msg106533.html" target="_blank" rel="external">utimensat EACCES vs. EPERM in 4.8+</a></li>
+<li><a href="https://lwn.net/Articles/532771/" target="_blank" rel="external">Making EPERM friendlier</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2017/10/14/inode-s-i-writecount/" itemprop="url">
                   inode's i_writecount
                 </a>
@@ -1361,132 +1481,11 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/05/10/第十章-内核同步方法/" itemprop="url">
-                  第十章 内核同步方法
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2017-05-10T23:21:49+08:00" content="2017-05-10">
-              2017-05-10
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index">
-                    <span itemprop="name">Linux</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h3 id="&#x5185;&#x6838;&#x540C;&#x6B65;&#x65B9;&#x6CD5;"><a href="#&#x5185;&#x6838;&#x540C;&#x6B65;&#x65B9;&#x6CD5;" class="headerlink" title="&#x5185;&#x6838;&#x540C;&#x6B65;&#x65B9;&#x6CD5;"></a>&#x5185;&#x6838;&#x540C;&#x6B65;&#x65B9;&#x6CD5;</h3><blockquote>
-<p>Linux&#x5185;&#x6838;&#x63D0;&#x4F9B;&#x4E86;&#x4E00;&#x7EC4;&#x76F8;&#x5F53;&#x5B8C;&#x5907;&#x8C03;&#x5EA6;&#x540C;&#x6B65;&#x65B9;&#x6CD5;&#x3002;</p>
-</blockquote>
-<h4 id="1-&#x539F;&#x5B50;&#x64CD;&#x4F5C;"><a href="#1-&#x539F;&#x5B50;&#x64CD;&#x4F5C;" class="headerlink" title="1. &#x539F;&#x5B50;&#x64CD;&#x4F5C;"></a>1. <a href="https://en.wikipedia.org/wiki/Linearizability">&#x539F;&#x5B50;&#x64CD;&#x4F5C;</a></h4><blockquote>
-<p>&#x539F;&#x5B50;&#x64CD;&#x4F5C;&#x53EF;&#x4EE5;&#x4FDD;&#x8BC1;&#x6307;&#x4EE4;&#x4EE5;&#x539F;&#x5B50;&#x65B9;&#x5F0F;&#x6267;&#x884C;&#x2014;&#x2014;&#x6267;&#x884C;&#x8FC7;&#x7A0B;&#x4E0D;&#x88AB;&#x6253;&#x65AD;&#x3002;  </p>
-</blockquote>
-<p>&#x5185;&#x6838;&#x63D0;&#x4F9B;&#x4E86;&#x4E24;&#x7EC4;&#x539F;&#x5B50;&#x64CD;&#x4F5C;&#x63A5;&#x53E3;&#xFF1A;&#x4E00;&#x7EC4;&#x9488;&#x5BF9;&#x6574;&#x6570;&#x8FDB;&#x884C;&#x64CD;&#x4F5C;&#xFF0C;&#x4E00;&#x7EC4;&#x9488;&#x5BF9;&#x5355;&#x72EC;&#x7684;&#x4F4D;&#x8FDB;&#x884C;&#x64CD;&#x4F5C;&#x3002;</p>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2017/05/10/第十章-内核同步方法/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1527,7 +1526,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">30</span>
+              <span class="site-state-item-count">31</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>

@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.0.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="math, python, C/C++" />
+  <meta name="keywords" content="Linux kernel," />
 
 
 
@@ -84,16 +84,19 @@
 
 
 
-<meta name="description" content="大约，孔乙己的确死了！">
-<meta property="og:type" content="website">
-<meta property="og:title" content="分类">
-<meta property="og:url" content="http://luobuda.github.io/categories/index.html">
+<meta name="description" content="EACCES vs. EPERMPosix says:
+[EACCES]    Permission denied. An attempt was made to access a file in a way forbidden by its file access permissions.[EPERM]    Operation not permitted. An attempt was mad">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Difference between EACCES and EPERM">
+<meta property="og:url" content="http://luobuda.github.io/2017/10/14/Difference-between-EACCES-and-EPERM/index.html">
 <meta property="og:site_name" content="洛卜哒的博客">
-<meta property="og:description" content="大约，孔乙己的确死了！">
-<meta property="og:updated_time" content="2016-11-03T10:06:28.030Z">
+<meta property="og:description" content="EACCES vs. EPERMPosix says:
+[EACCES]    Permission denied. An attempt was made to access a file in a way forbidden by its file access permissions.[EPERM]    Operation not permitted. An attempt was mad">
+<meta property="og:updated_time" content="2017-10-14T10:34:54.390Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="分类">
-<meta name="twitter:description" content="大约，孔乙己的确死了！">
+<meta name="twitter:title" content="Difference between EACCES and EPERM">
+<meta name="twitter:description" content="EACCES vs. EPERMPosix says:
+[EACCES]    Permission denied. An attempt was made to access a file in a way forbidden by its file access permissions.[EPERM]    Operation not permitted. An attempt was mad">
 
 
 
@@ -114,16 +117,10 @@
 
 
 
-  <link rel="canonical" href="http://luobuda.github.io/categories/"/>
+  <link rel="canonical" href="http://luobuda.github.io/2017/10/14/Difference-between-EACCES-and-EPERM/"/>
 
 
-  <title>
-  
-
-  
-    分类 | 洛卜哒的博客
-  
-</title>
+  <title> Difference between EACCES and EPERM | 洛卜哒的博客 </title>
 </head>
 
 <body itemscope itemtype="//schema.org/WebPage" lang="zh-Hans">
@@ -144,7 +141,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  ">
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="//schema.org/WPHeader">
@@ -244,16 +241,145 @@
 
   <div id="posts" class="posts-expand">
     
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
+
     
-      <div class="category-all-page">
-        <div class="category-all-title">
-            目前共计 5 个分类
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Difference between EACCES and EPERM
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-10-14T18:26:22+08:00" content="2017-10-14">
+              2017-10-14
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
         </div>
-        <div class="category-all">
-          <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/C/">C</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">22</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/algorithm/">algorithm</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/c-python/">c,python</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/python/">python</a><span class="category-list-count">6</span></li></ul>
-        </div>
-      </div>
+      </header>
     
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="EACCES-vs-EPERM"><a href="#EACCES-vs-EPERM" class="headerlink" title="EACCES vs. EPERM"></a>EACCES vs. EPERM</h3><p>Posix says:</p>
+<p>[EACCES]<br>    Permission denied. An attempt was made to access a file in a way forbidden by its file access permissions.<br>[EPERM]<br>    Operation not permitted. An attempt was made to perform an operation limited to processes with appropriate privileges or to the owner of a file or other resource.</p>
+<p>That&#x2019;s posix, not just linux.</p>
+<p>To clear this up: &#x201C;Permission denied&#x201D; means just that &#x2013; the process has insufficient privileges to perform the requested operation. Simply put, this means that &#x201C;trying the same thing as root will work&#x201D;.</p>
+<h4 id="&#x62D3;&#x5C55;&#x9605;&#x8BFB;"><a href="#&#x62D3;&#x5C55;&#x9605;&#x8BFB;" class="headerlink" title="&#x62D3;&#x5C55;&#x9605;&#x8BFB;"></a>&#x62D3;&#x5C55;&#x9605;&#x8BFB;</h4><ul>
+<li><a href="https://www.spinics.net/lists/linux-fsdevel/msg106533.html" target="_blank" rel="external">utimensat EACCES vs. EPERM in 4.8+</a></li>
+<li><a href="https://lwn.net/Articles/532771/" target="_blank" rel="external">Making EPERM friendlier</a></li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Linux-kernel/" rel="tag">#Linux kernel</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/10/14/inode-s-i-writecount/" rel="next" title="inode's i_writecount">
+                <i class="fa fa-chevron-left"></i> inode's i_writecount
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
   </div>
 
 
@@ -262,6 +388,10 @@
 
 
           
+  <div class="comments" id="comments">
+    
+  </div>
+
 
         </div>
         
@@ -281,8 +411,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+      <section class="site-overview sidebar-panel ">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="//schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="https://projecteuler.net/profile/luobuda.png"
@@ -361,6 +500,17 @@
 
       </section>
 
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#EACCES-vs-EPERM"><span class="nav-number">1.</span> <span class="nav-text">EACCES vs. EPERM</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#拓展阅读"><span class="nav-number">1.1.</span> <span class="nav-text">拓展阅读</span></a></li></ol></li></ol></div>
+            
+          </div>
+        </section>
       
 
     </div>
@@ -457,6 +607,10 @@
   
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.2"></script>
+
+
 
   
 
