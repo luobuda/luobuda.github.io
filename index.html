@@ -321,8 +321,7 @@
 
       
         
-          
-            <h3 id="Linux&#x5185;&#x5B58;&#x4F7F;&#x7528;&#x5206;&#x6790;"><a href="#Linux&#x5185;&#x5B58;&#x4F7F;&#x7528;&#x5206;&#x6790;" class="headerlink" title="Linux&#x5185;&#x5B58;&#x4F7F;&#x7528;&#x5206;&#x6790;"></a>Linux&#x5185;&#x5B58;&#x4F7F;&#x7528;&#x5206;&#x6790;</h3><blockquote>
+          <h3 id="Linux&#x5185;&#x5B58;&#x4F7F;&#x7528;&#x5206;&#x6790;"><a href="#Linux&#x5185;&#x5B58;&#x4F7F;&#x7528;&#x5206;&#x6790;" class="headerlink" title="Linux&#x5185;&#x5B58;&#x4F7F;&#x7528;&#x5206;&#x6790;"></a>Linux&#x5185;&#x5B58;&#x4F7F;&#x7528;&#x5206;&#x6790;</h3><blockquote>
 <p>Linux&#x7684;proc&#x6587;&#x4EF6;&#x7CFB;&#x7EDF;&#x63D0;&#x4F9B;&#x4E86;&#x5F88;&#x591A;&#x8FDB;&#x7A0B;&#x5185;&#x5B58;&#x4F7F;&#x7528;&#x60C5;&#x51B5;&#x7684;&#x4FE1;&#x606F;&#xFF0C;&#x8BE6;&#x7EC6;&#x8BF7;&#x53C2;&#x8003;[1][2]</p>
 </blockquote>
 <h3 id="proc-pid-maps&#x6587;&#x4EF6;"><a href="#proc-pid-maps&#x6587;&#x4EF6;" class="headerlink" title="/proc/pid/maps&#x6587;&#x4EF6;"></a>/proc/pid/maps&#x6587;&#x4EF6;</h3><blockquote>
@@ -354,71 +353,11 @@
 <blockquote>
 <p>You might notice a lot of anonymous regions. These are usually created by mmap but are not attached to any file. They are used for a lot of miscellaneous things like shared memory or buffers not allocated on the heap. For instance, I think the pthread library uses anonymous mapped regions as stacks for new threads.[4]</p>
 </blockquote>
-<p><strong>&#x76F8;&#x5173;&#x5DE5;&#x5177;</strong></p>
-<ul>
-<li>pmap</li>
-</ul>
-<h3 id="proc-pid-smaps&#x6587;&#x4EF6;"><a href="#proc-pid-smaps&#x6587;&#x4EF6;" class="headerlink" title="/proc/pid/smaps&#x6587;&#x4EF6;"></a>/proc/pid/smaps&#x6587;&#x4EF6;</h3><blockquote>
-<p>smaps&#x6587;&#x4EF6;&#x662F;&#x57FA;&#x4E8E;maps&#x6587;&#x4EF6;&#x7684;&#x62D3;&#x5C55;&#xFF0C;&#x66F4;&#x8BE6;&#x7EC6;&#x5730;&#x5C55;&#x793A;&#x4E86;&#x8FDB;&#x7A0B;&#x5185;&#x5B58;&#x6620;&#x5C04;&#x7684;mapping&#x548C;flags&#x4FE1;&#x606F;&#x3002;</p>
-</blockquote>
-<p>&#x5B9E;&#x73B0;&#x4EE3;&#x7801;&#x5728;<a href="https://github.com/torvalds/linux/blob/3266b5bd97eaa72793df0b6e5a106c69ccc166c4/fs/proc/task_mmu.c#L739" target="_blank" rel="external">fs/proc/task_mmu.c:show_smap</a></p>
-<p>smaps&#x6587;&#x4EF6;&#x7684;&#x8F93;&#x51FA;&#x5982;&#x4E0B;&#xFF1A;<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#address          perms offset  dev   inode   pathname</span></div><div class="line">08048000-080bc000 r-xp 00000000 03:02 13130   /bin/bash</div><div class="line">Size:               1084 kB</div><div class="line">Rss:                 892 kB</div><div class="line">Pss:                 374 kB</div><div class="line">Shared_Clean:        892 kB</div><div class="line">Shared_Dirty:          0 kB</div><div class="line">Private_Clean:         0 kB</div><div class="line">Private_Dirty:         0 kB</div><div class="line">Referenced:          892 kB</div><div class="line">Anonymous:             0 kB</div><div class="line">LazyFree:              0 kB</div><div class="line">AnonHugePages:         0 kB</div><div class="line">ShmemPmdMapped:        0 kB</div><div class="line">Shared_Hugetlb:        0 kB</div><div class="line">Private_Hugetlb:       0 kB</div><div class="line">Swap:                  0 kB</div><div class="line">SwapPss:               0 kB</div><div class="line">KernelPageSize:        4 kB</div><div class="line">MMUPageSize:           4 kB</div><div class="line">Locked:                0 kB</div><div class="line">VmFlags: rd ex mr mw me dw</div></pre></td></tr></table></figure></p>
-<ul>
-<li><strong><em>Size</em></strong>&#xFF1A;&#x76F8;&#x5E94;&#x865A;&#x62DF;&#x5730;&#x5740;&#x7A7A;&#x95F4;&#x7684;&#x5927;&#x5C0F;(the size of the mapping)</li>
-<li><strong><em>Rss(Resident Set Size)</em></strong>: &#x5E38;&#x9A7B;&#x5185;&#x5B58;&#x5927;&#x5C0F;</li>
-<li><strong><em>Pss(Proportional Set Size)</em></strong>:Unshared memory(Uss) + proportion of shared memory</li>
-<li>Uss(Unique Set Size ):Pss&#x4E2D;&#x72EC;&#x5360;&#x7684;&#x90E8;&#x5206;</li>
-<li><strong><em>Shared_Clean</em></strong>:  &#x5171;&#x4EAB;&#x9875;&#x4E2D;&#x5E72;&#x51C0;&#x7684;&#x9875;&#x6570;</li>
-<li><strong><em>Shared_Dirty</em></strong>:  &#x5171;&#x4EAB;&#x9875;&#x4E2D;&#x810F;&#x9875;&#x7684;&#x9875;&#x6570;</li>
-<li><strong><em>Private_Clean</em></strong>: &#x79C1;&#x6709;&#x9875;&#x4E2D;&#x5E72;&#x51C0;&#x7684;&#x9875;&#x6570;</li>
-<li><strong><em>Private_Dirty</em></strong>: &#x79C1;&#x6709;&#x9875;&#x4E2D;&#x810F;&#x9875;&#x7684;&#x9875;&#x6570;</li>
-</ul>
-<p><strong>Rss=Shared_Clean+Shared_Dirty+Private_Clean+Private_Dirty</strong></p>
-<blockquote>
-<p>if n processes are sharing a library L with size M then the contribution to their PSS is M/n.<br> So <strong>Pss = Uss + M/n</strong></p>
-</blockquote>
-<ul>
-<li>Swap: &#x8868;&#x793A;&#x975E;mmap&#x5185;&#x5B58;&#xFF08;&#x4E5F;&#x53EB;anonymous memory&#xFF0C;&#x6BD4;&#x5982;malloc&#x52A8;&#x6001;&#x5206;&#x914D;&#x51FA;&#x6765;&#x7684;&#x5185;&#x5B58;&#xFF09;&#x7531;&#x4E8E;&#x7269;&#x7406;&#x5185;&#x5B58;&#x4E0D;&#x8DB3;&#x88AB;swap&#x5230;&#x4EA4;&#x6362;&#x7A7A;&#x95F4;&#x7684;&#x5927;&#x5C0F;&#x3002;</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>&#x7C7B;&#x578B;</th>
-<th>&#x8BF4;&#x660E;</th>
-<th>details</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Shared</td>
-<td>page&#x7684;&#x5F15;&#x7528;&gt;1</td>
-<td>shared pages are mappedby other processes</td>
-</tr>
-<tr>
-<td>Private</td>
-<td>page&#x7684;&#x5F15;&#x7528;=1</td>
-<td>Private pages are available only to that process</td>
-</tr>
-<tr>
-<td>Dirty</td>
-<td>page&#x7684;flags&#x8BBE;&#x7F6E;&#x4E86;_PAGE_DIRTY,&#x5F53;&#x53D1;&#x751F;&#x6362;&#x9875;&#x65F6;&#x8981;&#x5199;&#x56DE;&#x78C1;&#x76D8;</td>
-<td>Dirty pages are pages that are  not clean (i.e. have been modified)</td>
-</tr>
-<tr>
-<td>Clean</td>
-<td>page&#x7684;flags&#x672A;&#x8BBE;&#x7F6E; _PAGE_DIRTY,&#x5F53;&#x53D1;&#x751F;&#x6362;&#x9875;&#x65F6;&#x4E0D;&#x7528;&#x5199;&#x56DE;</td>
-<td>Clean pages are pages that have not been modified since they were mapped <br> (typically, text sections from shared libraries are only read from disk (when necessary), never modified, so they&#x2019;ll be in shared, clean pages)</td>
-</tr>
-</tbody>
-</table>
-<h5 id="&#x53C2;&#x8003;&#x94FE;&#x63A5;&#xFF1A;"><a href="#&#x53C2;&#x8003;&#x94FE;&#x63A5;&#xFF1A;" class="headerlink" title="&#x53C2;&#x8003;&#x94FE;&#x63A5;&#xFF1A;"></a>&#x53C2;&#x8003;&#x94FE;&#x63A5;&#xFF1A;</h5><ul>
-<li><a href="https://github.com/torvalds/linux/blob/master/Documentation/filesystems/proc.txt" target="_blank" rel="external">1. Documentation/filesystems/proc.txt</a></li>
-<li><a href="https://linux-mm.org/" target="_blank" rel="external">2. LinuxMM</a></li>
-<li><a href="https://stackoverflow.com/questions/1401359/understanding-linux-proc-id-maps" target="_blank" rel="external">3. Understanding Linux /proc/id/maps&#x2013;www.stackoverflow.com
-</a></li>
-</ul>
-
-          
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2018/07/06/proc文件系统之内存使用/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
         
       
     </div>
