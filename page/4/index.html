@@ -259,6 +259,127 @@
             
               
                 
+                <a class="post-title-link" href="/2015/01/16/python-class/" itemprop="url">
+                  python中的__class__
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2015-01-16T23:50:14+08:00" content="2015-01-16">
+              2015-01-16
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>##python&#x4E2D;&#x7684;__class__</p>
+<p>__class__&#x662F;&#x7C7B;&#x7684;&#x4E00;&#x4E2A;&#x5185;&#x7F6E;&#x5C5E;&#x6027;&#xFF0C;&#x4E5F;&#x662F;&#x6BCF;&#x4E2A;&#x7C7B;&#x5B9E;&#x4F8B;&#x7684;&#xFF0C;&#x5B83;&#x662F;&#x4E00;&#x4E2A;&#x7C7B;&#x7684;&#x5F15;&#x7528;&#x3002;</p>
+<blockquote>
+<p>self.__class__ is a reference to the <em>type</em> of the current instance.</p>
+</blockquote>
+<p>&#x7B80;&#x5355;&#x4F8B;&#x5B50;&#xFF1A;<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">&apos;&apos;&apos;&#x7C7B;.__class__&#x603B;&#x662F;&#x8FD4;&#x56DE;&lt;type&apos;type&apos;&gt;;&#x5B9E;&#x4F8B;.__class__&#x8FD4;&#x56DE;&#x5B9E;&#x4F8B;&#x6240;&#x5C5E;&#x7684;&#x7C7B;&#x7684;&#x4E00;&#x4E2A;&#x5F15;&#x7528;&#x3002;&apos;&apos;&apos;</div><div class="line"></div><div class="line">class A(object):</div><div class="line">	pass</div><div class="line"></div><div class="line">&gt;&gt;&gt; A.__class__</div><div class="line">&lt;type &apos;type&apos;&gt;</div><div class="line">&gt;&gt;&gt; a=A()</div><div class="line">&gt;&gt;&gt; a</div><div class="line">&lt;__main__.A object at 0x01B91690&gt;</div><div class="line">&gt;&gt;&gt; a.__class__</div><div class="line">&lt;class &apos;__main__.A&apos;&gt;</div><div class="line">&gt;&gt;&gt; a.__class__()         #&#x8FD4;&#x56DE;&#x4E86;&#x7C7B;&#x7684;&#x4E00;&#x4E2A;&#x65B0;&#x7684;&#x5B9E;&#x4F8B;</div><div class="line">&lt;__main__.A object at 0x01B915D0&gt;</div><div class="line">&gt;&gt;&gt; A.__class__(A)        #&#x4E0E;A.__class__&#x4E00;&#x6837;</div><div class="line">&lt;type &apos;type&apos;&gt;</div></pre></td></tr></table></figure></p>
+<p>&#x53EF;&#x4EE5;&#x4ECE;<a href="http://brionas.github.io/2014/09/15/python-type-class/">&#x8FD9;&#x91CC;</a>&#x770B;&#x5230;&#x4ECE;CPython&#x6E90;&#x7801;&#x6765;&#x5206;&#x6790;__class__&#x5177;&#x4F53;&#x5E72;&#x4E86;&#x4EC0;&#x4E48;&#x3002;<br></p>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2015/01/16/python-class/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2015/01/14/c-number/" itemprop="url">
                   C语言中的数值
                 </a>
@@ -404,7 +525,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">31</span>
+              <span class="site-state-item-count">32</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
