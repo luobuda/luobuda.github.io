@@ -1,0 +1,648 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Linux kernel," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.2" />
+
+
+
+
+
+
+<meta name="description" content="&amp;#x95EE;&amp;#x9898;&amp;#x8FD8;&amp;#x539F;&amp;#x6D4B;&amp;#x8BD5;&amp;#x540C;&amp;#x4E8B;&amp;#x5728;&amp;#x8FDB;&amp;#x884C;vdbench&amp;#x6D4B;&amp;#x8BD5;&amp;#x51FA;&amp;#x73B0;&amp;#x957F;&amp;#x65F6;&amp;#x95F4;&amp;#x65AD;&amp;#x6D41;&amp;#xFF0C;&amp;#x522B;&amp;#x7684;&amp;#x540C;&amp;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="进程地址空间mmap_sem导致的死锁">
+<meta property="og:url" content="http://luobuda.github.io/2018/12/05/进程地址空间mmap-sem导致的死锁/index.html">
+<meta property="og:site_name" content="洛卜哒的博客">
+<meta property="og:description" content="&amp;#x95EE;&amp;#x9898;&amp;#x8FD8;&amp;#x539F;&amp;#x6D4B;&amp;#x8BD5;&amp;#x540C;&amp;#x4E8B;&amp;#x5728;&amp;#x8FDB;&amp;#x884C;vdbench&amp;#x6D4B;&amp;#x8BD5;&amp;#x51FA;&amp;#x73B0;&amp;#x957F;&amp;#x65F6;&amp;#x95F4;&amp;#x65AD;&amp;#x6D41;&amp;#xFF0C;&amp;#x522B;&amp;#x7684;&amp;#x540C;&amp;">
+<meta property="og:updated_time" content="2018-12-05T15:26:19.683Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="进程地址空间mmap_sem导致的死锁">
+<meta name="twitter:description" content="&amp;#x95EE;&amp;#x9898;&amp;#x8FD8;&amp;#x539F;&amp;#x6D4B;&amp;#x8BD5;&amp;#x540C;&amp;#x4E8B;&amp;#x5728;&amp;#x8FDB;&amp;#x884C;vdbench&amp;#x6D4B;&amp;#x8BD5;&amp;#x51FA;&amp;#x73B0;&amp;#x957F;&amp;#x65F6;&amp;#x95F4;&amp;#x65AD;&amp;#x6D41;&amp;#xFF0C;&amp;#x522B;&amp;#x7684;&amp;#x540C;&amp;">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://luobuda.github.io/2018/12/05/进程地址空间mmap-sem导致的死锁/"/>
+
+
+  <title> 进程地址空间mmap_sem导致的死锁 | 洛卜哒的博客 </title>
+</head>
+
+<body itemscope itemtype="//schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="//schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">洛卜哒的博客</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Hope I can study from bits to qubits.</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                进程地址空间mmap_sem导致的死锁
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2018-12-05T23:06:16+08:00" content="2018-12-05">
+              2018-12-05
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="&#x95EE;&#x9898;&#x8FD8;&#x539F;"><a href="#&#x95EE;&#x9898;&#x8FD8;&#x539F;" class="headerlink" title="&#x95EE;&#x9898;&#x8FD8;&#x539F;"></a>&#x95EE;&#x9898;&#x8FD8;&#x539F;</h3><p>&#x6D4B;&#x8BD5;&#x540C;&#x4E8B;&#x5728;&#x8FDB;&#x884C;vdbench&#x6D4B;&#x8BD5;&#x51FA;&#x73B0;&#x957F;&#x65F6;&#x95F4;&#x65AD;&#x6D41;&#xFF0C;&#x522B;&#x7684;&#x540C;&#x4E8B;&#x6CA1;&#x6709;&#x627E;&#x5230;&#x539F;&#x56E0;&#xFF0C;&#x95EE;&#x9898;&#x6700;&#x7EC8;&#x6765;&#x5230;&#x6211;&#x8FD9;&#x91CC;&#xFF0C;jira&#x8BB0;&#x5F55;&#x6CA1;&#x6709;&#x505A;&#x6545;&#x969C;&#xFF0C;&#x540E;&#x7AEF;&#x670D;&#x52A1;&#x8FDB;&#x7A0B;&#x6B63;&#x5E38;&#x3002;</p>
+<p>&#x73B0;&#x573A;&#x6CA1;&#x6709;&#x4E86;&#xFF0C;&#x8FD8;&#x597D;&#x4FDD;&#x5B58;&#x4E86;crash core&#xFF0C;&#x9700;&#x8981;&#x5206;&#x6790;crash&#x6765;&#x5B9A;&#x4F4D;&#x3002;</p>
+<h4 id="crash&#x5206;&#x6790;"><a href="#crash&#x5206;&#x6790;" class="headerlink" title="crash&#x5206;&#x6790;"></a>crash&#x5206;&#x6790;</h4><p><strong> 1. &#x52A0;&#x8F7D;&#x6211;&#x4EEC;&#x7684;&#x5185;&#x6838;&#x6A21;&#x5757; </strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">crash&gt; mod -S .</div></pre></td></tr></table></figure></p>
+<p><strong> 2. &#x6253;&#x5370;&#x6240;&#x6709;&#x8FDB;&#x7A0B;&#x6808;&#x4FE1;&#x606F;&#xFF0C;&#x67E5;&#x770B;&#x53EF;&#x7591;&#x7684;&#x8FDB;&#x7A0B;&#x6808; </strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">crash&gt; foreach bt &gt; bt.all</div></pre></td></tr></table></figure>
+<a id="more"></a>
+<p>&#x901A;&#x8FC7;&#x67E5;&#x770B;&#x6240;&#x6709;&#x7684;&#x8FDB;&#x7A0B;&#x6808;&#xFF0C;&#x53D1;&#x73B0;&#xFF1A;<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div></pre></td><td class="code"><pre><div class="line">PID: <span class="number">28945</span>  TASK: ffff8b93f673af70  CPU: <span class="number">6</span>   COMMAND: <span class="string">&quot;dataio_srv/0&quot;</span></div><div class="line"> #<span class="number">0</span> [ffff8b93572e3bb8] __schedule at ffffffffb91128d4</div><div class="line"> #<span class="number">1</span> [ffff8b93572e3c48] schedule at ffffffffb9112f49</div><div class="line"> #<span class="number">2</span> [ffff8b93572e3c58] schedule_timeout at ffffffffb91107f4</div><div class="line"> #<span class="number">3</span> [ffff8b93572e3d08] ofs_tjobq_timedwait_locked at ffffffffc10e01b6 </div><div class="line"> #<span class="number">4</span> [ffff8b93572e3d78] ofs_tjobq_purge at ffffffffc10e042e </div><div class="line"> #<span class="number">5</span> [ffff8b93572e3db8] dataio_srv_tcb at ffffffffc0767195 </div><div class="line"> #<span class="number">6</span> [ffff8b93572e3e18] ofs_tpool_tcb at ffffffffc10dee8f </div><div class="line"> #<span class="number">7</span> [ffff8b93572e3e38] ofs_daemon_proxy at ffffffffc10e0e05</div><div class="line"> #<span class="number">8</span> [ffff8b93572e3ec8] kthread at ffffffffb8abae31</div><div class="line"></div><div class="line">PID: <span class="number">28946</span>  TASK: ffff8b93f673bf40  CPU: <span class="number">4</span>   COMMAND: <span class="string">&quot;dataio_srv/1&quot;</span></div><div class="line"> #<span class="number">0</span> [ffff8b9350eab728] __schedule at ffffffffb91128d4</div><div class="line"> #<span class="number">1</span> [ffff8b9350eab7b0] schedule at ffffffffb9112f49</div><div class="line"> #<span class="number">2</span> [ffff8b9350eab7c0] rwsem_down_read_failed at ffffffffb911457d</div><div class="line"> #<span class="number">3</span> [ffff8b9350eab890] down_read at ffffffffb9112070</div><div class="line"> #<span class="number">4</span> [ffff8b9350eab8a8] ffs_get_user_page at ffffffffc06548fb </div><div class="line"> #<span class="number">5</span> [ffff8b9350eab908] ffs_copy_to_user at ffffffffc0654b14 </div><div class="line"> #<span class="number">6</span> [ffff8b9350eab9a8] ffs_get_size at ffffffffc06ca395</div><div class="line"> #<span class="number">7</span> [ffff8b9350eaba68] __direct_read_cb at ffffffffc06cb6c5 </div><div class="line"> #<span class="number">8</span> [ffff8b9350eabb18] dataio_ack at ffffffffc0768c8f</div><div class="line"> #<span class="number">9</span> [ffff8b9350eabc38] segread_end at ffffffffc0750abe </div><div class="line">#<span class="number">10</span> [ffff8b9350eabd18] dinode_odc_nr at ffffffffc0766f9e </div><div class="line">#<span class="number">11</span> [ffff8b9350eabdb8] dataio_srv_tcb at ffffffffc07671cf </div><div class="line">#<span class="number">12</span> [ffff8b9350eabe18] ofs_tpool_tcb at ffffffffc10dee8f </div><div class="line">#<span class="number">13</span> [ffff8b9350eabe38] ofs_daemon_proxy at ffffffffc10e0e05 </div><div class="line">#<span class="number">14</span> [ffff8b9350eabec8] kthread at ffffffffb8abae31</div><div class="line"></div><div class="line">PID: <span class="number">28947</span>  TASK: ffff8b93f673cf10  CPU: <span class="number">12</span>  COMMAND: <span class="string">&quot;dataio_srv/2&quot;</span></div><div class="line"> #<span class="number">0</span> [ffff8b93c9767728] __schedule at ffffffffb91128d4</div><div class="line"> #<span class="number">1</span> [ffff8b93c97677b0] schedule at ffffffffb9112f49</div><div class="line"> #<span class="number">2</span> [ffff8b93c97677c0] rwsem_down_read_failed at ffffffffb911457d</div><div class="line"> #<span class="number">3</span> [ffff8b93c9767890] down_read at ffffffffb9112070</div><div class="line"> #<span class="number">4</span> [ffff8b93c97678a8] ffs_get_user_page at ffffffffc06548fb </div><div class="line"> #<span class="number">5</span> [ffff8b93c9767908] ffs_copy_to_user at ffffffffc0654b14 </div><div class="line"> #<span class="number">6</span> [ffff8b93c97679a8] ffs_get_size at ffffffffc06ca395 </div><div class="line"> #<span class="number">7</span> [ffff8b93c9767a68] __direct_read_cb at ffffffffc06cb6c5 </div><div class="line"> #<span class="number">8</span> [ffff8b93c9767b18] dataio_ack at ffffffffc0768c8f </div><div class="line"> #<span class="number">9</span> [ffff8b93c9767c38] segread_end at ffffffffc0750abe </div><div class="line">#<span class="number">10</span> [ffff8b93c9767d18] dinode_odc_nr at ffffffffc0766f9e </div><div class="line">#<span class="number">11</span> [ffff8b93c9767db8] dataio_srv_tcb at ffffffffc07671cf </div><div class="line">#<span class="number">12</span> [ffff8b93c9767e18] ofs_tpool_tcb at ffffffffc10dee8f </div><div class="line">#<span class="number">13</span> [ffff8b93c9767e38] ofs_daemon_proxy at ffffffffc10e0e05 </div><div class="line">#<span class="number">14</span> [ffff8b93c9767ec8] kthread at ffffffffb8abae31</div><div class="line"></div><div class="line">PID: <span class="number">28948</span>  TASK: ffff8b93f673dee0  CPU: <span class="number">15</span>  COMMAND: <span class="string">&quot;dataio_srv/3&quot;</span></div><div class="line"> #<span class="number">0</span> [ffff8b9281f8f728] __schedule at ffffffffb91128d4</div><div class="line"> #<span class="number">1</span> [ffff8b9281f8f7b0] schedule at ffffffffb9112f49</div><div class="line"> #<span class="number">2</span> [ffff8b9281f8f7c0] rwsem_down_read_failed at ffffffffb911457d</div><div class="line"> #<span class="number">3</span> [ffff8b9281f8f890] down_read at ffffffffb9112070</div><div class="line"> #<span class="number">4</span> [ffff8b9281f8f8a8] ffs_get_user_page at ffffffffc06548fb</div><div class="line"> #<span class="number">5</span> [ffff8b9281f8f908] ffs_copy_to_user at ffffffffc0654b14 </div><div class="line"> #<span class="number">6</span> [ffff8b9281f8f9a8] ffs_get_size at ffffffffc06ca395 </div><div class="line"> #<span class="number">7</span> [ffff8b9281f8fa68] __direct_read_cb at ffffffffc06cb6c5 </div><div class="line"> #<span class="number">8</span> [ffff8b9281f8fb18] dataio_ack at ffffffffc0768c8f </div><div class="line"> #<span class="number">9</span> [ffff8b9281f8fc38] segread_end at ffffffffc0750abe </div><div class="line">#<span class="number">10</span> [ffff8b9281f8fd18] dinode_odc_nr at ffffffffc0766f9e </div><div class="line">#<span class="number">11</span> [ffff8b9281f8fdb8] dataio_srv_tcb at ffffffffc07671cf </div><div class="line">#<span class="number">12</span> [ffff8b9281f8fe18] ofs_tpool_tcb at ffffffffc10dee8f </div><div class="line">#<span class="number">13</span> [ffff8b9281f8fe38] ofs_daemon_proxy at ffffffffc10e0e05</div><div class="line">#<span class="number">14</span> [ffff8b9281f8fec8] kthread at ffffffffb8abae31</div></pre></td></tr></table></figure></p>
+<p>dataio_srv&#x662F;&#x6211;&#x4EEC;&#x7684;&#x6570;&#x636E;&#x670D;&#x52A1;&#x7EBF;&#x7A0B;&#xFF0C;&#x53D1;&#x73B0;&#x6709;&#x4E09;&#x4E2A;&#x670D;&#x52A1;&#x7EBF;&#x7A0B;&#x90FD;&#x88AB;&#x5361;&#x5728;&#x4E00;&#x4E2A;rw_semaphore&#x4E0A;&#x4E86;&#xFF0C;ffs_get_user_page&#x51FD;&#x6570;&#x4F1A;&#x7533;&#x8BF7;mmap_sem&#x8BFB;&#x4FE1;&#x53F7;&#x91CF;&#xFF0C;&#x5206;&#x6790;&#x5E94;&#x8BE5;&#x662F;&#x6709;&#x8FDB;&#x7A0B;&#x8BF7;&#x6C42;&#x5199;&#x4FE1;&#x53F7;&#x91CF;&#x800C;&#x4E4B;&#x524D;&#x6709;&#x8BFB;&#x672A;&#x91CA;&#x653E;&#x5BFC;&#x81F4;&#x3002;</p>
+<p><strong> 3. &#x627E;&#x5230;&#x5BF9;&#x5E94;&#x7684;mm_struct&#x5730;&#x5740;&#x8FDB;&#x5165;&#x5F97;&#x5230;mmap_sem&#x7684;&#x5730;&#x5740;&#x4E3A;0xffff8b92ab737e20 </strong></p>
+<p>&#x8BFB;&#x5199;&#x4FE1;&#x53F7;&#x91CF;&#x7684;&#x7B49;&#x5F85;&#x961F;&#x5217;&#x7ED3;&#x6784;&#x4E3A;<a href="https://github.com/torvalds/linux/blob/master/kernel/locking/rwsem-spinlock.c#L19" target="_blank" rel="external"><strong>struct rwsem_waiter</strong></a>&#xFF0C;&#x904D;&#x5386;&#x8FD9;&#x4E2A;&#x94FE;&#x8868;&#x5373;&#x53EF;&#x83B7;&#x5F97;&#x6240;&#x6709;&#x7B49;&#x5F85;&#x5728;&#x8FD9;&#x4E2A;&#x4FE1;&#x53F7;&#x91CF;&#x7684;task&#x3002;</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">struct</span> rwsem_waiter {</div><div class="line">	<span class="keyword">struct</span> list_head <span class="built_in">list</span>;</div><div class="line">	<span class="keyword">struct</span> task_struct *task;</div><div class="line">	<span class="keyword">enum</span> rwsem_waiter_type type;</div><div class="line">};</div></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div></pre></td><td class="code"><pre><div class="line">crash&gt; <span class="built_in">list</span> rwsem_waiter.<span class="built_in">list</span> -s rwsem_waiter.task,type -h <span class="number">0xffff8b92ab737e20</span></div><div class="line">ffff8b92ab737e20</div><div class="line">  task = <span class="number">0xffff8b93cdcf8000</span></div><div class="line">  type = RWSEM_WAITING_FOR_WRITE</div><div class="line">ffff8b9350eab7e0</div><div class="line">  task = <span class="number">0xffff8b93f673bf40</span></div><div class="line">  type = RWSEM_WAITING_FOR_READ</div><div class="line">ffff8b93c97677e0</div><div class="line">  task = <span class="number">0xffff8b93f673cf10</span></div><div class="line">  type = RWSEM_WAITING_FOR_READ</div><div class="line">ffff8b9281f8f7e0</div><div class="line">  task = <span class="number">0xffff8b93f673dee0</span></div><div class="line">  type = RWSEM_WAITING_FOR_READ</div><div class="line">ffff8b93ee2f3df0</div><div class="line">  task = <span class="number">0xffff8b92b4332f70</span></div><div class="line">  type = RWSEM_WAITING_FOR_READ</div><div class="line">ffff8b93f41cbcb0</div><div class="line">  task = <span class="number">0xffff8b93ff72eeb0</span></div><div class="line">  type = RWSEM_WAITING_FOR_READ</div><div class="line">ffff8b93758ebd50</div><div class="line">  task = <span class="number">0xffff8b92826d0fd0</span></div><div class="line">  type = RWSEM_WAITING_FOR_READ</div><div class="line">ffff8b918d43bd50</div><div class="line">  task = <span class="number">0xffff8b93d409dee0</span></div><div class="line">  type = RWSEM_WAITING_FOR_READ</div><div class="line">ffff8b9353bbfd50</div><div class="line">  task = <span class="number">0xffff8b91d44cdee0</span></div><div class="line">  type = RWSEM_WAITING_FOR_READ</div><div class="line">ffff8b93e5337d50</div><div class="line">  task = <span class="number">0xffff8b93be258000</span></div><div class="line">  type = RWSEM_WAITING_FOR_READ</div><div class="line">ffff8b9282d17d80</div><div class="line">  task = <span class="number">0xffff8b9307be1fa0</span></div><div class="line">  type = RWSEM_WAITING_FOR_READ</div><div class="line">ffff8b9378ebfd80</div><div class="line">  task = <span class="number">0xffff8b93ea6adee0</span></div><div class="line">  type = RWSEM_WAITING_FOR_READ</div><div class="line">ffff8b933123bd50</div><div class="line">  task = <span class="number">0xffff8b92f9a31fa0</span></div><div class="line">  type = RWSEM_WAITING_FOR_READ</div><div class="line">ffff8b93e93dfd80</div><div class="line">  task = <span class="number">0xffff8b9307be0000</span></div><div class="line">  type = RWSEM_WAITING_FOR_READ</div><div class="line">ffff8b919f933d80</div><div class="line">  task = <span class="number">0xffff8b91aa413f40</span></div><div class="line">  type = RWSEM_WAITING_FOR_READ</div><div class="line">ffff8b93a9fabd80</div><div class="line">  task = <span class="number">0xffff8b938032dee0</span></div><div class="line">  type = RWSEM_WAITING_FOR_READ</div><div class="line">ffff8b91a347fd80</div><div class="line">  task = <span class="number">0xffff8b91e4f51fa0</span></div><div class="line">  type = RWSEM_WAITING_FOR_READ</div><div class="line">ffff8b92de83bd80</div><div class="line">  task = <span class="number">0xffff8b936d065ee0</span></div><div class="line">  type = RWSEM_WAITING_FOR_READ</div><div class="line">ffff8b92d73b3d80</div><div class="line">  task = <span class="number">0xffff8b935b753f40</span></div><div class="line">  type = RWSEM_WAITING_FOR_READ</div></pre></td></tr></table></figure>
+<p><strong> 4. &#x8BF7;&#x6C42;&#x5199;&#x4FE1;&#x53F7;&#x91CF;&#x7684;&#x6808; </strong><br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">crash&gt; p (<span class="keyword">struct</span> task_struct *)<span class="number">0xffff8b93cdcf8000</span></div><div class="line">$<span class="number">1</span> = (<span class="keyword">struct</span> task_struct *) <span class="number">0xffff8b93cdcf8000</span></div><div class="line">crash&gt; p $<span class="number">1.</span>pid</div><div class="line">$<span class="number">2</span> = <span class="number">12862</span></div><div class="line">crash&gt; bt <span class="number">12862</span></div><div class="line">PID: <span class="number">12862</span>  TASK: ffff8b93cdcf8000  CPU: <span class="number">0</span>   COMMAND: <span class="string">&quot;java&quot;</span></div><div class="line"> #<span class="number">0</span> [ffff8b92ab737d58] __schedule at ffffffffb91128d4</div><div class="line"> #<span class="number">1</span> [ffff8b92ab737de0] schedule at ffffffffb9112f49</div><div class="line"> #<span class="number">2</span> [ffff8b92ab737df0] rwsem_down_write_failed at ffffffffb9114835</div><div class="line"> #<span class="number">3</span> [ffff8b92ab737e80] call_rwsem_down_write_failed at ffffffffb8d5a7b7</div><div class="line"> #<span class="number">4</span> [ffff8b92ab737ec8] down_write at ffffffffb91120bd</div><div class="line"> #<span class="number">5</span> [ffff8b92ab737ee0] do_mprotect_pkey at ffffffffb8bcf805</div><div class="line"> #<span class="number">6</span> [ffff8b92ab737f40] sys_mprotect at ffffffffb8bcfac3</div><div class="line"> #<span class="number">7</span> [ffff8b92ab737f50] system_call_fastpath at ffffffffb911f7d5</div></pre></td></tr></table></figure></p>
+<p><strong> 5. &#x67E5;&#x627E;&#x62FF;&#x7740;&#x8BFB;&#x4FE1;&#x53F7;&#x91CF;&#x7684;&#x8FDB;&#x7A0B; </strong><br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">crash&gt; bt <span class="number">22134</span></div><div class="line">PID: <span class="number">22134</span>  TASK: ffff8b91992e3f40  CPU: <span class="number">13</span>  COMMAND: <span class="string">&quot;java&quot;</span></div><div class="line"> #<span class="number">0</span> [ffff8b91efd5b768] __schedule at ffffffffb91128d4</div><div class="line"> #<span class="number">1</span> [ffff8b91efd5b7f8] schedule at ffffffffb9112f49</div><div class="line"> #<span class="number">2</span> [ffff8b91efd5b808] lock_blkgrp_sync at ffffffffc06bf512</div><div class="line"> #<span class="number">3</span> [ffff8b91efd5b948] wait_on_blkgrp_locked at ffffffffc06c107c</div><div class="line"> #<span class="number">4</span> [ffff8b91efd5b998] filemap_read_blkgrp at ffffffffc064d9ae</div><div class="line"> #<span class="number">5</span> [ffff8b91efd5ba28] __ffs_do_filemap_fault at ffffffffc064f2d4</div><div class="line"> #<span class="number">6</span> [ffff8b91efd5bb88] ffs_do_filemap_fault at ffffffffc064f705</div><div class="line"> #<span class="number">7</span> [ffff8b91efd5bbe8] ffs_filemap_fault at ffffffffc064fce3</div><div class="line"> #<span class="number">8</span> [ffff8b91efd5bc98] __do_fault at ffffffffb8bc05fa</div><div class="line"> #<span class="number">9</span> [ffff8b91efd5bd18] do_read_fault at ffffffffb8bc0b5c</div><div class="line">#<span class="number">10</span> [ffff8b91efd5bd78] handle_pte_fault at ffffffffb8bc52dc</div><div class="line">#<span class="number">11</span> [ffff8b91efd5be10] handle_mm_fault at ffffffffb8bc747d</div><div class="line">#<span class="number">12</span> [ffff8b91efd5beb8] __do_page_fault at ffffffffb911a597</div><div class="line">#<span class="number">13</span> [ffff8b91efd5bf20] do_page_fault at ffffffffb911a925</div><div class="line">#<span class="number">14</span> [ffff8b91efd5bf50] page_fault at ffffffffb9116768</div></pre></td></tr></table></figure></p>
+<p><a href="https://github.com/torvalds/linux/blob/master/arch/x86/mm/fault.c#L1362" target="_blank" rel="external"><strong>__do_page_fault</strong></a>&#x4F1A;&#x62FF;&#x7740;mmap_sem&#x7684;&#x8BFB;&#x4FE1;&#x53F7;&#x91CF;&#xFF0C;&#x7136;&#x540E;22134&#x7EBF;&#x7A0B;&#x4F1A;&#x53D1;&#x9001;&#x8BFB;&#x547D;&#x4EE4;&#x7ED9;dataio&#x53BB;&#x540E;&#x7AEF;&#x8BFB;&#x53D6;&#x6570;&#x636E;&#xFF0C;&#x4F46;&#x662F;dataio&#x7EBF;&#x7A0B;&#x5361;&#x5728;&#x8FD9;&#x4E2A;&#x4FE1;&#x53F7;&#x91CF;&#x4E86;(&#x56E0;&#x4E3A;12862&#x8BF7;&#x6C42;&#x4E86;&#x4E9B;&#x4FE1;&#x53F7;&#x91CF;&#xFF0C;&#x540E;&#x7EED;&#x8BF7;&#x6C42;&#x8BFB;&#x8BFB;&#x4FE1;&#x53F7;&#x91CF;&#x4F1A;&#x6392;&#x5728;&#x5199;&#x4FE1;&#x53F7;&#x91CF;&#x4E4B;&#x540E;)&#xFF0C;&#x8FD9;&#x5C31;&#x5BFC;&#x81F4;&#x4E86;&#x6B7B;&#x9501;&#x3002;</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Linux-kernel/" rel="tag">#Linux kernel</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/07/10/shell-read命令的一个坑/" rel="next" title="shell read命令的一个坑">
+                <i class="fa fa-chevron-left"></i> shell read命令的一个坑
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="//schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="https://projecteuler.net/profile/luobuda.png"
+               alt="洛卜哒" />
+          <p class="site-author-name" itemprop="name">洛卜哒</p>
+          <p class="site-description motion-element" itemprop="description">大约，孔乙己的确死了！</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">33</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/luobuda" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://github.com/luobuda" title="Github" target="_blank">Github</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://projecteuler.net/" title="Project Euler" target="_blank">Project Euler</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#问题还原"><span class="nav-number">1.</span> <span class="nav-text">问题还原</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#crash分析"><span class="nav-number">1.1.</span> <span class="nav-text">crash分析</span></a></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">洛卜哒</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.2"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>
