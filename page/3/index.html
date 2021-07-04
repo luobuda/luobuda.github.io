@@ -259,6 +259,128 @@
             
               
                 
+                <a class="post-title-link" href="/2017/04/30/第六章-内核数据结构/" itemprop="url">
+                  第六章 内核数据结构
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-04-30T17:07:22+08:00" content="2017-04-30">
+              2017-04-30
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index">
+                    <span itemprop="name">Linux</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h3 id="&#x5185;&#x6838;&#x6570;&#x636E;&#x7ED3;&#x6784;"><a href="#&#x5185;&#x6838;&#x6570;&#x636E;&#x7ED3;&#x6784;" class="headerlink" title="&#x5185;&#x6838;&#x6570;&#x636E;&#x7ED3;&#x6784;"></a>&#x5185;&#x6838;&#x6570;&#x636E;&#x7ED3;&#x6784;</h3><blockquote>
+<p>&#x5185;&#x6838;&#x4E2D;&#x5B9E;&#x73B0;&#x4E86;&#x5F88;&#x591A;&#x901A;&#x7528;&#x6570;&#x636E;&#x7ED3;&#x6784;&#xFF0C;&#x5305;&#x62EC;Linked list&#x3001;Queue&#x3001;Map&#x3001;Binary tree&#x7B49;</p>
+</blockquote>
+<h4 id="1-&#x94FE;&#x8868;"><a href="#1-&#x94FE;&#x8868;" class="headerlink" title="1. &#x94FE;&#x8868;"></a>1. &#x94FE;&#x8868;</h4><p>Linux&#x5185;&#x6838;&#x4E2D;&#x94FE;&#x8868;&#x968F;&#x5904;&#x53EF;&#x89C1;&#xFF0C;&#x5B83;&#x5C06;&#x94FE;&#x8868;&#x8282;&#x70B9;&#x585E;&#x5165;&#x6570;&#x636E;&#x7ED3;&#x6784;&#x4E2D;&#x3002;</p>
+<p>&#x94FE;&#x8868;&#x5728;<a href="https://github.com/torvalds/linux/blob/master/include/linux/types.h#L184">linux/types.h</a>&#x4E2D;&#x58F0;&#x660E;&#xFF0C;&#x53EA;&#x6709;&#x4E24;&#x4E2A;&#x6307;&#x9488;next&#x3001;prev&#xFF0C;&#x662F;&#x5F88;&#x7B80;&#x5355;&#x7684;&#x53CC;&#x5411;&#x94FE;&#x8868;&#xFF0C;<a href="https://github.com/torvalds/linux/blob/master/include/linux/list.h">linux/list.h</a>&#x4E2D;&#x5B9E;&#x73B0;&#x4E86;&#x5F88;&#x591A;&#x94FE;&#x8868;&#x64CD;&#x4F5C;&#x7684;&#x5B8F;&#x3002;<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">struct</span> list_head {</div><div class="line">	<span class="keyword">struct</span> list_head *next, *prev;</div><div class="line">};</div></pre></td></tr></table></figure></p>
+<p>&#x5728;&#x4F7F;&#x7528;&#x7684;&#x65F6;&#x5019;&#x53EA;&#x9700;&#x8981;&#x5728;&#x81EA;&#x5DF1;&#x7684;&#x7ED3;&#x6784;&#x4E2D;&#x52A0;&#x4E0A;struct list_head list,&#x5982;<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">struct</span> person</div><div class="line">{</div><div class="line">    <span class="keyword">int</span> age;</div><div class="line">    <span class="keyword">char</span>* name;</div><div class="line">    <span class="keyword">struct</span> list_head <span class="built_in">list</span>;</div><div class="line">};</div></pre></td></tr></table></figure></p>
+<p>&#x5185;&#x6838;&#x5E38;&#x7528;&#x7684;&#x4E00;&#x4E2A;&#x5B8F;&#xFF0C;&#x83B7;&#x5F97;&#x5305;&#x542B;member&#x7684;&#x7ED3;&#x6784;&#x4F53;&#x7684;&#x6307;&#x9488;&#xFF1A;<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">define</span> container_of(ptr, type, member) ({			\</span></div><div class="line">	const typeof( ((type *)0)-&gt;member ) *__mptr = (ptr);	\</div><div class="line">	(type *)( (char *)__mptr - offsetof(type,member) );})</div></pre></td></tr></table></figure></p>
+<p>&#x5229;&#x7528;&#x8FD9;&#x4E2A;&#x5B8F;&#xFF0C;&#x53EF;&#x4EE5;&#x65B9;&#x4FBF;&#x5730;&#x5F97;&#x5230;&#x5305;&#x542B;&#x94FE;&#x8868;&#x7684;&#x7ED3;&#x6784;&#x4F53;&#xFF1A;<br><figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * list_entry - get the struct for this entry</div><div class="line"> * @ptr:	the &amp;struct list_head pointer.</div><div class="line"> * @type:	the type of the struct this is embedded in.</div><div class="line"> * @member:	the name of the list_struct within the struct.</div><div class="line"> */</div><div class="line"><span class="meta">#<span class="meta-keyword">define</span> list_entry(ptr, type, member) \</span></div><div class="line">	container_of(ptr, type, member)</div></pre></td></tr></table></figure></p>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2017/04/30/第六章-内核数据结构/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2017/04/29/第五章-系统调用/" itemprop="url">
                   第五章 系统调用
                 </a>
@@ -1652,132 +1774,6 @@
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2017/03/05/python3-source-read/" itemprop="url">
-                  python3源码浅读——编译
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2017-03-05T14:14:57+08:00" content="2017-03-05">
-              2017-03-05
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h2 id="python3&#x6E90;&#x7801;&#x7F16;&#x8BD1;&#x5B89;&#x88C5;"><a href="#python3&#x6E90;&#x7801;&#x7F16;&#x8BD1;&#x5B89;&#x88C5;" class="headerlink" title="python3&#x6E90;&#x7801;&#x7F16;&#x8BD1;&#x5B89;&#x88C5;"></a>python3&#x6E90;&#x7801;&#x7F16;&#x8BD1;&#x5B89;&#x88C5;</h2><h3 id="Python3&#x6E90;&#x7801;&#x7ED3;&#x6784;"><a href="#Python3&#x6E90;&#x7801;&#x7ED3;&#x6784;" class="headerlink" title="Python3&#x6E90;&#x7801;&#x7ED3;&#x6784;"></a>Python3&#x6E90;&#x7801;&#x7ED3;&#x6784;</h3><ul>
-<li><p>Python&#x6E90;&#x7801;&#x76EE;&#x5F55;&#x7ED3;&#x6784;<br><img src="/2017/03/05/python3-source-read/./images/python_dir.png" alt=""></p>
-</li>
-<li><p>Include&#xFF1A;Python&#x6240;&#x6709;&#x7684;&#x5934;&#x6587;&#x4EF6;&#xFF0C;&#x5199;C/C++&#x6269;&#x5C55;&#x65F6;&#x9700;&#x8981;</p>
-</li>
-<li>Lib&#xFF1A;Python&#x81EA;&#x5E26;&#x7684;&#x6807;&#x51C6;&#x5E93;&#xFF0C;Python&#x8BED;&#x8A00;&#x7F16;&#x5199;</li>
-<li>Modules&#xFF1A;&#x7531;C&#x8BED;&#x8A00;&#x7F16;&#x5199;&#x7684;&#x6A21;&#x5757;&#xFF0C;&#x5982;ctypes&#x3001;mutltiprocessing&#x7B49;</li>
-<li>Parser&#xFF1A; Python&#x89E3;&#x91CA;&#x5668;&#x7684;Scanner&#x548C;Parser&#xFF0C;&#x5373;Python&#x7684;&#x8BCD;&#x6CD5;&#x5206;&#x6790;&#x548C;&#x8BED;&#x6CD5;&#x5206;&#x6790;</li>
-<li>Objects&#xFF1A;Python&#x7684;&#x5185;&#x5EFA;&#x5BF9;&#x8C61;&#x7684;&#x5B9E;&#x73B0;&#x3001;&#x5305;&#x62EC;list&#x3001;dict&#x7B49;</li>
-<li>Python&#xFF1A;Python&#x89E3;&#x91CA;&#x5668;&#x7684;Compiler&#x548C;&#x6267;&#x884C;&#x5F15;&#x64CE;</li>
-<li>PCBuild&#xFF1A;Visual Studio&#x5DE5;&#x7A0B;&#x6587;&#x4EF6;</li>
-</ul>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2017/03/05/python3-source-read/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1823,7 +1819,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">36</span>
+              <span class="site-state-item-count">37</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1831,7 +1827,7 @@
           
             <div class="site-state-item site-state-categories">
               <a href="/categories">
-                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-count">9</span>
                 <span class="site-state-item-name">分类</span>
               </a>
             </div>
@@ -1840,7 +1836,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-count">8</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
