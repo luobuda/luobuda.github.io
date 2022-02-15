@@ -1,0 +1,791 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="raft," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.2" />
+
+
+
+
+
+
+<meta name="description" content="snapshot&amp;#x4F5C;&amp;#x7528;snapshot&amp;#x662F;raft&amp;#x7B97;&amp;#x6CD5;&amp;#x7684;&amp;#x56DB;&amp;#x5927;&amp;#x7279;&amp;#x6027;&amp;#x4E4B;Log Compaction&amp;#x3002;snapshot&amp;#x7684;&amp;#x4E3B;&amp;#x8981;&amp;#x4F5C;&amp;#x7528;&amp;#xFF0C;&amp;#x5BF9;&amp;#x672">
+<meta property="og:type" content="article">
+<meta property="og:title" content="braft snapshot实现">
+<meta property="og:url" content="https://luobuda.github.io/2022/02/15/braft-snapshot实现/index.html">
+<meta property="og:site_name" content="洛卜哒的博客">
+<meta property="og:description" content="snapshot&amp;#x4F5C;&amp;#x7528;snapshot&amp;#x662F;raft&amp;#x7B97;&amp;#x6CD5;&amp;#x7684;&amp;#x56DB;&amp;#x5927;&amp;#x7279;&amp;#x6027;&amp;#x4E4B;Log Compaction&amp;#x3002;snapshot&amp;#x7684;&amp;#x4E3B;&amp;#x8981;&amp;#x4F5C;&amp;#x7528;&amp;#xFF0C;&amp;#x5BF9;&amp;#x672">
+<meta property="og:image" content="https://luobuda.github.io/2022/02/15/braft-snapshot实现/./images/snapshot.png">
+<meta property="og:image" content="https://luobuda.github.io/2022/02/15/braft-snapshot实现/./images/install.png">
+<meta property="og:updated_time" content="2022-02-15T15:40:45.750Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="braft snapshot实现">
+<meta name="twitter:description" content="snapshot&amp;#x4F5C;&amp;#x7528;snapshot&amp;#x662F;raft&amp;#x7B97;&amp;#x6CD5;&amp;#x7684;&amp;#x56DB;&amp;#x5927;&amp;#x7279;&amp;#x6027;&amp;#x4E4B;Log Compaction&amp;#x3002;snapshot&amp;#x7684;&amp;#x4E3B;&amp;#x8981;&amp;#x4F5C;&amp;#x7528;&amp;#xFF0C;&amp;#x5BF9;&amp;#x672">
+<meta name="twitter:image" content="https://luobuda.github.io/2022/02/15/braft-snapshot实现/./images/snapshot.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 'undefined',
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="https://luobuda.github.io/2022/02/15/braft-snapshot实现/"/>
+
+
+  <title> braft snapshot实现 | 洛卜哒的博客 </title>
+</head>
+
+<body itemscope itemtype="//schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="//schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">洛卜哒的博客</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Hope I can study from bits to qubits.</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                braft snapshot实现
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2022-02-15T22:56:12+08:00" content="2022-02-15">
+              2022-02-15
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/consensus-protocol/" itemprop="url" rel="index">
+                    <span itemprop="name">consensus protocol</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h4 id="snapshot&#x4F5C;&#x7528;"><a href="#snapshot&#x4F5C;&#x7528;" class="headerlink" title="snapshot&#x4F5C;&#x7528;"></a>snapshot&#x4F5C;&#x7528;</h4><p>snapshot&#x662F;raft&#x7B97;&#x6CD5;&#x7684;&#x56DB;&#x5927;&#x7279;&#x6027;&#x4E4B;Log Compaction&#x3002;<br>snapshot&#x7684;&#x4E3B;&#x8981;&#x4F5C;&#x7528;&#xFF0C;&#x5BF9;&#x672C;&#x8282;&#x70B9;&#x6765;&#x8BF4;&#xFF1A;</p>
+<ul>
+<li>Log Compaction&#xFF0C;&#x5728;&#x5B8C;&#x6210;Snapshot&#x5B8C;&#x6210;&#x4E4B;&#x540E;&#xFF0C;&#x8FD9;&#x4E2A;&#x65F6;&#x95F4;&#x4E4B;&#x524D;&#x7684;&#x65E5;&#x5FD7;&#x90FD;&#x53EF;&#x4EE5;&#x88AB;&#x5220;&#x9664;&#x4E86;&#xFF0C;&#x8FD9;&#x6837;&#x53EF;&#x4EE5;&#x51CF;&#x5C11;&#x65E5;&#x5FD7;&#x5360;&#x7528;&#x7684;&#x8D44;&#x6E90;</li>
+<li>&#x542F;&#x52A8;&#x52A0;&#x901F;&#xFF0C;&#x542F;&#x52A8;&#x9636;&#x6BB5;&#x53D8;&#x4E3A;&#x52A0;&#x8F7D;Snapshot&#x548C;&#x8FFD;&#x52A0;&#x4E4B;&#x540E;&#x65E5;&#x5FD7;&#x4E24;&#x4E2A;&#x9636;&#x6BB5;&#xFF0C;&#x800C;&#x4E0D;&#x9700;&#x8981;&#x91CD;&#x65B0;&#x6267;&#x884C;&#x5386;&#x53F2;&#x4E0A;&#x6240;&#x6709;&#x7684;&#x64CD;&#x4F5C;.<br>&#x5BF9;&#x6574;&#x4E2A;raft-group&#x6765;&#x8BF4;&#xFF0C;leader&#x548C;follower&#x4F1A;&#x6709;InstallSnapshot&#x64CD;&#x4F5C;&#xFF0C;&#x76EE;&#x524D;&#xFF0C;&#x4E3B;&#x8981;&#x6709;&#x4E24;&#x4E2A;&#x5730;&#x65B9;&#x4F1A;&#x89E6;&#x53D1;InstallSnapshot&#x7684;&#x53D1;&#x9001;&#xFF1A;</li>
+<li>Raft&#x4E2D;&#x7684;Follower&#x843D;&#x540E;Leader&#x592A;&#x591A;&#xFF0C;Follower&#x6240;&#x9700;&#x8981;&#x7684;Raft Log&#x5728;Leader&#x4E2D;&#x5DF2;&#x7ECF;&#x5220;&#x9664;&#xFF0C;&#x4F1A;&#x89E6;&#x53D1;Leader&#x5411;Follower&#x53D1;&#x9001;snapshot</li>
+<li>&#x5F53;&#x4E00;&#x4E2A;Raft Group&#x589E;&#x52A0;&#x4E00;&#x4E2A;peer&#x65F6;&#xFF0C;&#x8FD9;&#x4E2A;peer&#x901A;&#x8FC7;Leader&#x53D1;&#x9001;snapshot&#x8FDB;&#x884C;&#x6570;&#x636E;&#x7684;&#x521D;&#x59CB;&#x5316;</li>
+</ul>
+<a id="more"></a>
+<h4 id="braft&#x5B9E;&#x73B0;"><a href="#braft&#x5B9E;&#x73B0;" class="headerlink" title="braft&#x5B9E;&#x73B0;"></a>braft&#x5B9E;&#x73B0;</h4><p>braft&#x5C06;log compaction&#x5206;&#x6210;&#x4E86;&#x4E09;&#x5927;&#x5757;&#xFF1A;</p>
+<ul>
+<li>snapshot save&#xFF1A;&#x521B;&#x5EFA;&#x5FEB;&#x7167;</li>
+<li>snapshot load&#xFF1A;&#x52A0;&#x8F7D;&#x5FEB;&#x7167;</li>
+<li>install snapshot&#xFF1A;&#x590D;&#x5236;&#x5FEB;&#x7167;  </li>
+</ul>
+<p>&#x4E0D;&#x540C;&#x4E1A;&#x52A1;&#x7684;Snapshot&#x5343;&#x5DEE;&#x4E07;&#x522B;&#xFF0C;&#x56E0;&#x4E3A;SnapshotStorage&#x5E76;&#x6CA1;&#x6709;&#x62BD;&#x8C61;&#x5177;&#x4F53;&#x8BFB;&#x5199;Snapshot&#x7684;&#x63A5;&#x53E3;&#xFF0C;&#x800C;&#x662F;&#x62BD;&#x8C61;&#x51FA;SnapshotReader&#x548C;SnapshotWriter&#xFF0C;&#x4EA4;&#x7531;&#x7528;&#x6237;&#x6269;&#x5C55;&#x5177;&#x4F53;&#x7684;snapshot&#x521B;&#x5EFA;&#x548C;&#x52A0;&#x8F7D;&#x903B;&#x8F91;&#x3002;<br><strong>Snapshot&#x521B;&#x5EFA;&#x6D41;&#x7A0B;</strong>&#xFF1A;  </p>
+<ul>
+<li>SnapshotStorage::create&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x4E34;&#x65F6;&#x7684;Snapshot&#xFF0C;&#x5E76;&#x8FD4;&#x56DE;&#x4E00;&#x4E2A;SnapshotWriter</li>
+<li>SnapshotWriter&#x5C06;&#x72B6;&#x6001;&#x6570;&#x636E;&#x5199;&#x5165;&#x5230;&#x4E34;&#x65F6;snapshot&#x4E2D;</li>
+<li>SnapshotStorage::close&#x6765;&#x5C06;&#x8FD9;&#x4E2A;snapshot&#x8F6C;&#x4E3A;&#x5408;&#x6CD5;&#x7684;snapshot</li>
+<li>&#x901A;&#x8FC7;NodeOptions.snapshot_uri&#x6307;&#x5B9A;&#x5FEB;&#x7167;&#x7684;&#x5B58;&#x50A8;&#x8DEF;&#x5F84;</li>
+</ul>
+<p><strong>Snapshot&#x8BFB;&#x53D6;&#x6D41;&#x7A0B;</strong>&#xFF1A;  </p>
+<ul>
+<li>SnapshotStorage::open&#x6253;&#x5F00;&#x6700;&#x8FD1;&#x7684;&#x4E00;&#x4E2A;Snapshot&#xFF0C;&#x5E76;&#x8FD4;&#x56DE;&#x4E00;&#x4E2A;SnapshotReader</li>
+<li>SnapshotReader&#x5C06;&#x72B6;&#x6001;&#x6570;&#x636E;&#x4ECE;snapshot&#x4E2D;&#x6062;&#x590D;&#x51FA;&#x6765;</li>
+<li>SnapshotStorage::close&#x6E05;&#x7406;&#x8D44;&#x6E90;</li>
+</ul>
+<p>libraft&#x5185;&#x63D0;&#x4F9B;&#x4E86;&#x57FA;&#x4E8E;&#x6587;&#x4EF6;&#x5217;&#x8868;&#x7684;LocalSnapshotWriter&#x548C;LocalSnapshotReader&#x9ED8;&#x8BA4;&#x5B9E;&#x73B0;&#xFF0C;&#x5177;&#x4F53;&#x4F7F;&#x7528;&#x65B9;&#x5F0F;&#x4E3A;&#xFF1A;</p>
+<ul>
+<li>&#x5728;fsm&#x7684;on_snapshot_save&#x56DE;&#x8C03;&#x4E2D;&#xFF0C;&#x5C06;&#x72B6;&#x6001;&#x6570;&#x636E;&#x5199;&#x5165;&#x5230;&#x672C;&#x5730;&#x6587;&#x4EF6;&#x4E2D;&#xFF0C;&#x7136;&#x540E;&#x8C03;&#x7528;SnapshotWriter::add_file&#x5C06;&#x76F8;&#x5E94;&#x6587;&#x4EF6;&#x52A0;&#x5165;snapshot meta&#x3002;</li>
+<li>&#x5728;fsm&#x7684;on_snapshot_load&#x56DE;&#x8C03;&#x4E2D;&#xFF0C;&#x8C03;&#x7528;SnapshotReader::list_files&#x83B7;&#x53D6;&#x672C;&#x5730;&#x6587;&#x4EF6;&#x5217;&#x8868;&#xFF0C;&#x6309;&#x7167;on_snapshot_save&#x7684;&#x65B9;&#x5F0F;&#x8FDB;&#x884C;&#x89E3;&#x6790;&#xFF0C;&#x6062;&#x590D;&#x72B6;&#x6001;&#x6570;&#x636E;&#x3002;</li>
+</ul>
+<p>braft&#x4E2D;&#x4E00;&#x4E2A;raft-group&#x4E2D;&#x7684;&#x6240;&#x6709;&#x526F;&#x672C;&#x505A;log compaction&#x662F;&#x76F8;&#x4E92;&#x72EC;&#x7ACB;&#x7684;&#xFF0C;&#x901A;&#x5E38;&#x5C06;NodeOptions.snapshot_interval_s=-1&#xFF0C;&#x7136;&#x540E;&#x6BCF;&#x4E2A;&#x526F;&#x672C;&#x81EA;&#x5DF1;&#x63A7;&#x5236;snapshot&#x3002;<br>&#x4E3B;&#x8981;&#x7C7B;&#x8BF4;&#x660E;&#xFF1A;</p>
+<table>
+<thead>
+<tr>
+<th>&#x7C7B;</th>
+<th>&#x63CF;&#x8FF0;</th>
+<th>&#x4E3B;&#x8981;&#x6D41;&#x7A0B;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SnapshotStorage</td>
+<td>&#x5FEB;&#x7167;&#x8BFB;&#x5199;&#x7684;&#x62BD;&#x8C61;&#x63A5;&#x53E3;&#xFF0C;&#x7528;&#x6237;&#x53EF;&#x4EE5;&#x7EE7;&#x627F;&#x8BE5;&#x7C7B;&#x5B9E;&#x73B0;&#x81EA;&#x5DF1;&#x7684;&#x5FEB;&#x7167;&#x8BFB;&#x5199;</td>
+<td>LocalSnapshotStorage&#xFF0C;&#x901A;&#x8FC7;create&#x65B9;&#x6CD5;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x5FEB;&#x7167;&#xFF0C;&#x901A;&#x8FC7;copy_from&#x65B9;&#x6CD5;&#x5F00;&#x59CB;&#x62F7;&#x8D1D;&#x5FEB;&#x7167;</td>
+</tr>
+<tr>
+<td>SnapshotReader</td>
+<td>&#x5FEB;&#x7167;&#x5143;&#x4FE1;&#x606F;&#x8BFB;&#x53D6;&#x7684;&#x62BD;&#x8C61;</td>
+<td>LocalSnapshotReader&#xFF0C;&#x901A;&#x8FC7;get_path&#x65B9;&#x6CD5;&#x6765;&#x83B7;&#x53D6;&#x8BE5;snapshot&#x5B58;&#x653E;&#x7684;&#x8DEF;&#x5F84;&#xFF0C;&#x901A;&#x8FC7;list_files&#x6765;&#x83B7;&#x53D6;snapshot&#x5BF9;&#x5E94;&#x7684;&#x6587;&#x4EF6;&#xFF0C;&#x901A;&#x8FC7;get_file_meta&#x63A5;&#x53E3;&#x83B7;&#x53D6;&#x6587;&#x4EF6;&#x5143;&#x4FE1;&#x606F;</td>
+</tr>
+<tr>
+<td>SnapshotWriter</td>
+<td>&#x5FEB;&#x7167;&#x5199;&#x64CD;&#x4F5C;&#x7684;&#x62BD;&#x8C61;</td>
+<td>LocalSnapshotWriter&#xFF0C;&#x4F7F;&#x7528;add_file&#x63A5;&#x53E3;&#x544A;&#x77E5;libRaft&#x4E1A;&#x52A1;&#x72B6;&#x6001;&#x673A;&#x8BE5;snapshot&#x5BF9;&#x5E94;&#x7684;&#x6587;&#x4EF6;&#x540D;&#x53CA;meta&#x4FE1;&#x606F;</td>
+</tr>
+<tr>
+<td>SnapshotCopier</td>
+<td>&#x5FEB;&#x7167;&#x62F7;&#x8D1D;&#x7684;&#x62BD;&#x8C61;</td>
+<td>LocalSnapshotCopier&#xFF0C;&#x8D1F;&#x8D23;&#x62F7;&#x8D1D;&#x5FEB;&#x7167;&#x6570;&#x636E;&#xFF0C;load_meta_table(&#x5143;&#x6570;&#x636E;&#x62F7;&#x8D1D;)-&gt;filter(&#x8FC7;&#x6EE4;&#x89C4;)-&gt;copy_file(&#x6570;&#x636E;&#x62F7;&#x8D1D;)</td>
+</tr>
+<tr>
+<td>RemoteFileCopier</td>
+<td>&#x5C01;&#x88C5;rpc&#x8BF7;&#x6C42;</td>
+<td>send_next_rpc&#x53D1;&#x8D77;&#x5F02;&#x6B65;&#x8BF7;&#x6C42;&#xFF0C;copy_to_iobuf&#x62F7;&#x8D1D;&#x5143;&#x6570;&#x636E;&#xFF0C;copy_to_file&#x62F7;&#x8D1D;&#x6570;&#x636E;</td>
+</tr>
+<tr>
+<td>FileSystemAdaptor</td>
+<td>&#x5E95;&#x5C42;&#x5B58;&#x50A8;&#x63A5;&#x53E3;</td>
+<td>&#x9ED8;&#x8BA4;&#x5B9E;&#x73B0;&#x662F;&#x672C;&#x5730;&#x6587;&#x4EF6;&#x7CFB;&#x7EDF;&#x63A5;&#x53E3;PosixFileSystemAdaptor&#xFF0C;&#x53EF;&#x4EE5;&#x5B9A;&#x5236;&#xFF0C;&#x5982;&#x6839;&#x636E;rocksdb&#x5B9E;&#x73B0;RocksdbFileSystemAdaptor</td>
+</tr>
+</tbody>
+</table>
+<h4 id="&#x4E3B;&#x8981;&#x6D41;&#x7A0B;"><a href="#&#x4E3B;&#x8981;&#x6D41;&#x7A0B;" class="headerlink" title="&#x4E3B;&#x8981;&#x6D41;&#x7A0B;"></a>&#x4E3B;&#x8981;&#x6D41;&#x7A0B;</h4><p><img src="/2022/02/15/braft-snapshot&#x5B9E;&#x73B0;/./images/snapshot.png" alt=""></p>
+<p>braft&#x7684;&#x72B6;&#x6001;&#x673A;&#x63D0;&#x4F9B;&#x4E86;on_snapshot_save&#x3001;on_snapshot_load&#x7684;&#x56DE;&#x8C03;&#x63A5;&#x53E3;&#x901A;&#x77E5;&#x7528;&#x6237;&#x5FEB;&#x7167;&#x521B;&#x5EFA;&#x548C;&#x52A0;&#x8F7D;&#xFF0C;&#x8FD9;&#x4E24;&#x4E2A;&#x64CD;&#x4F5C;&#x662F;&#x5728;&#x72B6;&#x6001;&#x673A;&#x961F;&#x5217;&#x91CC;&#x4E32;&#x884C;&#x6267;&#x884C;&#x7684;&#xFF0C;&#x6240;&#x4EE5;&#x9700;&#x8981;&#x9AD8;&#x6548;&#x5B9E;&#x73B0;&#xFF0C;&#x4E0D;&#x7136;&#x5C31;&#x4F1A;&#x963B;&#x585E;&#x72B6;&#x6001;&#x673A;&#x3002;</p>
+<h5 id="snapshot-save&#xFF1A;&#x521B;&#x5EFA;&#x5FEB;&#x7167;"><a href="#snapshot-save&#xFF1A;&#x521B;&#x5EFA;&#x5FEB;&#x7167;" class="headerlink" title="snapshot save&#xFF1A;&#x521B;&#x5EFA;&#x5FEB;&#x7167;"></a>snapshot save&#xFF1A;&#x521B;&#x5EFA;&#x5FEB;&#x7167;</h5><p>&#x5FEB;&#x7167;&#x521B;&#x5EFA;&#x7531;Node::snapshot&#x63A5;&#x53E3;&#x89E6;&#x53D1;&#xFF0C;&#x7136;&#x540E;&#x76F8;&#x7EE7;&#x6301;&#x4E45;&#x5316;&#x5143;&#x6570;&#x636E;&#x548C;&#x6570;&#x636E;&#xFF0C;braft&#x72B6;&#x6001;&#x673A;&#x4F1A;&#x6301;&#x4E45;&#x5316;&#x5305;&#x62EC;last_included_index&#xFF0C;last_included_term&#x548C;&#x6B64;snapshot&#x5BF9;&#x5E94;&#x7684;peer configuration&#x7684;&#x5143;&#x6570;&#x636E;&#xFF0C;&#x4FDD;&#x5B58;(last_included_term,last_included_index)&#x5728;&#x52A0;&#x8F7D;&#x5FEB;&#x7167;&#x7684;&#x65F6;&#x5019;&#x5B8C;&#x6210;&#x540E;&#x5C31;&#x4F1A;&#x4ECE;&#x8FD9;&#x4E2A;log_index&#x5F00;&#x59CB;&#x540C;&#x6B65;&#x65E5;&#x5FD7;&#xFF1B;&#x5728;on_snapshot_save&#x56DE;&#x8C03;&#x4E2D;&#x4E1A;&#x52A1;&#x5B8C;&#x6210;&#x81EA;&#x5DF1;snapshot&#x6570;&#x636E;&#x7684;&#x6301;&#x4E45;&#x5316;&#x3002;</p>
+<p>&#x4E3B;&#x8981;&#x51FD;&#x6570;&#x8C03;&#x7528;&#xFF1A;</p>
+<ol>
+<li>Node::snapshot(Closure* done)&#xFF1A;&#x5B9A;&#x65F6;&#x6216;&#x624B;&#x52A8;&#x89E6;&#x53D1;&#x521B;&#x5EFA;&#x5FEB;&#x7167;</li>
+<li>SnapshotExecutor::do_snapshot(Closure* done)&#xFF1A;<ul>
+<li>SnapshotStorage::create()&#xFF1A;&#x8FD4;&#x56DE;SnapshotWriter</li>
+<li>FSMCaller::on_snapshot_save(SaveSnapshotClosure* done)</li>
+<li>FSMCaller::do_snapshot_save(SaveSnapshotClosure* done)&#xFF1A;&#x4FDD;&#x5B58;snapshot&#x5143;&#x6570;&#x636E;</li>
+<li>_fsm::on_snapshot_save(writer, done)&#xFF1A;&#x6267;&#x884C;&#x7528;&#x6237;&#x72B6;&#x6001;&#x673A;&#x7684;&#x903B;&#x8F91;</li>
+</ul>
+</li>
+<li>SnapshotExecutor::on_snapshot_save_done()&#xFF1A;&#x5F02;&#x6B65;&#x6267;&#x884C;<ul>
+<li>SnapshotWriter::save_meta()&#x4FDD;&#x5B58;&#x5FEB;&#x7167;&#x5143;&#x6570;&#x636E;</li>
+<li>SnapshotStorage::close(writer)&#x5173;&#x95ED;&#x8D44;&#x6E90;&#xFF0C;&#x66F4;&#x65B0;&#x5185;&#x5B58;</li>
+</ul>
+</li>
+</ol>
+<p>&#x7528;&#x6237;&#x72B6;&#x6001;&#x673A;&#x5B9E;&#x73B0;on_snapshot_save&#x63A5;&#x53E3;&#x5982;&#x4E0B;&#xFF1A;<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">on_snapshot_save</span><span class="params">(SnapshotWriter* writer, Closure* closure)</span></span>;</div></pre></td></tr></table></figure></p>
+<p>SnapshotWriter&#x662F;braft&#x5FEB;&#x7167;&#x5199;&#x64CD;&#x4F5C;&#x7684;&#x62BD;&#x8C61;&#xFF0C;&#x4E1A;&#x52A1;&#x901A;&#x8FC7;SnapshotWriter::add_file&#x63A5;&#x53E3;&#x4FDD;&#x5B58;&#x5FEB;&#x7167;&#x7684;&#x5143;&#x4FE1;&#x606F;&#x3002;<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">add_file</span><span class="params">(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span>&amp; name, google::protobuf::Message* meta)</span></span>;</div></pre></td></tr></table></figure></p>
+<p>&#x6267;&#x884C;snapshot save&#x540E;&#xFF0C;braft&#x5373;&#x53EF;&#x5C06;&#x66F4;&#x8001;&#x7684;snapshot&#x5220;&#x9664;&#xFF0C;&#x5E76;&#x5C06;last_included_index&#x4E4B;&#x524D;&#x7684;log&#x5B89;&#x5168;&#x5730;&#x6E05;&#x9664;&#x6389;&#xFF0C;snapshot&#x7684;&#x5143;&#x4FE1;&#x606F;&#x5B58;&#x653E;&#x5728;&#x6307;&#x5B9A;&#x5FEB;&#x7167;&#x76EE;&#x5F55;&#x7684;__raft_snapshot_meta&#x6587;&#x4EF6;&#x91CC;&#x3002;</p>
+<h5 id="snapshot-load&#xFF1A;&#x52A0;&#x8F7D;&#x5FEB;&#x7167;"><a href="#snapshot-load&#xFF1A;&#x52A0;&#x8F7D;&#x5FEB;&#x7167;" class="headerlink" title="snapshot load&#xFF1A;&#x52A0;&#x8F7D;&#x5FEB;&#x7167;"></a>snapshot load&#xFF1A;&#x52A0;&#x8F7D;&#x5FEB;&#x7167;</h5><p>snapshot load&#x53D1;&#x751F;&#x7684;&#x573A;&#x666F;&#xFF1A;</p>
+<ul>
+<li>&#x8282;&#x70B9;&#x91CD;&#x542F;&#xFF1A;&#x901A;&#x8FC7;&#x52A0;&#x8F7D;snapshot&#x6765;&#x6062;&#x590D;&#x4E1A;&#x52A1;&#x72B6;&#x6001;&#x673A;&#x7684;&#x72B6;&#x6001;&#xFF0C;&#x9996;&#x5148;&#x901A;&#x8FC7;on_snapshot_load&#x63A5;&#x53E3;&#x56DE;&#x8C03;&#x4E1A;&#x52A1;&#x72B6;&#x6001;&#x673A;&#xFF0C;&#x5B8C;&#x6210;snapshot&#x7684;&#x52A0;&#x8F7D;&#xFF0C;&#x7136;&#x540E;&#x5728;&#x5C06;&#x6B64;snapshot&#x4E4B;&#x540E;&#x7684;committed log replay&#x7ED9;&#x4E1A;&#x52A1;&#x72B6;&#x6001;&#x673A;&#xFF0C;&#x5B8C;&#x6210;&#x72B6;&#x6001;&#x6062;&#x590D;&#xFF1B;</li>
+<li>&#x65E5;&#x5FD7;&#x843D;&#x540E;&#x592A;&#x591A;&#xFF1A;follower&#x65E5;&#x5FD7;&#x843D;&#x540E;Leader&#x592A;&#x591A;&#x65F6;(follower next_log_index &lt; leader first_log_index)&#xFF0C;leader&#x4F1A;&#x53D1;&#x8D77;install_snapshot&#x7ED9;Follower&#x52A0;&#x901F;&#x6570;&#x636E;&#x8865;&#x9F50;&#xFF0C;&#x6CE8;&#x610F;&#x6B64;&#x65F6;&#x5728;&#x6B64;&#x65F6;&#x5728;on_snapshot_load&#x56DE;&#x8C03;&#x4E2D;&#x9700;&#x8981;&#x73B0;&#x6E05;&#x7406;&#x672C;&#x5730;&#x6570;&#x636E;&#x3002;</li>
+<li>&#x65B0;peer&#x52A0;&#x5165;&#xFF1A;&#x8FD9;&#x662F;&#x4E0A;&#x4E00;&#x4E2D;&#x573A;&#x666F;&#x7684;&#x7279;&#x6B8A;&#x60C5;&#x51B5;&#x3002;</li>
+</ul>
+<p>on_snapshot_load&#x63A5;&#x53E3;&#x5982;&#x4E0B;&#xFF1A;<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">on_snapshot_load</span><span class="params">(SnapshotReader* reader)</span></span>;</div></pre></td></tr></table></figure></p>
+<p>SnapshotReader&#x662F;braft&#x5FEB;&#x7167;&#x8BFB;&#x64CD;&#x4F5C;&#x7684;&#x62BD;&#x8C61;&#xFF0C;&#x4E1A;&#x52A1;&#x72B6;&#x6001;&#x673A;&#x901A;&#x8FC7;get_path&#x65B9;&#x6CD5;&#x6765;&#x83B7;&#x53D6;&#x8BE5;snapshot&#x5B58;&#x653E;&#x7684;&#x8DEF;&#x5F84;&#xFF0C;&#x901A;&#x8FC7;list_files&#x6765;&#x83B7;&#x53D6;snapshot&#x5BF9;&#x5E94;&#x7684;&#x6587;&#x4EF6;&#xFF0C;&#x4E4B;&#x540E;&#x5373;&#x53EF;&#x8FDB;&#x884C;&#x5FEB;&#x7167;&#x6587;&#x4EF6;&#x7684;&#x8BFB;&#x5199;&#x3002;<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">std</span>::<span class="function"><span class="built_in">string</span> <span class="title">get_path</span><span class="params">()</span></span>;</div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">list_files</span><span class="params">(<span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="built_in">std</span>::<span class="built_in">string</span>&gt;* files)</span></span>;</div></pre></td></tr></table></figure></p>
+<p>snapshot load&#x5B8C;&#x6210;&#x540E;&#xFF0C;braft&#x4ECE;last_included_index&#x4E4B;&#x540E;&#x7684;log&#x8FDB;&#x884C;&#x56DE;&#x653E;(replay)&#x3002;</p>
+<h5 id="install-snapshot&#xFF1A;&#x5B89;&#x88C5;&#x5FEB;&#x7167;"><a href="#install-snapshot&#xFF1A;&#x5B89;&#x88C5;&#x5FEB;&#x7167;" class="headerlink" title="install snapshot&#xFF1A;&#x5B89;&#x88C5;&#x5FEB;&#x7167;"></a>install snapshot&#xFF1A;&#x5B89;&#x88C5;&#x5FEB;&#x7167;</h5><p>Install Snapshot&#x5305;&#x62EC;&#x4E24;&#x4E2A;&#x9636;&#x6BB5;&#xFF0C;&#x5373;leader&#x8282;&#x70B9;&#x4E0A;&#x7684;&#x8BFB;&#x4EE5;&#x53CA;follower&#x8282;&#x70B9;&#x4E0A;&#x7684;&#x5199;&#x3002;</p>
+<p>&#x5B89;&#x88C5;&#x5FEB;&#x7167;&#x65F6;&#x9996;&#x5148;Leader&#x5411;Follower&#x53D1;&#x8D77;RaftService::install_snapshot rpc&#x8BF7;&#x6C42;&#xFF0C;&#x8BF7;&#x6C42;&#x5185;&#x5BB9;&#x5982;&#x4E0B;&#xFF1A;<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">message InstallSnapshotRequest {</div><div class="line">    required <span class="built_in">string</span> group_id = <span class="number">1</span>;</div><div class="line">    required <span class="built_in">string</span> server_id = <span class="number">2</span>;</div><div class="line">    required <span class="built_in">string</span> peer_id = <span class="number">3</span>;</div><div class="line">    required int64 term = <span class="number">4</span>;</div><div class="line">    required SnapshotMeta meta = <span class="number">5</span>;</div><div class="line">    required <span class="built_in">string</span> uri = <span class="number">6</span>;</div><div class="line">};</div></pre></td></tr></table></figure></p>
+<p>Follower&#x6536;&#x5230;&#x8BF7;&#x6C42;&#x540E;&#x5F00;&#x542F;&#x5F02;&#x6B65;&#x4EFB;&#x52A1;&#xFF0C;&#x901A;&#x8FC7;FileService::get_file rpc&#x63A5;&#x53E3;&#x6765;&#x62C9;&#x53D6;&#x5FEB;&#x7167;&#x6570;&#x636E;,<br>&#x8BF7;&#x6C42;GetFileRequest/GetFileResponse&#x5185;&#x5BB9;&#x5982;&#x4E0B;&#xFF1A;<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">message GetFileRequest {</div><div class="line">    required int64 reader_id = <span class="number">1</span>;</div><div class="line">    required <span class="built_in">string</span> filename = <span class="number">2</span>;</div><div class="line">    required int64 count = <span class="number">3</span>;</div><div class="line">    required int64 offset = <span class="number">4</span>;</div><div class="line">    optional <span class="keyword">bool</span> read_partly = <span class="number">5</span>; </div><div class="line">}</div><div class="line"></div><div class="line">message GetFileResponse {</div><div class="line">    <span class="comment">// Data is in attachment</span></div><div class="line">    required <span class="keyword">bool</span> eof = <span class="number">1</span>;</div><div class="line">    optional int64 read_size = <span class="number">2</span>;</div><div class="line">}</div></pre></td></tr></table></figure></p>
+<p>&#x62C9;&#x53D6;&#x5B8C;&#x6570;&#x636E;&#x540E;Flollower&#x6267;&#x884C;snapshot load&#x52A0;&#x8F7D;&#x5FEB;&#x7167;&#x5230;&#x4E1A;&#x52A1;&#x72B6;&#x6001;&#x673A;&#xFF0C;&#x7136;&#x540E;&#x56DE;&#x590D;Leader InstallSnapshotResponse&#x3002;&#x5B8C;&#x6210;install snapshot&#xFF0C;snapshot install&#x4E4B;&#x540E;&#xFF0C;Leader&#x5373;&#x53EF;&#x4ECE;&#x8BE5;snapshot&#x7684;last_included_index&#x4E4B;&#x540E;log&#x5F00;&#x59CB;replication&#x7ED9;Follower&#x3002;</p>
+<h4 id="BaikalDB&#x57FA;&#x4E8E;RocksDB&#x7684;Snapshot&#x5B9E;&#x73B0;"><a href="#BaikalDB&#x57FA;&#x4E8E;RocksDB&#x7684;Snapshot&#x5B9E;&#x73B0;" class="headerlink" title="BaikalDB&#x57FA;&#x4E8E;RocksDB&#x7684;Snapshot&#x5B9E;&#x73B0;"></a>BaikalDB&#x57FA;&#x4E8E;RocksDB&#x7684;Snapshot&#x5B9E;&#x73B0;</h4><p>BaikalDB&#x91C7;&#x7528;Rocksdb&#x4F5C;&#x4E3A;&#x5355;&#x673A;&#x5F15;&#x64CE;&#xFF0C;raft&#x72B6;&#x6001;&#x673A;&#x4E2D;&#x5E94;&#x7528;raft-log&#x76F4;&#x63A5;&#x5C06;&#x6570;&#x636E;&#x6301;&#x5199;&#x5165;Rocksdb&#xFF0C;&#x53EF;&#x4EE5;&#x76F4;&#x63A5;&#x5C06;RocksDB&#x7684;&#x6570;&#x636E;&#x4F5C;&#x4E3A;snapshot&#xFF0C;&#x901A;&#x8FC7;&#x5B9A;&#x5236;RocksdbFileSystemAdaptor&#x5B9E;&#x73B0;Snapshot&#xFF0C;&#x5177;&#x4F53;&#x5B9E;&#x73B0;&#x5982;&#x4E0B;&#xFF1A;</p>
+<h5 id="snapshot-save&#xFF1A;&#x521B;&#x5EFA;&#x5FEB;&#x7167;-1"><a href="#snapshot-save&#xFF1A;&#x521B;&#x5EFA;&#x5FEB;&#x7167;-1" class="headerlink" title="snapshot save&#xFF1A;&#x521B;&#x5EFA;&#x5FEB;&#x7167;"></a>snapshot save&#xFF1A;&#x521B;&#x5EFA;&#x5FEB;&#x7167;</h5><p>&#x5728;&#x8FD9;&#x4E2A;&#x9636;&#x6BB5;&#x4E0D;&#x505A;&#x4EFB;&#x4F55;&#x64CD;&#x4F5C;&#xFF0C;&#x53EA;&#x5728;SnapshotWriter&#x4E2D;add&#x4E24;&#x4E2A;&#x6587;&#x4EF6;&#x540D;&#xFF0C;&#x7136;&#x540E;&#x7ED3;&#x675F;&#x3002;BaikalDB&#x521B;&#x5EFA;&#x4E86;meta&#x548C;data&#x4E24;&#x4E2A;ColumnFamily&#x5206;&#x522B;&#x4FDD;&#x5B58;&#x6570;&#x636E;&#x5E93;&#x7684;&#x5143;&#x6570;&#x636E;&#x548C;&#x6570;&#x636E;&#x3002;<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> SNAPSHOT_DATA_FILE = <span class="string">&quot;region_data_snapshot.sst&quot;</span>; <span class="comment">// &#x6570;&#x636E;&#x6587;&#x4EF6;</span></div><div class="line"><span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span> SNAPSHOT_META_FILE = <span class="string">&quot;region_meta_snapshot.sst&quot;</span>; <span class="comment">// &#x5143;&#x6570;&#x636E;&#x6587;&#x4EF6;</span></div><div class="line"></div><div class="line">oid Region::on_snapshot_save(braft::SnapshotWriter* writer, braft::Closure* done) {</div><div class="line">    brpc::<span class="function">ClosureGuard <span class="title">done_guard</span><span class="params">(done)</span></span>;</div><div class="line">    <span class="keyword">if</span> (writer-&gt;add_file(SNAPSHOT_META_FILE) != <span class="number">0</span>  </div><div class="line">      || writer-&gt;add_file(SNAPSHOT_DATA_FILE) != <span class="number">0</span>) {</div><div class="line">        done-&gt;status().set_error(EINVAL, <span class="string">&quot;Fail to add snapshot&quot;</span>);</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    }</div><div class="line">}</div></pre></td></tr></table></figure></p>
+<p>&#x76F4;&#x63A5;&#x4F7F;&#x7528;RocksDB&#x91CC;&#x7684;&#x6570;&#x636E;&#x4F5C;&#x4E3A;snapshot&#xFF0C;&#x800C;RocksDB&#x5728;&#x6301;&#x7EED;&#x4E0D;&#x65AD;&#x7684;&#x5199;&#x5165;&#x6570;&#x636E;&#xFF0C;&#x56E0;&#x6B64;&#x5728;snapshot load&#x65F6;&#x9700;&#x8981;&#x6BD4;&#x8F83;snapshot_index&#x548C;applied_index&#xFF0C;&#x786E;&#x4FDD;&#x4E8B;&#x52A1;&#x6062;&#x590D;&#x6B63;&#x786E;&#x72B6;&#x6001;&#x3002;</p>
+<h5 id="snapshot-load&#xFF1A;&#x52A0;&#x8F7D;&#x5FEB;&#x7167;-1"><a href="#snapshot-load&#xFF1A;&#x52A0;&#x8F7D;&#x5FEB;&#x7167;-1" class="headerlink" title="snapshot load&#xFF1A;&#x52A0;&#x8F7D;&#x5FEB;&#x7167;"></a>snapshot load&#xFF1A;&#x52A0;&#x8F7D;&#x5FEB;&#x7167;</h5><p>snapshot load&#x53D1;&#x751F;&#x5728;&#x573A;&#x666F;&#x5305;&#x62EC;&#x8282;&#x70B9;&#x91CD;&#x542F;&#x6216;&#x8005;Follower&#x843D;&#x540E;&#x65E5;&#x5FD7;&#x592A;&#x591A;&#x7684;&#x65F6;&#x5019;&#xFF1A;<br><strong>&#x8282;&#x70B9;&#x91CD;&#x542F;&#x65F6;&#xFF1A;</strong>    </p>
+<blockquote>
+<p> &#x8282;&#x70B9;&#x91CD;&#x542F;&#x65F6;&#x91CD;&#x542F;RocksDB&#xFF0C;&#x540C;&#x65F6;&#x8BFB;&#x53D6;raft log_index &lt; std::max(snapshot_index, _applied_index)&#x7684; &#x672A;&#x63D0;&#x4EA4;&#x4E8B;&#x52A1;&#x7684;log&#x8FDB;&#x884C;raplay&#x6062;&#x590D;&#x4E8B;&#x52A1;&#x72B6;&#x6001;&#x3002;</p>
+</blockquote>
+<p><strong>&#x65E5;&#x5FD7;&#x843D;&#x540E;&#x592A;&#x591A;&#x65F6;</strong>    </p>
+<blockquote>
+<p>&#x65E5;&#x5FD7;&#x843D;&#x540E;&#x592A;&#x591A;&#x65F6;&#x4F1A;&#x4ECE;Leader&#x62C9;&#x53D6;&#x4E00;&#x4EFD;&#x5B8C;&#x6574;&#x7684;snapshot&#xFF0C;&#x56E0;&#x4E3A;&#x662F;&#x4ECE;Leasder&#x62C9;&#x53D6;&#x7684;&#x4E00;&#x4EFD;&#x5B8C;&#x6574;&#x7684;&#x6570;&#x636E;&#xFF0C;&#x6B64;&#x65F6;&#x9700;&#x8981;&#x5148;&#x6E05;&#x9664;&#x672C;&#x5730;&#x6240;&#x6709;&#x6570;&#x636E;&#xFF0C;&#x4F7F;&#x7528;RocksDB&#x7684;DeleteRange&#x63A5;&#x53E3;&#xFF0C;&#x7136;&#x540E;&#x5C06;&#x62C9;&#x53D6;&#x7684;sst&#x6587;&#x4EF6;&#x901A;&#x8FC7;IngestExternalFile&#x63A5;&#x53E3;&#x52A0;&#x8F7D;&#x5230;Rocksdb&#x3002;</p>
+</blockquote>
+<h5 id="RocksdbFileSystemAdaptor&#x5B9E;&#x73B0;"><a href="#RocksdbFileSystemAdaptor&#x5B9E;&#x73B0;" class="headerlink" title="RocksdbFileSystemAdaptor&#x5B9E;&#x73B0;"></a>RocksdbFileSystemAdaptor&#x5B9E;&#x73B0;</h5><table>
+<thead>
+<tr>
+<th>&#x5DE5;&#x5177;&#x7C7B;</th>
+<th>&#x7236;&#x7C7B;</th>
+<th>&#x529F;&#x80FD;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RocksdbFileSystemAdaptor</td>
+<td>braft::FileSystemAdaptor</td>
+<td>&#x8D1F;&#x8D23;&#x6574;&#x4E2A;&#x5FEB;&#x7167;&#x6587;&#x4EF6;&#x7684;&#x7EF4;&#x62A4;</td>
+</tr>
+<tr>
+<td>PosixFileAdaptor</td>
+<td>braft::FileAdaptor</td>
+<td>&#x8D1F;&#x8D23;braft&#x81EA;&#x8EAB;&#x5FEB;&#x7167;&#x5143;&#x6570;&#x636E;&#x7684;&#x8BFB;&#x5199;</td>
+</tr>
+<tr>
+<td>SstWriterAdaptor</td>
+<td>braft::FileAdaptor</td>
+<td>&#x8D1F;&#x8D23;follower&#x5199;sst&#x6587;&#x4EF6;</td>
+</tr>
+<tr>
+<td>RocksdbReaderAdaptor</td>
+<td>braft::FileAdaptor</td>
+<td>&#x8D1F;&#x8D23;leader&#x8BFB;&#x53D6;rocksdb&#x6570;&#x636E;</td>
+</tr>
+</tbody>
+</table>
+<p>&#x4E3B;&#x8981;&#x63A5;&#x53E3;&#xFF1A;<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> FileSystemAdaptor {</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    <span class="function"><span class="keyword">virtual</span> FileAdaptor* <span class="title">open</span><span class="params">(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span>&amp; path, <span class="keyword">int</span> oflag, <span class="keyword">const</span> google::protobuf::Message* meta, Error* err)</span> </span>= <span class="number">0</span>;</div><div class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">bool</span> <span class="title">open_snapshot</span><span class="params">(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span>&amp; path)</span> </span>= <span class="number">0</span>;</div><div class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">close_snapshot</span><span class="params">(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span>&amp; path)</span> </span>= <span class="number">0</span>;</div><div class="line">};</div><div class="line"> </div><div class="line"> </div><div class="line"><span class="keyword">class</span> FileAdaptor {</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    <span class="function"><span class="keyword">virtual</span> ssize_t <span class="title">write</span><span class="params">(<span class="keyword">const</span> base::IOBuf&amp; data, <span class="keyword">off_t</span> offset)</span> </span>= <span class="number">0</span>;</div><div class="line">    <span class="function"><span class="keyword">virtual</span> ssize_t <span class="title">read</span><span class="params">(base::IOPortal* portal, <span class="keyword">off_t</span> offset, <span class="keyword">size_t</span> size)</span> </span>= <span class="number">0</span>;</div><div class="line">    <span class="function"><span class="keyword">virtual</span> ssize_t <span class="title">size</span><span class="params">()</span> </span>= <span class="number">0</span>;</div><div class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">bool</span> <span class="title">close</span><span class="params">()</span> </span>= <span class="number">0</span>;</div><div class="line">};</div></pre></td></tr></table></figure></p>
+<p><img src="/2022/02/15/braft-snapshot&#x5B9E;&#x73B0;/./images/install.png" alt=""></p>
+<h5 id="Leader&#x7AEF;"><a href="#Leader&#x7AEF;" class="headerlink" title="Leader&#x7AEF;"></a>Leader&#x7AEF;</h5><p>leader&#x6267;&#x884C;install_snapshot&#x6D41;&#x7A0B;&#xFF1A;<br><strong>open_snapshot</strong>&#xFF1A;&#x8BE5;&#x63A5;&#x53E3;&#x7528;&#x6765;&#x5B8C;&#x6210;&#x4E00;&#x4E9B;snapshot&#x8BFB;&#x53D6;&#x524D;&#x7684;&#x51C6;&#x5907;&#x5DE5;&#x4F5C;&#xFF0C;&#x8FDB;&#x884C;&#x5E76;&#x53D1;&#x63A7;&#x5236;&#x3002;&#x53EF;&#x80FD;&#x540C;&#x4E00;&#x4E2A;group&#x5185;&#x6709;&#x591A;&#x4E2A;Follower&#x9700;&#x8981;&#x62C9;&#x53D6;&#x540C;&#x4E00;&#x4E2A;snapshot&#xFF0C;&#x7531;&#x4E8E;braft&#x6CA1;&#x6709;&#x533A;&#x5206;&#x8BFB;&#x53D6;&#x8BF7;&#x6C42;&#x6765;&#x81EA;&#x54EA;&#x4E2A;Follower&#xFF0C;&#x56E0;&#x6B64;&#x9700;&#x8981;&#x5728;open_snapshot&#x63A5;&#x53E3;&#x4E2D;&#x5BF9;&#x540C;&#x4E00;&#x4E2A;snapshot&#x8FDB;&#x884C;&#x5E76;&#x53D1;&#x9650;&#x5236;&#xFF0C;&#x540C;&#x4E00;&#x65F6;&#x523B;&#x53EA;&#x5141;&#x8BB8;&#x4E00;&#x4E2A;Follower&#x8BFB;&#x53D6;&#x8BE5;snapshot&#xFF0C;&#x68C0;&#x67E5;&#x5230;&#x5DF2;&#x7ECF;&#x6709;&#x5176;&#x4ED6;snapshot install&#x4EFB;&#x52A1;&#x6253;&#x5F00;&#x8BE5;snapshot&#x65F6;&#xFF0C;&#x8FD4;&#x56DE;&#x6253;&#x5F00;&#x5931;&#x8D25;&#x3002;<br><strong>open</strong>&#xFF1A;&#x8BFB;&#x53D6;&#x65F6;&#x8C03;&#x7528;RocksdbFileSystemAdaptor::open&#x63A5;&#x53E3;&#x8FD4;&#x56DE;RocksdbReaderAdaptor&#xFF0C;&#x8BE5;&#x7C7B;&#x662F;&#x6709;&#x72B6;&#x6001;&#x7684;FileAdaptor&#xFF0C;&#x7EF4;&#x62A4;&#x6BCF;&#x6B21;&#x8BFB;&#x53D6;&#x7684;&#x8FDB;&#x5EA6;&#xFF0C;&#x5E76;&#x6301;&#x6709;RocksDB Iterator&#x76F4;&#x81F3;&#x6570;&#x636E;&#x8BFB;&#x53D6;&#x5168;&#x90E8;&#x7ED3;&#x675F;&#x3002;<br><strong>read</strong>&#xFF1A;read&#x64CD;&#x4F5C;&#x901A;&#x8FC7;&#x6307;&#x5B9A;offset&#x6765;&#x51B3;&#x5B9A;&#x8981;&#x4ECE;&#x54EA;&#x91CC;&#x5F00;&#x59CB;&#x8BFB;&#x53D6;&#x6570;&#x636E;&#xFF0C;size&#x53C2;&#x6570;&#x6307;&#x5B9A;&#x4E86;&#x672C;&#x6B21;&#x8981;&#x8BFB;&#x53D6;&#x7684;&#x6570;&#x636E;&#x91CF;&#xFF0C;&#x901A;&#x8FC7;RocksDB Iterator&#x904D;&#x5386;kv&#x6570;&#x636E;&#x5206;&#x6279;&#x53D1;&#x9001;&#x7ED9;Follower&#xFF0C;&#x76F4;&#x5230;eof&#xFF0C;kv&#x6570;&#x636E;&#x4EE5;Fixed-Length-Bytes&#x7684;&#x65B9;&#x5F0F;&#x7F16;&#x7801;&#xFF0C;&#x5373;size+data&#x3002;<br><strong>close</strong>: close&#x64CD;&#x4F5C;&#x6E05;&#x7406;open&#x64CD;&#x4F5C;&#x7EF4;&#x62A4;&#x7684;&#x5185;&#x5B58;&#x7ED3;&#x6784;&#xFF0C;&#x5982;&#x91CA;&#x653E;RocksDB Iterator&#x7B49;&#x3002;<br><strong>close_snapshot</strong>&#xFF1A;close_snapshot&#x64CD;&#x4F5C;&#x5728;&#x5B8C;&#x6210;snapshot&#x6216;&#x51FA;&#x9519;&#x540E;&#x8C03;&#x7528;&#xFF0C;&#x5728;&#x6B64;&#x63A5;&#x53E3;&#x4E2D;&#x6E05;&#x9664;open_snapshot&#x65F6;&#x4FDD;&#x5B58;&#x7684;&#x72B6;&#x6001;&#x3002;</p>
+<h5 id="Follower&#x7AEF;"><a href="#Follower&#x7AEF;" class="headerlink" title="Follower&#x7AEF;"></a>Follower&#x7AEF;</h5><p>&#x5728;Follower&#x7AEF;&#xFF0C;&#x5728;&#x6536;&#x5230;InstallSnapshotRequest&#x540E;&#xFF0C;&#x8C03;&#x7528;RocksdbFileSystemAdaptor::open&#x63A5;&#x53E3;&#x8FD4;&#x56DE;&#x4E00;&#x4E2A;SstWriterAdaptor&#xFF0C;&#x5229;&#x7528;rocksdb::SstFileWriter&#x751F;&#x6210;sst&#x6587;&#x4EF6;&#x3002;<br>&#x5728;SstWriterAdaptor::write&#x63A5;&#x53E3;&#x4E2D;&#xFF0C;&#x5C06;&#x4ECE;Leader&#x8BFB;&#x53D6;&#x7684;&#x6570;&#x636E;&#xFF0C;&#x6839;&#x636E;Fixed-Length-Bytes&#x89E3;&#x6790;&#x51FA;kv&#x6570;&#x636E;&#xFF0C;&#x8C03;&#x7528;SstFileWrtier&#x7684;Put&#x63A5;&#x53E3;&#x5199;&#x5165;sst&#x6587;&#x4EF6;&#x3002;<br>&#x6700;&#x540E;&#xFF0C;&#x5728;close&#x65F6;&#xFF0C;&#x8C03;&#x7528;SstFileWriter&#x7684;Finish&#x63A5;&#x53E3;&#x751F;&#x6210;&#x5B8C;&#x6574;&#x7684;sst&#x6587;&#x4EF6;&#xFF0C;&#x6B64;sst&#x6587;&#x4EF6;&#x5373;&#x53EF;&#x5728;&#x540E;&#x7EED;snapshot load&#x65F6;ingest&#x5230;RocksDB&#x4E2D;&#xFF0C;&#x5B8C;&#x6210;snapshot&#x6570;&#x636E;&#x52A0;&#x8F7D;&#x3002;</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/raft/" rel="tag">#raft</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/06/20/笔记-The-Google-File-System/" rel="next" title="[笔记] The Google File System">
+                <i class="fa fa-chevron-left"></i> [笔记] The Google File System
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="//schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="https://projecteuler.net/profile/luobuda.png"
+               alt="洛卜哒" />
+          <p class="site-author-name" itemprop="name">洛卜哒</p>
+          <p class="site-description motion-element" itemprop="description">大约，孔乙己的确死了！</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">37</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/luobuda" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://github.com/luobuda" title="Github" target="_blank">Github</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="https://projecteuler.net/" title="Project Euler" target="_blank">Project Euler</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#snapshot作用"><span class="nav-number">1.</span> <span class="nav-text">snapshot作用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#braft实现"><span class="nav-number">2.</span> <span class="nav-text">braft实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#主要流程"><span class="nav-number">3.</span> <span class="nav-text">主要流程</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#snapshot-save：创建快照"><span class="nav-number">3.1.</span> <span class="nav-text">snapshot save：创建快照</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#snapshot-load：加载快照"><span class="nav-number">3.2.</span> <span class="nav-text">snapshot load：加载快照</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#install-snapshot：安装快照"><span class="nav-number">3.3.</span> <span class="nav-text">install snapshot：安装快照</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#BaikalDB基于RocksDB的Snapshot实现"><span class="nav-number">4.</span> <span class="nav-text">BaikalDB基于RocksDB的Snapshot实现</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#snapshot-save：创建快照-1"><span class="nav-number">4.1.</span> <span class="nav-text">snapshot save：创建快照</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#snapshot-load：加载快照-1"><span class="nav-number">4.2.</span> <span class="nav-text">snapshot load：加载快照</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#RocksdbFileSystemAdaptor实现"><span class="nav-number">4.3.</span> <span class="nav-text">RocksdbFileSystemAdaptor实现</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Leader端"><span class="nav-number">4.4.</span> <span class="nav-text">Leader端</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Follower端"><span class="nav-number">4.5.</span> <span class="nav-text">Follower端</span></a></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">洛卜哒</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.2"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>

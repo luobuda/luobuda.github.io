@@ -259,6 +259,127 @@
             
               
                 
+                <a class="post-title-link" href="/2022/02/15/braft-snapshot实现/" itemprop="url">
+                  braft snapshot实现
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2022-02-15T22:56:12+08:00" content="2022-02-15">
+              2022-02-15
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/consensus-protocol/" itemprop="url" rel="index">
+                    <span itemprop="name">consensus protocol</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h4 id="snapshot&#x4F5C;&#x7528;"><a href="#snapshot&#x4F5C;&#x7528;" class="headerlink" title="snapshot&#x4F5C;&#x7528;"></a>snapshot&#x4F5C;&#x7528;</h4><p>snapshot&#x662F;raft&#x7B97;&#x6CD5;&#x7684;&#x56DB;&#x5927;&#x7279;&#x6027;&#x4E4B;Log Compaction&#x3002;<br>snapshot&#x7684;&#x4E3B;&#x8981;&#x4F5C;&#x7528;&#xFF0C;&#x5BF9;&#x672C;&#x8282;&#x70B9;&#x6765;&#x8BF4;&#xFF1A;</p>
+<ul>
+<li>Log Compaction&#xFF0C;&#x5728;&#x5B8C;&#x6210;Snapshot&#x5B8C;&#x6210;&#x4E4B;&#x540E;&#xFF0C;&#x8FD9;&#x4E2A;&#x65F6;&#x95F4;&#x4E4B;&#x524D;&#x7684;&#x65E5;&#x5FD7;&#x90FD;&#x53EF;&#x4EE5;&#x88AB;&#x5220;&#x9664;&#x4E86;&#xFF0C;&#x8FD9;&#x6837;&#x53EF;&#x4EE5;&#x51CF;&#x5C11;&#x65E5;&#x5FD7;&#x5360;&#x7528;&#x7684;&#x8D44;&#x6E90;</li>
+<li>&#x542F;&#x52A8;&#x52A0;&#x901F;&#xFF0C;&#x542F;&#x52A8;&#x9636;&#x6BB5;&#x53D8;&#x4E3A;&#x52A0;&#x8F7D;Snapshot&#x548C;&#x8FFD;&#x52A0;&#x4E4B;&#x540E;&#x65E5;&#x5FD7;&#x4E24;&#x4E2A;&#x9636;&#x6BB5;&#xFF0C;&#x800C;&#x4E0D;&#x9700;&#x8981;&#x91CD;&#x65B0;&#x6267;&#x884C;&#x5386;&#x53F2;&#x4E0A;&#x6240;&#x6709;&#x7684;&#x64CD;&#x4F5C;.<br>&#x5BF9;&#x6574;&#x4E2A;raft-group&#x6765;&#x8BF4;&#xFF0C;leader&#x548C;follower&#x4F1A;&#x6709;InstallSnapshot&#x64CD;&#x4F5C;&#xFF0C;&#x76EE;&#x524D;&#xFF0C;&#x4E3B;&#x8981;&#x6709;&#x4E24;&#x4E2A;&#x5730;&#x65B9;&#x4F1A;&#x89E6;&#x53D1;InstallSnapshot&#x7684;&#x53D1;&#x9001;&#xFF1A;</li>
+<li>Raft&#x4E2D;&#x7684;Follower&#x843D;&#x540E;Leader&#x592A;&#x591A;&#xFF0C;Follower&#x6240;&#x9700;&#x8981;&#x7684;Raft Log&#x5728;Leader&#x4E2D;&#x5DF2;&#x7ECF;&#x5220;&#x9664;&#xFF0C;&#x4F1A;&#x89E6;&#x53D1;Leader&#x5411;Follower&#x53D1;&#x9001;snapshot</li>
+<li>&#x5F53;&#x4E00;&#x4E2A;Raft Group&#x589E;&#x52A0;&#x4E00;&#x4E2A;peer&#x65F6;&#xFF0C;&#x8FD9;&#x4E2A;peer&#x901A;&#x8FC7;Leader&#x53D1;&#x9001;snapshot&#x8FDB;&#x884C;&#x6570;&#x636E;&#x7684;&#x521D;&#x59CB;&#x5316;</li>
+</ul>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2022/02/15/braft-snapshot实现/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2021/06/20/笔记-The-Google-File-System/" itemprop="url">
                   [笔记] The Google File System
                 </a>
@@ -441,122 +562,6 @@
 </ul>
           <div class="post-more-link text-center">
             <a class="btn" href="/2021/06/16/dynamic-cast/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2021/06/09/paper笔记：Designing-Access-Methods-The-RUM-Conjecture/" itemprop="url">
-                  [笔记]：Designing Access Methods: The RUM Conjecture
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2021-06-09T22:47:41+08:00" content="2021-06-09">
-              2021-06-09
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp;
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/storage-system/" itemprop="url" rel="index">
-                    <span itemprop="name">storage system</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-
-          
-          
-
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h4 id="The-RUM-Conjecture"><a href="#The-RUM-Conjecture" class="headerlink" title="The RUM Conjecture"></a>The RUM Conjecture</h4><p><a href="http://daslab.seas.harvard.edu/rum-conjecture/">RUM Conjecture</a>&#x975E;&#x5E38;&#x7C7B;&#x4F3C;CAP theorem&#xFF0C;&#x6307;&#x5BF9;&#x4E8E;&#x4E00;&#x4E2A;&#x5B58;&#x50A8;&#x7CFB;&#x7EDF;&#xFF0C;&#x51FA;&#x8BFB;(Read)&#x3001;&#x5199;(Updates)&#x4EE5;&#x53CA;&#x7A7A;&#x95F4;(Memory)&#x4E09;&#x8005;&#x4E4B;&#x95F4;&#x662F;&#x4E00;&#x4E2A;&#x76F8;&#x4E92;&#x5236;&#x7EA6;&#x7684;&#x5173;&#x7CFB;&#xFF0C;&#x5982;&#x56FE;</p>
-<p><img src="https://d3i71xaburhd42.cloudfront.net/fbf48c5d82e72541937a6bfd94eca38257096ee1/500px/3-Figure1-1.png" alt=""><br></p>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2021/06/09/paper笔记：Designing-Access-Methods-The-RUM-Conjecture/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1592,7 +1597,7 @@
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2021</span>
+  <span itemprop="copyrightYear">2022</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
