@@ -558,9 +558,31 @@
 
       
         
-          
-            
-          
+          <p>Google GFS&#x6587;&#x4EF6;&#x7CFB;&#x7EDF;&#x662F;&#x4E00;&#x4E2A;&#x9762;&#x5411;&#x5927;&#x89C4;&#x6A21;&#x6570;&#x636E;&#x5BC6;&#x96C6;&#x578B;&#x5E94;&#x7528;&#x7684;&#x3001;&#x53EF;&#x4F38;&#x7F29;&#x7684;&#x5206;&#x5E03;&#x5F0F;&#x6587;&#x4EF6;&#x7CFB;&#x7EDF;&#x3002;&#x6784;&#x5EFA;&#x5728;&#x5EC9;&#x4EF7;&#x7684;PC&#x673A;&#x4E0A;&#xFF0C;&#x5177;&#x5907;&#x826F;&#x597D;&#x7684;&#x5BB9;&#x707E;&#x80FD;&#x529B;&#x548C;&#x6027;&#x80FD;&#x3002;</p>
+<h4 id="1-Introduction"><a href="#1-Introduction" class="headerlink" title="1. Introduction"></a>1. Introduction</h4><ul>
+<li>&#x5206;&#x5E03;&#x5F0F;&#x7CFB;&#x7EDF;&#x4E2D;&#x9519;&#x8BEF;&#x662F;&#x5E38;&#x6001;&#xFF0C;&#x6240;&#x4EE5;&#x9700;&#x8981;&#x6709;&#x6301;&#x7EED;&#x7684;&#x76D1;&#x63A7;&#x3001;&#x9519;&#x8BEF;&#x4FA6;&#x6D4B;&#x3001;&#x707E;&#x96BE;&#x5197;&#x4F59;&#x4EE5;&#x53CA;&#x81EA;&#x52A8;&#x6062;&#x590D;&#x7684;&#x673A;&#x5236;</li>
+<li>&#x6587;&#x4EF6;&#x666E;&#x904D;&#x8F83;&#x5927;&#xFF0C;&#x8FBE;&#x5230;GB&#x7EA7;&#x522B;&#xFF0C;&#x9700;&#x8981;&#x91CD;&#x65B0;&#x8003;&#x8651;I/O&#x64CD;&#x4F5C;&#x548C;block&#x5927;&#x5C0F;</li>
+<li>&#x5927;&#x90E8;&#x5206;&#x7684;&#x6587;&#x4EF6;&#x662F;&#x8FFD;&#x52A0;&#x5199;&#x800C;&#x4E0D;&#x662F;&#x8986;&#x76D6;&#x5199;&#xFF0C;&#x4E00;&#x65E6;&#x5199;&#x5B8C;&#x901A;&#x5E38;&#x662F;&#x987A;&#x5E8F;&#x8BFB;&#x53D6;&#xFF0C;&#x7F13;&#x5B58;&#x6570;&#x636E;&#x5757;&#x5BF9;&#x6027;&#x80FD;&#x63D0;&#x5347;&#x4E0D;&#x660E;&#x663E;&#xFF0C;&#x6570;&#x636E;&#x7684;&#x8FFD;&#x52A0;&#x64CD;&#x4F5C;&#x662F;&#x6027;&#x80FD;&#x4F18;&#x5316;&#x548C;&#x539F;&#x5B50;&#x6027;&#x4FDD;&#x8BC1;&#x7684;&#x4E3B;&#x8981;&#x8003;&#x91CF;&#x56E0;&#x7D20;&#x3002;</li>
+</ul>
+<h4 id="2-Design-Overview"><a href="#2-Design-Overview" class="headerlink" title="2. Design Overview"></a>2. Design Overview</h4><h5 id="2-1-&#x8BBE;&#x8BA1;&#x7684;&#x8003;&#x91CF;"><a href="#2-1-&#x8BBE;&#x8BA1;&#x7684;&#x8003;&#x91CF;" class="headerlink" title="2.1 &#x8BBE;&#x8BA1;&#x7684;&#x8003;&#x91CF;"></a>2.1 &#x8BBE;&#x8BA1;&#x7684;&#x8003;&#x91CF;</h5><ul>
+<li>&#x7CFB;&#x7EDF;&#x7531;&#x8BB8;&#x591A;&#x5EC9;&#x4EF7;&#x7684;&#x666E;&#x901A;&#x7EC4;&#x4EF6;&#x7EC4;&#x6210;&#xFF0C;&#x7EC4;&#x4EF6;&#x5931;&#x6548;&#x662F;&#x4E00;&#x79CD;&#x5E38;&#x6001;</li>
+<li>&#x9762;&#x5411;&#x5927;&#x6587;&#x4EF6;&#x8BBE;&#x8BA1;&#xFF0C;&#x5178;&#x578B;&#x6587;&#x4EF6;&#x5927;&#x5C0F;&#x5728;100MB&#x4EE5;&#x4E0A;&#x3002;&#x652F;&#x6301;&#x5C0F;&#x6587;&#x4EF6;&#x4F46;&#x4E0D;&#x505A;&#x4E13;&#x95E8;&#x4F18;&#x5316;</li>
+<li>&#x4E3B;&#x8981;&#x6709;&#x4E24;&#x79CD;&#x8BFB;&#x6A21;&#x5F0F;&#xFF0C;&#x5927;&#x5757;&#x987A;&#x5E8F;&#x8BFB;&#x548C;&#x5C0F;&#x5757;&#x968F;&#x673A;&#x8BFB;&#x3002;&#x5E94;&#x7528;&#x53EF;&#x4EE5;&#x5C06;&#x591A;&#x4E2A;&#x968F;&#x673A;&#x8BFB;&#x5408;&#x5E76;&#x6392;&#x5E8F;&#xFF0C;&#x7136;&#x540E;&#x987A;&#x5E8F;&#x8BFB;&#x53D6;&#x63D0;&#x5347;&#x6027;&#x80FD;</li>
+<li>&#x5199;&#x6A21;&#x5F0F;&#x4E3A;&#x5927;&#x5757;&#x7684;&#x987A;&#x5E8F;&#x8FFD;&#x52A0;&#x5199;&#x5165;&#xFF0C;&#x4E5F;&#x652F;&#x6301;&#x5C0F;&#x5757;&#x7684;&#x968F;&#x673A;&#x5199;&#x5165;&#xFF0C;&#x4F46;&#x6027;&#x80FD;&#x8F83;&#x5DEE;</li>
+<li>&#x652F;&#x6301;&#x591A;&#x5BA2;&#x6237;&#x7AEF;&#x9AD8;&#x6548;&#x7684;&#x5E76;&#x53D1;&#x8FFD;&#x52A0;&#x5199;&#x540C;&#x4E00;&#x4E2A;&#x6587;&#x4EF6;</li>
+<li>&#x9AD8;&#x541E;&#x5410;&#x4F18;&#x5148;&#x4E8E;&#x4F4E;&#x5EF6;&#x65F6;</li>
+</ul>
+<h5 id="2-2-Interface"><a href="#2-2-Interface" class="headerlink" title="2.2 Interface"></a>2.2 Interface</h5><ul>
+<li>&#x63D0;&#x4F9B;create&#x3001;delete&#x3001;open&#x3001;close&#x3001;read&#x3001;write&#x63A5;&#x53E3;</li>
+<li>&#x652F;&#x6301;snapshot&#x548C;record append</li>
+</ul>
+<h4 id="2-3-Architecture"><a href="#2-3-Architecture" class="headerlink" title="2.3 Architecture"></a>2.3 Architecture</h4><p>&#x4E00;&#x4E2A;GFS&#x96C6;&#x7FA4;&#x7531;&#x4E00;&#x4E2A;Master&#x8282;&#x70B9;&#x548C;&#x82E5;&#x5E72;&#x4E2A;ChunkServer&#x8282;&#x70B9;&#x7EC4;&#x6210;&#xFF0C;Master&#x8282;&#x70B9;&#x901A;&#x8FC7;&#x591A;&#x526F;&#x672C;&#x4FDD;&#x8BC1;&#x9AD8;&#x53EF;&#x7528;&#x3002;</p>
+<p><img src="/2021/06/20/&#x7B14;&#x8BB0;-The-Google-File-System/./images/GoogleFileSystemGFS.png" alt=""></p>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2021/06/20/笔记-The-Google-File-System/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
         
       
     </div>
